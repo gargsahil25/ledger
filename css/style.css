@@ -52,11 +52,39 @@ a:hover {
     color: #E91E63;
 }
 
+table {
+    margin: 2%;
+    width: 96%;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+table td {
+    text-align: center;
+    height: 30px;
+}
+
+table th {
+    background-color: #009688;
+    height: 30px;
+    color: #FFF;
+}
+
+table tr:nth-child(even) {
+    background-color: rgba(123, 198, 191, 0.3);
+}
+
+table tr:nth-child(odd) {
+    background-color: rgba(0, 150, 136, 0.4);
+}
+
 .main-block {
     display: inline-block;
     vertical-align: top;
     width: 20%;
     margin: 10px 2%;
+}
+
+.form {
     background-color: #FFC107;
     border-radius: 5px;
     box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
@@ -65,15 +93,14 @@ a:hover {
 .summary {
     color: #eee;
     font-size: 0.8em;
-    background-color: #673AB7;
+    background-color: #009688;
     padding: 5px;
     border-radius: 5px;
-    border: 1px solid #673AB7;
     margin: 0px 10px;
 }
 
 .summary .title {
-    color: #aaa;
+    color: #ccc;
     text-transform: uppercase;
     font-size: 0.7em;
 }
@@ -87,28 +114,12 @@ a:hover {
     margin-top: 20px;
     margin-bottom: 20px;
     width: 100%;
-    border: 1px solid #9DEEF9;
-    background-color: #9DEEF9;
-    border-radius: 5px;
-    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .accounts {
-    margin-top: 20px;
+    margin-top: 10px;
     margin-left: 30%;
+    margin-bottom: 10px;
     width: 40%;
-    border: 1px solid #FFF59A;
-    background-color: #FFF59A;
-    border-radius: 5px;
-    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-
-table {
-    margin: 2%;
-    width: 96%;
-}
-
-table td {
-    text-align: center;
+    display: inline-block;
 }

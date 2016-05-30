@@ -33,7 +33,7 @@ date_default_timezone_set('Asia/Kolkata');
 		<hr>
 	</section>
 	<section>
-		<div class="main-block">
+		<div class="main-block form">
 			<h2>Buy Stuff</h2>
 			<form method="post">
 			<input type="text" name="buy-desc" placeholder="Item Description"/>
@@ -46,7 +46,7 @@ date_default_timezone_set('Asia/Kolkata');
 			<input type="submit" name="buy-submit" value="Submit"/>
 			</form>
 		</div>
-		<div class="main-block">
+		<div class="main-block form">
 			<h2>Pay Amount</h2>
 			<form method="post">
 			<input type="text" name="pay-desc" placeholder="Payment Description"/>
@@ -62,7 +62,7 @@ date_default_timezone_set('Asia/Kolkata');
 			<input type="submit" name="pay-submit" value="Submit"/>
 			</form>
 		</div>
-		<div class="main-block">
+		<div class="main-block form">
 			<h2>Sell Stuff</h2>
 			<form method="post">
 			<input type="text" name="sell-desc" placeholder="Item Description"/>
@@ -75,7 +75,7 @@ date_default_timezone_set('Asia/Kolkata');
 			<input type="submit" name="sell-submit" value="Submit"/>
 			</form>
 		</div>
-		<div class="main-block">
+		<div class="main-block form">
 			<h2>Get Payment</h2>
 			<form method="post">
 			<input type="text" name="payment-desc" placeholder="Payment Description"/>

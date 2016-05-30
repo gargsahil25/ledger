@@ -34,7 +34,7 @@ $accounts = getAccounts();
 		</div>
 	</section>
 	<section>
-		<div class="accounts">
+		<div class="accounts form">
 			<h2>Add New Client</h2>
 			<form method="post">
 			<input type="text" name="client-name" placeholder="Name of Client"/>
