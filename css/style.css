@@ -1,0 +1,114 @@
+body {
+    font-family: sans-serif;
+    background-color: #F5F5F5;
+    color: #333;
+    font-size: 14px;
+    margin: 0 2%;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h1,
+h2 {
+    text-align: center;
+    margin: 10px;
+}
+
+input,
+select {
+    height: 30px;
+    font-size: 1em;
+    padding: 5px;
+    margin: 0 4% 10px 4%;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    width: 92%;
+    background-color: #f5f5f5;
+}
+
+input[type="submit"] {
+    background-color: #F44336;
+    margin-top: 10px;
+    height: 40px;
+    border: none;
+    color: #f5f5f5;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #E91E63;
+}
+
+a {
+    text-decoration: none;
+    color: #F44336;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #E91E63;
+}
+
+.main-block {
+    display: inline-block;
+    vertical-align: top;
+    width: 20%;
+    margin: 10px 2%;
+    background-color: #FFC107;
+    border-radius: 5px;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.summary {
+    color: #eee;
+    font-size: 0.8em;
+    background-color: #673AB7;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #673AB7;
+    margin: 0px 10px;
+}
+
+.summary .title {
+    color: #aaa;
+    text-transform: uppercase;
+    font-size: 0.7em;
+}
+
+.nav-links a {
+    font-size: 0.6em;
+    text-transform: uppercase;
+}
+
+.txns {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    border: 1px solid #9DEEF9;
+    background-color: #9DEEF9;
+    border-radius: 5px;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.accounts {
+    margin-top: 20px;
+    margin-left: 30%;
+    width: 40%;
+    border: 1px solid #FFF59A;
+    background-color: #FFF59A;
+    border-radius: 5px;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+table {
+    margin: 2%;
+    width: 96%;
+}
+
+table td {
+    text-align: center;
+}
