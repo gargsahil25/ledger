@@ -1,10 +1,20 @@
 <?php 
 
 function mysqlQuery($sql) {
+	
 	$servername = "localhost:3306";
 	$username = "root";
 	$password = "root";
 	$dbname = "ledger";
+
+	$url = getenv("CLEARDB_DATABASE_URL");
+	if ($url) {
+		$url = parse_url($url);
+		$servername = $url["host"];
+		$username = $url["user"];
+		$password = $url["pass"];
+		$dbname = substr($url["path"],1);
+	}	
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);
