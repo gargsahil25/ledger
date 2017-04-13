@@ -69,7 +69,7 @@ function getTransactions($id = null) {
 	if ($id) {
 		$sql .= " WHERE t.from_account = ".$id." OR t.to_account = ".$id;
 	}
-	$sql .= " ORDER BY date desc";
+	$sql .= " ORDER BY date desc LIMIT 0,10";
 	$txnRows = mysqlQuery($sql);
 	$txns = array();
 	while($txn = $txnRows->fetch_assoc()) {

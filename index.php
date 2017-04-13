@@ -29,76 +29,129 @@ $clientBalance = getBalanceByType('client');
 <link rel="stylesheet" href="css/style.css?v1"> 
 </head>
 <body>
-	<div class="page-header">
-		<h5>Ledger
-	</div>
-	<div class="summary">
+	<section class="page-header">
+		<h5>Ledger<h5>
+	</section>
+	<section class="summary">
 		<div class="label label-success"><span class="title">Cash</span><?php echo getMoneyFormat($cashBalance); ?></div>
 		<div class="label <?php if ($clientBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Client</span><?php echo getMoneyFormat($clientBalance); ?></div>
-	</div>
+	</section>
 	<section>
-		<div class="main-block form">
-			<h2>Buy Stuff</h2>
-			<form method="post">
-			<input type="text" name="buy-desc" placeholder="Item Description"/>
-			<select name="buy-from">
-				<option value="">Buy from</option>
-				<?php displayAccount($accounts, 'client'); ?>
-			</select>
-			<input type="number" name="buy-amount" placeholder="Amount"/>
-			<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
-			<input type="submit" name="buy-submit" value="Submit"/>
-			</form>
+		<div class="entry">
+			<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#purchase">
+				<span class="glyphicon glyphicon-object-align-left" aria-hidden="true"></span> 
+				Purchase
+			</button>
+			<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#sale">
+				<span class="glyphicon glyphicon-object-align-right" aria-hidden="true"></span> 
+				Sale
+			</button>
+			<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#pay">
+				<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> 
+				Payment
+			</button>
+			<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#earn">
+				<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> 
+				Earn
+			</button>
 		</div>
-		<div class="main-block form">
-			<h2>Pay Amount</h2>
-			<form method="post">
-			<input type="text" name="pay-desc" placeholder="Payment Description"/>
-			<select name="pay-to">
-				<option value="">Pay to</option>
-				<?php displayAccount($accounts, 'capital'); ?>
-				<?php displayAccount($accounts, 'home'); ?>
-				<?php displayAccount($accounts, 'factory'); ?>
-				<?php displayAccount($accounts, 'client'); ?>
-			</select>
-			<input type="number" name="pay-amount" placeholder="Amount"/>
-			<input type="date" name="pay-date" value="<?php echo date("Y-m-d") ?>"/>
-			<input type="submit" name="pay-submit" value="Submit"/>
-			</form>
+		
+		<div id="purchase" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+	      			<div class="modal-header">
+	      				<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h2>Purchase</h2>
+					</div>
+					<div class="modal-body">
+						<form method="post">
+						<input type="text" name="buy-desc" placeholder="Item Description"/>
+						<select name="buy-from">
+							<option value="">Purchase from</option>
+							<?php displayAccount($accounts, 'client'); ?>
+						</select>
+						<input type="number" name="buy-amount" placeholder="Amount"/>
+						<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
+						<input type="submit" name="buy-submit" value="Submit"/>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="main-block form">
-			<h2>Sell Stuff</h2>
-			<form method="post">
-			<input type="text" name="sell-desc" placeholder="Item Description"/>
-			<select name="sell-to">
-				<option value="">Sell to</option>
-				<?php displayAccount($accounts, 'client'); ?>
-			</select>
-			<input type="number" name="sell-amount" placeholder="Amount"/>
-			<input type="date" name="sell-date" value="<?php echo date("Y-m-d") ?>"/>
-			<input type="submit" name="sell-submit" value="Submit"/>
-			</form>
+		<div id="sale" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+	      			<div class="modal-header">
+	      				<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h2>Sale</h2>
+					</div>
+					<div class="modal-body">
+						<form method="post">
+						<input type="text" name="sell-desc" placeholder="Item Description"/>
+						<select name="sell-to">
+							<option value="">Sell to</option>
+							<?php displayAccount($accounts, 'client'); ?>
+						</select>
+						<input type="number" name="sell-amount" placeholder="Amount"/>
+						<input type="date" name="sell-date" value="<?php echo date("Y-m-d") ?>"/>
+						<input type="submit" name="sell-submit" value="Submit"/>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="main-block form">
-			<h2>Get Payment</h2>
-			<form method="post">
-			<input type="text" name="payment-desc" placeholder="Payment Description"/>
-			<select name="payment-from">
-				<option value="">Payment from</option>
-				<?php displayAccount($accounts, 'capital'); ?>
-				<?php displayAccount($accounts, 'home'); ?>
-				<?php displayAccount($accounts, 'client'); ?>
-			</select>
-			<input type="number" name="payment-amount" placeholder="Amount"/>
-			<input type="date" name="payment-date" value="<?php echo date("Y-m-d") ?>"/>
-			<input type="submit" name="payment-submit" value="Submit"/>
-			</form>
+		<div id="pay" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+	      			<div class="modal-header">
+	      				<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h2>Pay</h2>
+					</div>
+					<div class="modal-body">
+						<form method="post">
+						<input type="text" name="pay-desc" placeholder="Payment Description"/>
+						<select name="pay-to">
+							<option value="">Pay to</option>
+							<?php displayAccount($accounts, 'capital'); ?>
+							<?php displayAccount($accounts, 'home'); ?>
+							<?php displayAccount($accounts, 'factory'); ?>
+							<?php displayAccount($accounts, 'client'); ?>
+						</select>
+						<input type="number" name="pay-amount" placeholder="Amount"/>
+						<input type="date" name="pay-date" value="<?php echo date("Y-m-d") ?>"/>
+						<input type="submit" name="pay-submit" value="Submit"/>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="earn" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+	      			<div class="modal-header">
+	      				<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h2>Earn</h2>
+					</div>
+					<div class="modal-body">
+						<form method="post">
+						<input type="text" name="buy-desc" placeholder="Item Description"/>
+						<select name="buy-from">
+							<option value="">Earn from</option>
+							<?php displayAccount($accounts, 'client'); ?>
+						</select>
+						<input type="number" name="buy-amount" placeholder="Amount"/>
+						<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
+						<input type="submit" name="buy-submit" value="Submit"/>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</section>
 	<section>
 		<div class="txns">
 			<table>
-			<tr><th>Date</th><th>From</th><th>To</th><th>Description</th><th>Amount</th></tr>
+			<tr><th>Date</th><th>From</th><th>To</th><th>Desc</th><th>Amount</th></tr>
 			<?php displayTxns($txns); ?>
 			</table>
 		</div>

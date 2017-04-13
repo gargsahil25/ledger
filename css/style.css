@@ -1,39 +1,3 @@
-.page-header {
-    background: linear-gradient(#8764ac, #9f82bd, #8764ac);
-    color: #fff;
-    margin: 0px;
-    padding-top: 10px;
-}
-
-.page-header h5 {
-    margin: 0px;
-    text-align: center;
-}
-
-.summary {
-    margin: 5px;
-    text-align: center;
-}
-
-.summary .label {
-    padding: .5em;
-    margin: 3px;
-    font-size: 120%;
-    line-height: 1.5;
-    display: inline-block;
-    width: 47%;
-    max-width: 200px;
-}
-
-.summary .title {
-    color: #ddd;
-    font-size: 80%;
-    text-transform: uppercase;
-    display: grid;
-}
-
-
-
 input,
 select {
     height: 30px;
@@ -79,12 +43,17 @@ table {
 table td {
     text-align: center;
     height: 30px;
+    padding: 3px;
+    font-size: 0.9em;
 }
 
 table th {
     background-color: #009688;
     height: 30px;
     color: #FFF;
+    padding: 3px;
+    font-size: 0.9em;
+    text-align: center;
 }
 
 table tr:nth-child(even) {
@@ -95,29 +64,54 @@ table tr:nth-child(odd) {
     background-color: rgba(0, 150, 136, 0.4);
 }
 
-.main-block {
+.page-header {
+    background: linear-gradient(#8764ac, #9f82bd, #8764ac);
+    color: #fff;
+    margin: 0px;
+    padding-top: 10px;
+}
+
+.page-header h5 {
+    margin: 0px;
+    text-align: center;
+}
+
+.summary {
+    margin: 5px;
+    text-align: center;
+}
+
+.summary .label {
+    padding: .5em;
+    margin: 3px;
+    font-size: 120%;
+    line-height: 1.5;
     display: inline-block;
-    vertical-align: top;
-    width: 20%;
-    margin: 10px 2%;
+    width: 47%;
+    max-width: 200px;
 }
 
-.form {
-    background-color: #FFC107;
-    border-radius: 5px;
-    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-
-
-.nav-links a {
-    font-size: 0.6em;
+.summary .title {
+    color: #ddd;
+    font-size: 80%;
     text-transform: uppercase;
+    display: grid;
+}
+
+.entry {
+    margin: 5px;
+    text-align: center;
+}
+
+.entry button {
+    width: 47%;
+    max-width: 200px;
+    margin: 3px;
 }
 
 .txns {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     width: 100%;
 }
 

@@ -12,7 +12,7 @@ function displayAccount($accounts, $type) {
 
 function displayTxns($txns) {
 	foreach($txns as $txn) {
-		echo '<tr><td>'.$txn["date"].'</td><td><a href="./transactions.php?id='.$txn["from_account_id"].'">'.$txn["from_account_name"].'</a></td><td><a href="./transactions.php?id='.$txn["to_account_id"].'">'.$txn["to_account_name"].'</a></td><td>'.$txn["description"].'</td><td>'.$txn["amount"].'</td></tr>';
+		echo '<tr><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td><a href="./transactions.php?id='.$txn["from_account_id"].'">'.$txn["from_account_name"].'</a></td><td><a href="./transactions.php?id='.$txn["to_account_id"].'">'.$txn["to_account_name"].'</a></td><td>'.$txn["description"].'</td><td>'.$txn["amount"].'</td></tr>';
 	}
 }
 
