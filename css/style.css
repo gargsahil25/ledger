@@ -1,20 +1,38 @@
-body {
-    font-family: sans-serif;
-    background-color: #F5F5F5;
-    color: #333;
-    font-size: 14px;
-    margin: 0 2%;
+.page-header {
+    background: linear-gradient(#8764ac, #9f82bd, #8764ac);
+    color: #fff;
+    margin: 0px;
+    padding-top: 10px;
 }
 
-h1 {
-    font-size: 2em;
-}
-
-h1,
-h2 {
+.page-header h5 {
+    margin: 0px;
     text-align: center;
-    margin: 10px;
 }
+
+.summary {
+    margin: 5px;
+    text-align: center;
+}
+
+.summary .label {
+    padding: .5em;
+    margin: 3px;
+    font-size: 120%;
+    line-height: 1.5;
+    display: inline-block;
+    width: 47%;
+    max-width: 200px;
+}
+
+.summary .title {
+    color: #ddd;
+    font-size: 80%;
+    text-transform: uppercase;
+    display: grid;
+}
+
+
 
 input,
 select {
@@ -90,20 +108,7 @@ table tr:nth-child(odd) {
     box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
 }
 
-.summary {
-    color: #eee;
-    font-size: 0.8em;
-    background-color: #009688;
-    padding: 5px;
-    border-radius: 5px;
-    margin: 0px 10px;
-}
 
-.summary .title {
-    color: #ccc;
-    text-transform: uppercase;
-    font-size: 0.7em;
-}
 
 .nav-links a {
     font-size: 0.6em;
