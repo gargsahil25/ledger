@@ -91,11 +91,21 @@ table tr:nth-child(odd) {
     max-width: 200px;
 }
 
+.summary .label.full {
+    width: 97%;
+    max-width: 300px;
+}
+
+
 .summary .title {
     color: #ddd;
     font-size: 80%;
     text-transform: uppercase;
     display: grid;
+}
+
+.entry-container {
+    text-align: center;
 }
 
 .entry {
