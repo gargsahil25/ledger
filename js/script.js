@@ -39,6 +39,7 @@ $(document).ready(function() {
     });
 
     $('.txn-selector select').change(function(e) {
+        $('.loader').fadeIn();
         var element = e.currentTarget;
         window.location.search = "?" + element.name + "=" + element.value;
     });
