@@ -40,20 +40,16 @@ table {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
-table td {
+table td,th {
     text-align: center;
-    height: 30px;
-    padding: 3px;
-    font-size: 0.9em;
+    padding: 2px;
+    font-size: 0.7em;
+    color: #333;
 }
 
 table th {
     background-color: #009688;
-    height: 30px;
     color: #FFF;
-    padding: 3px;
-    font-size: 0.9em;
-    text-align: center;
 }
 
 table tr:nth-child(even) {
