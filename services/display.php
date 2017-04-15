@@ -1,11 +1,13 @@
 <?php
 
-include_once "mysql.php";
-
-function displayAccount($accounts, $type) {
+function displayAccounts($accounts, $type, $selectedAccount) {
 	foreach($accounts as $account) {
-		if ($account['type'] == $type) {
-			echo '<option value="'.$account['id'].'">'.$account['name'].'</option>';
+		if (!$type || $account['type'] == $type) {
+			if ($selectedAccount == $account['id']) {
+				echo '<option selected value="'.$account['id'].'">'.$account['name'] .' &#8377; '.$account['balance'].'</option>';
+			} else {
+				echo '<option value="'.$account['id'].'">'.$account['name'] .' &#8377; '.$account['balance'].'</option>';
+			}
 		}
 	}
 }
@@ -28,9 +30,35 @@ function displayTxnsWithBalance($txns, $id) {
 	}
 }
 
-function displayAccountsWithBalance($accounts) {
-	foreach($accounts as $account) {
-			echo '<tr><td><a href="./transactions.php?id='.$account["id"].'">'.$account['name'].'</a></td><td>'.getBalanceByAccountId($account['id']).'</td></tr>';
+function displayDays($count, $selectedDate) {
+	if (!$selectedDate) {
+		echo "<option selected value=''>Date</option>";
+	} else {
+		echo "<option value=''>Date</option>";
+	}
+	for ($i = 0; $i < $count; $i++) {
+		$d = strtotime("-".$i." Days");
+		if ($selectedDate == date("Ymd", $d)) {
+			echo "<option selected value='".date("Ymd", $d)."'>".date("jS M", $d)."</option>";
+		} else {
+			echo "<option value='".date("Ymd", $d)."'>".date("jS M", $d)."</option>";
+		}
+	}
+}
+
+function displayMonths($count, $selectedDate) {
+	if (!$selectedDate) {
+		echo "<option selected value=''>Month</option>";
+	} else {
+		echo "<option value=''>Month</option>";
+	}
+	for ($i = 0; $i < $count; $i++) {
+		$d = strtotime("-".$i." Months");
+		if ($selectedDate == date("Ymd", $d)) {
+			echo "<option selected value='".date("Ymd", $d)."'>".date("M 'y", $d)."</option>";
+		} else {
+			echo "<option value='".date("Ymd", $d)."'>".date("M 'y", $d)."</option>";
+		}
 	}
 }
 

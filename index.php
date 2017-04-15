@@ -21,6 +21,11 @@ $capitalBalance = getBalanceByType('capital');
 $homeBalance = getBalanceByType('home');
 $profitBalance = getBalanceByType('factory');
 
+// Get Params
+$txnDate = isset($_GET['txn-date']) ? $_GET['txn-date'] : null;
+$txmMonth = isset($_GET['txn-month']) ? $_GET['txn-month'] : null;
+$txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
+
 ?>
 
 <!DOCTYPE html>
@@ -80,11 +85,11 @@ $profitBalance = getBalanceByType('factory');
 							<input type="text" name="buy-desc" placeholder="Item Description"/>
 							<select name="buy-from">
 								<option value="">Purchase from</option>
-								<?php displayAccount($accounts, 'client'); ?>
+								<?php displayAccounts($accounts, 'client', null); ?>
 							</select>
 							<input type="number" name="buy-amount" placeholder="Amount"/>
 							<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" name="buy-submit" value="Submit"/>
+							<input type="submit" class="btn btn-warning btn-lg" name="buy-submit" value="Submit"/>
 							</form>
 						</div>
 					</div>
@@ -102,11 +107,11 @@ $profitBalance = getBalanceByType('factory');
 							<input type="text" name="sell-desc" placeholder="Item Description"/>
 							<select name="sell-to">
 								<option value="">Sell to</option>
-								<?php displayAccount($accounts, 'client'); ?>
+								<?php displayAccounts($accounts, 'client', null); ?>
 							</select>
 							<input type="number" name="sell-amount" placeholder="Amount"/>
 							<input type="date" name="sell-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" name="sell-submit" value="Submit"/>
+							<input type="submit" class="btn btn-warning btn-lg" name="sell-submit" value="Submit"/>
 							</form>
 						</div>
 					</div>
@@ -124,14 +129,11 @@ $profitBalance = getBalanceByType('factory');
 							<input type="text" name="pay-desc" placeholder="Payment Description"/>
 							<select name="pay-to">
 								<option value="">Pay to</option>
-								<?php displayAccount($accounts, 'capital'); ?>
-								<?php displayAccount($accounts, 'home'); ?>
-								<?php displayAccount($accounts, 'factory'); ?>
-								<?php displayAccount($accounts, 'client'); ?>
+								<?php displayAccounts($accounts, null, null); ?>
 							</select>
 							<input type="number" name="pay-amount" placeholder="Amount"/>
 							<input type="date" name="pay-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" name="pay-submit" value="Submit"/>
+							<input type="submit" class="btn btn-warning btn-lg" name="pay-submit" value="Submit"/>
 							</form>
 						</div>
 					</div>
@@ -149,11 +151,11 @@ $profitBalance = getBalanceByType('factory');
 							<input type="text" name="buy-desc" placeholder="Item Description"/>
 							<select name="buy-from">
 								<option value="">Earn from</option>
-								<?php displayAccount($accounts, 'client'); ?>
+								<?php displayAccounts($accounts, null, null); ?>
 							</select>
 							<input type="number" name="buy-amount" placeholder="Amount"/>
 							<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" name="buy-submit" value="Submit"/>
+							<input type="submit" class="btn btn-warning btn-lg" name="buy-submit" value="Submit"/>
 							</form>
 						</div>
 					</div>
@@ -162,6 +164,18 @@ $profitBalance = getBalanceByType('factory');
 		</div>
 	</section>
 	<section>
+		<div class="txn-selector">
+			<select name="txn-date">
+				<?php displayDays(10, $txnDate); ?>
+			</select>
+			<select name="txn-month">
+				<?php displayMonths(10, $txmMonth); ?>
+			</select>
+			<select name="txn-account">
+				<option value="">Account</option>
+				<?php displayAccounts($accounts, null, $txnAccount); ?>
+			</select>
+		</div>
 		<div class="txns">
 			<table>
 			<tr><th>Date</th><th>From</th><th>To</th><th>Desc</th><th>Amount</th></tr>

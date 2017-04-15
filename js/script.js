@@ -1,5 +1,5 @@
 function setCookie(cname, cvalue, exdays) {
-	exdays = exdays || 1000;
+    exdays = exdays || 1000;
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
@@ -30,11 +30,16 @@ $(document).ready(function() {
     }
 
     $('.header-menu').click(function(e) {
-    	var cookieName = e.currentTarget.dataset.cookie;
-    	if ($(e.currentTarget).find('span').hasClass('collapsed')) {
-    		setCookie(cookieName, true);
-    	} else {
-    		setCookie(cookieName, false);
-    	}
+        var cookieName = e.currentTarget.dataset.cookie;
+        if ($(e.currentTarget).find('span').hasClass('collapsed')) {
+            setCookie(cookieName, true);
+        } else {
+            setCookie(cookieName, false);
+        }
+    });
+
+    $('.txn-selector select').change(function(e) {
+        var element = e.currentTarget;
+        window.location.search = "?" + element.name + "=" + element.value;
     });
 });

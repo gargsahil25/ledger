@@ -44,6 +44,7 @@ function getAccounts($type = null) {
 	$accountRows = mysqlQuery($sql);
 	$accounts = array();
 	while($account = $accountRows->fetch_assoc()) {
+		$account['balance'] = getBalanceByAccountId($account['id']);
 		array_push($accounts, $account);
 	}
 	return $accounts;
@@ -100,13 +101,13 @@ function getBalanceByType($type) {
 }
 
 function getBalanceByAccountId($id) {
-	$sql = "SELECT sum(amount) AS from_amount FROM transactions t JOIN accounts fa ON t.from_account = fa.id WHERE fa.id = '".$id."'";
+	$sql = "SELECT sum(amount) AS from_amount FROM transactions t WHERE t.from_account = '".$id."'";
 	$txnRows = mysqlQuery($sql);
 	$fromAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
 		$fromAmount += $txn['from_amount'];
 	}
-	$sql = "SELECT sum(amount) AS to_amount FROM transactions t JOIN accounts ta ON t.to_account = ta.id WHERE ta.id = '".$id."'";
+	$sql = "SELECT sum(amount) AS to_amount FROM transactions t WHERE t.to_account = '".$id."'";
 	$txnRows = mysqlQuery($sql);
 	$toAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
