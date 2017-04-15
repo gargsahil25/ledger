@@ -5,16 +5,16 @@ include_once "services/mysql.php";
 include_once "services/handler.php";
 include_once "services/display.php";
 
+// Post request handlers
 buyStuffHandler($_POST);
 sellStuffHandler($_POST);
 payAmountHandler($_POST);
 getPaymentHandler($_POST);
 
+// Getting data for the page
+date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
 $txns = getTransactions();
-
-date_default_timezone_set('Asia/Kolkata');
-
 $cashBalance = getBalanceByType('cash'); 
 $clientBalance = getBalanceByType('client');
 $capitalBalance = getBalanceByType('capital');
@@ -33,10 +33,12 @@ $profitBalance = getBalanceByType('factory');
 </head>
 <body>
 	<section class="page-header">
-		<h5>Ledger<h5>
+		<h5>Ledger
+			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
+			<span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span>
+		</h5>
 	</section>
 	<section class="summary">
-		<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#summary">Summary</button>
 		<div id="summary" class="collapse">
 			<div class="label <?php if ($cashBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Cash</span><?php echo getMoneyFormat($cashBalance); ?></div>
 			<div class="label <?php if ($clientBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Party</span><?php echo getMoneyFormat($clientBalance); ?></div>
@@ -46,9 +48,8 @@ $profitBalance = getBalanceByType('factory');
 		</div>
 	</section>
 	<section class="entry-container">
-		<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#entry">Entry</button>
 		<div id="entry" class="collapse">
-			<div class="entry" class="collapse">
+			<div class="entry">
 				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#purchase">
 					<span class="glyphicon glyphicon-object-align-left" aria-hidden="true"></span> 
 					Purchase
@@ -170,5 +171,6 @@ $profitBalance = getBalanceByType('factory');
 	</section>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>

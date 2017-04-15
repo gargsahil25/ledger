@@ -68,12 +68,29 @@ table tr:nth-child(odd) {
     background: linear-gradient(#8764ac, #9f82bd, #8764ac);
     color: #fff;
     margin: 0px;
-    padding-top: 10px;
+    padding: 0px;
 }
 
 .page-header h5 {
     margin: 0px;
     text-align: center;
+    vertical-align: middle;
+    line-height: 35px;
+}
+
+.page-header .glyphicon {
+    float: right;
+    margin-right: 10px;
+    cursor: pointer;
+    padding: 6px;
+    background: #5d4a80;
+    border-radius: 5px;
+    margin-top: 4px;
+    transition: 0.5s;
+}
+
+.page-header .glyphicon.collapsed {
+    background: none;
 }
 
 .summary {
@@ -109,7 +126,7 @@ table tr:nth-child(odd) {
 }
 
 .entry {
-    margin: 5px;
+    margin: 0 5px 0 5px;
     text-align: center;
 }
 
