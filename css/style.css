@@ -189,4 +189,5 @@ table tr:nth-child(odd) {
 
 .txns-heading {
     margin: 10px;
+    text-align: center;
 }
