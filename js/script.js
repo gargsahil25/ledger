@@ -43,4 +43,18 @@ $(document).ready(function() {
         var element = e.currentTarget;
         window.location.search = "?" + element.name + "=" + element.value;
     });
+
+    $('input[name="txn-delete-confirm"]').on('click', function(e) {
+    	var index = e.currentTarget.dataset.index;
+        var $form = $(this).closest('form');
+        e.preventDefault();
+        $('#confirm-' + index).modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+            .one('click', '.delete', function(e) {
+            	$form.find('input[name="txn-delete-submit"]').val('Delete');
+                $form.trigger('submit');
+            });
+    });
 });

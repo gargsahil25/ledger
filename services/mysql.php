@@ -65,10 +65,10 @@ function addAccount($name, $type) {
 	return mysqlQuery($sql);
 }
 
-function getTransactions($id = null) {
-	$sql = "SELECT t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, ta.id AS to_account_id, ta.name AS to_account_name FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id";
-	if ($id) {
-		$sql .= " WHERE t.from_account = ".$id." OR t.to_account = ".$id;
+function getTransactions($accountId = null) {
+	$sql = "SELECT t.id AS id, t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, ta.id AS to_account_id, ta.name AS to_account_name FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id";
+	if ($accountId) {
+		$sql .= " WHERE t.from_account = ".$accountId." OR t.to_account = ".$accountId;
 	}
 	$sql .= " ORDER BY date desc LIMIT 0,10";
 	$txnRows = mysqlQuery($sql);
@@ -81,6 +81,16 @@ function getTransactions($id = null) {
 
 function addTransaction($fromAccount, $toAccount, $description, $amount, $date) {
 	$sql = "INSERT INTO `transactions` (`from_account`, `to_account`, `description`, `amount`, `date`) VALUES (".$fromAccount.", ".$toAccount.", '".$description."', ".$amount.", '".$date."')";
+	return mysqlQuery($sql);
+}
+
+function updateTransaction($txnId, $desc, $from, $to, $amount, $date) {
+	$sql = "UPDATE `transactions` SET `from_account` = ".$from.", `to_account` = ".$to.", `description` = '".$desc."', `amount` = '".$amount."', `date` = '".$date."' WHERE id = ".$txnId;
+	return mysqlQuery($sql);
+}
+
+function deleteTransaction($txnId) {
+	$sql = "DELETE FROM `transactions` WHERE id = ".$txnId;
 	return mysqlQuery($sql);
 }
 

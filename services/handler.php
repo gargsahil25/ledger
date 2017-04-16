@@ -1,6 +1,7 @@
 <?php
 
 include_once "mysql.php";
+include_once "util.php";
 
 date_default_timezone_set('Asia/Kolkata');
 
@@ -13,7 +14,8 @@ function buyStuffHandler($post) {
 
 		$factoryId = getAccounts('factory')[0]['id'];
 		$date = $post['buy-date']." ".date('H:i:s', time());
-		return addTransaction($post['buy-from'], $factoryId, $post['buy-desc'], $post['buy-amount'], $date);
+		addTransaction($post['buy-from'], $factoryId, $post['buy-desc'], $post['buy-amount'], $date);
+		header('Location: /');
 	}
 }
 
@@ -26,7 +28,8 @@ function sellStuffHandler($post) {
 
 		$factoryId = getAccounts('factory')[0]['id'];
 		$date = $post['sell-date']." ".date('H:i:s', time());
-		return addTransaction($factoryId, $post['sell-to'], $post['sell-desc'], $post['sell-amount'], $date);
+		addTransaction($factoryId, $post['sell-to'], $post['sell-desc'], $post['sell-amount'], $date);
+		header('Location: /');
 	}
 }
 
@@ -39,7 +42,8 @@ function payAmountHandler($post) {
 
 		$cashId = getAccounts('cash')[0]['id'];
 		$date = $post['pay-date']." ".date('H:i:s', time());
-		return addTransaction($cashId, $post['pay-to'], $post['pay-desc'], $post['pay-amount'], $date);
+		addTransaction($cashId, $post['pay-to'], $post['pay-desc'], $post['pay-amount'], $date);
+		header('Location: /');
 	}
 }
 
@@ -52,15 +56,29 @@ function getPaymentHandler($post) {
 
 		$cashId = getAccounts('cash')[0]['id'];
 		$date = $post['payment-date']." ".date('H:i:s', time());
-		return addTransaction($post['payment-from'], $cashId, $post['payment-desc'], $post['payment-amount'], $date);
+		addTransaction($post['payment-from'], $cashId, $post['payment-desc'], $post['payment-amount'], $date);
+		header('Location: /');
 	}
 }
 
 function newClientHandler($post) {
-	if(isset($post['client-submit']) && 
-		!empty($post['client-name'])) {
+	if(isset($post['client-submit']) && !empty($post['client-name'])) {
+		addAccount($post['client-name'], 'client');
+		header('Location: /');
+	}
+}
 
-		return addAccount($post['client-name'], 'client');
+function updateTxnHandler($post) {
+	if(isset($post['txn-update-submit']) && !empty($post['txn-update-submit'])) {
+		updateTransaction($post['txn-id'], $post['txn-desc'], $post['txn-from'], $post['txn-to'], $post['txn-amount'], $post['txn-date']);
+		redirect();
+	}
+}
+
+function deleteTxnHandler($post) {
+	if(isset($post['txn-delete-submit']) && !empty($post['txn-delete-submit'])) {
+		deleteTransaction($post['txn-id']);
+		header('Location: /');
 	}
 }
 

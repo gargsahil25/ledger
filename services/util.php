@@ -14,4 +14,10 @@ function getMoneyFormat($money) {
     return "&#8377; ".strrev($m);
 }
 
+function redirect() {
+    $url = '/index.php?'.$_SERVER['QUERY_STRING'];
+    header('Location: '.$url);
+    exit();
+}
+
 ?>

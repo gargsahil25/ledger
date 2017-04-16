@@ -10,6 +10,14 @@ buyStuffHandler($_POST);
 sellStuffHandler($_POST);
 payAmountHandler($_POST);
 getPaymentHandler($_POST);
+newClientHandler($_POST);
+updateTxnHandler($_POST);
+deleteTxnHandler($_POST);
+
+// Get Params
+$txnDate = isset($_GET['txn-date']) ? $_GET['txn-date'] : null;
+$txnMonth = isset($_GET['txn-month']) ? $_GET['txn-month'] : null;
+$txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
 
 // Getting data for the page
 date_default_timezone_set('Asia/Kolkata');
@@ -21,11 +29,6 @@ $capitalBalance = getBalanceByType('capital');
 $homeBalance = getBalanceByType('home');
 $profitBalance = getBalanceByType('factory');
 
-// Get Params
-$txnDate = isset($_GET['txn-date']) ? $_GET['txn-date'] : null;
-$txmMonth = isset($_GET['txn-month']) ? $_GET['txn-month'] : null;
-$txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
-
 ?>
 
 <!DOCTYPE html>
@@ -34,15 +37,35 @@ $txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
 <title>Ledger</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="css/style.css?v6"> 
+<link rel="stylesheet" href="css/style.css?v7"> 
 </head>
 <body>
 	<div class="loader" style="display:none;"></div>
 	<section class="page-header">
-		<h5>Ledger
+		<h5>			
+			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
+			Ledger
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
 			<span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span>
 		</h5>
+	</section>
+	<section>
+		<div id="add-account" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+	      			<div class="modal-header">
+	      				<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h2>Add Party</h2>
+					</div>
+					<div class="modal-body">
+						<form method="post">
+						<input type="text" name="client-name" placeholder="Party Name"/>
+						<input type="submit" class="btn btn-warning btn-lg" name="client-submit" value="Submit"/>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 	</section>
 	<section class="summary">
 		<div id="summary" class="collapse">
@@ -170,7 +193,7 @@ $txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
 				<?php displayDays(10, $txnDate); ?>
 			</select>
 			<select name="txn-month">
-				<?php displayMonths(10, $txmMonth); ?>
+				<?php displayMonths(10, $txnMonth); ?>
 			</select>
 			<select name="txn-account">
 				<option value="">Account</option>
@@ -178,10 +201,72 @@ $txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
 			</select>
 		</div>
 		<div class="txns">
+			<div class="txns-heading">
+				<?php 
+					if($txnDate) {
+						$date = date_create($txnDate);
+						echo "Transactions on <strong>".date_format($date, "jS M")."</strong>";
+					} else if ($txnMonth) {
+						$date = date_create($txnMonth);
+						echo "Transactions in <strong>".date_format($date, "M Y")."</strong>";
+					} else if ($txnAccount) {
+						$account = getAccountById($txnAccount);
+						echo "Transactions for <strong>".$account['name']."</strong>";
+					} else {
+						echo "Recent transactions";
+					}
+				?>
+			</div>
 			<table>
 			<tr><th>Date</th><th>From</th><th>To</th><th>Desc</th><th>Amount</th></tr>
 			<?php displayTxns($txns); ?>
 			</table>
+
+			<?php for($i = 0; $i < sizeof($txns); $i++) { $txn = $txns[$i]; ?>
+			<div id="txn-<?php echo $i; ?>" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+	    	  			<div class="modal-header">
+	    	  				<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h2>Update</h2>
+						</div>
+						<div class="modal-body">
+							<form method="post">
+							<input type="hidden" name="txn-id" value="<?php echo $txn['id']; ?>"/>
+							<input type="text" name="txn-desc" placeholder="Item Description" value="<?php echo $txn['description']; ?>"/>
+							<select name="txn-from">
+								<option value="">From</option>
+								<?php displayAccounts($accounts, null, $txn['from_account_id']); ?>
+							</select>
+							<select name="txn-to">
+								<option value="">To</option>
+								<?php displayAccounts($accounts, null, $txn['to_account_id']); ?>
+							</select>
+							<input type="number" name="txn-amount" placeholder="Amount" value="<?php echo $txn['amount']; ?>"/>
+							<?php $d = date_create($txn['date']); ?>
+							<input type="date" name="txn-date" value="<?php echo date_format($d, 'Y-m-d'); ?>"/>
+							<input type="hidden" name="txn-delete-submit" value=""/>
+							<input type="submit" class="btn btn-danger btn-lg half" data-index="<?php echo $i; ?>" name="txn-delete-confirm" value="Delete" data-dismiss="modal"/>							
+							<input type="submit" class="btn btn-warning btn-lg half" name="txn-update-submit" value="Update"/>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="confirm-<?php echo $i; ?>" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+	    	  			<div class="modal-header">
+							<h2>Confirm delete?</h2>
+						</div>
+						<div class="modal-footer">
+							<button type="button" data-dismiss="modal" class="btn btn-danger delete">Delete</button>
+							<button type="button" data-dismiss="modal" class="btn">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php } ?>
 		</div>
 	</section>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
