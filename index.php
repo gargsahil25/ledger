@@ -50,7 +50,7 @@ $profitBalance = getBalanceByType('factory');
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
 			<a href="/">Ledger</a>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
-			<span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span>
+			<!-- <span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span> -->
 		</h5>
 	</section>
 	<section>
@@ -176,14 +176,14 @@ $profitBalance = getBalanceByType('factory');
 						</div>
 						<div class="modal-body">
 							<form method="post">
-							<input type="text" name="buy-desc" placeholder="Item Description"/>
-							<select name="buy-from">
+							<input type="text" name="earn-desc" placeholder="Item Description"/>
+							<select name="earn-from">
 								<option value="">Earn from</option>
 								<?php displayAccounts($accounts, null, null); ?>
 							</select>
-							<input type="number" name="buy-amount" placeholder="Amount"/>
-							<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" class="btn btn-warning btn-lg" name="buy-submit" value="Submit"/>
+							<input type="number" name="earn-amount" placeholder="Amount"/>
+							<input type="date" name="earn-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input type="submit" class="btn btn-warning btn-lg" name="earn-submit" value="Submit"/>
 							</form>
 						</div>
 					</div>
@@ -201,7 +201,7 @@ $profitBalance = getBalanceByType('factory');
 			</select> -->
 			<select name="txn-account">
 				<option value="">Account</option>
-				<?php displayAccounts($accounts, null, $txnAccount); ?>
+				<?php displayAccounts($accounts, null, $txnAccount, true); ?>
 			</select>
 		</div>
 		<div class="txns">

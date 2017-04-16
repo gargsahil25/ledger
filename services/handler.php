@@ -48,15 +48,15 @@ function payAmountHandler($post) {
 }
 
 function getPaymentHandler($post) {
-	if(isset($post['payment-submit']) && 
-		!empty($post['payment-desc']) && 
-		!empty($post['payment-from']) && 
-		!empty($post['payment-amount']) && 
-		!empty($post['payment-date'])) {
+	if(isset($post['earn-submit']) && 
+		!empty($post['earn-desc']) && 
+		!empty($post['earn-from']) && 
+		!empty($post['earn-amount']) && 
+		!empty($post['earn-date'])) {
 
 		$cashId = getAccounts('cash')[0]['id'];
-		$date = $post['payment-date']." ".date('H:i:s', time());
-		addTransaction($post['payment-from'], $cashId, $post['payment-desc'], $post['payment-amount'], $date);
+		$date = $post['earn-date']." ".date('H:i:s', time());
+		addTransaction($post['earn-from'], $cashId, $post['earn-desc'], $post['earn-amount'], $date);
 		header('Location: /');
 	}
 }

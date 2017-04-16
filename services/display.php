@@ -2,13 +2,17 @@
 
 include_once "mysql.php";
 
-function displayAccounts($accounts, $type, $selectedAccount) {
+function displayAccounts($accounts, $type, $selectedAccount, $showBalance = null) {
 	foreach($accounts as $account) {
 		if (!$type || $account['type'] == $type) {
+			$balance = '';
+			if ($showBalance) {
+				$balance = ' '.getMoneyFormat($account['balance']);
+			}
 			if ($selectedAccount == $account['id']) {
-				echo '<option selected value="'.$account['id'].'">'.$account['name'] .' '.getMoneyFormat($account['balance']).'</option>';
+				echo '<option selected value="'.$account['id'].'">'.$account['name'] .$balance.'</option>';
 			} else {
-				echo '<option value="'.$account['id'].'">'.$account['name'] .' '.getMoneyFormat($account['balance']).'</option>';
+				echo '<option value="'.$account['id'].'">'.$account['name'] .$balance.'</option>';
 			}
 		}
 	}
@@ -25,23 +29,23 @@ function displayDateTxns($txns) {
 	$cashTxns = "";
 	$factoryTxns = "";
 	foreach($txns as $txn) {
-		$prefix = '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["description"].'</td>';
+		$prefix = '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td>';
 		$factoryAmount = $txn["amount"];
 		$cashAmount = $txn["amount"];
 		if ($txn['from_account_id'] == $factoryId) {
 			$factoryAmount = $factoryAmount * -1;
-			$factoryTxns .= $prefix.'<td>&nbsp;</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>'.getMoneyFormat($factoryBalance, true).'</td></tr>';
+			$factoryTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>'.getMoneyFormat($factoryBalance, true).'</td></tr>';
 			$factoryBalance -= $factoryAmount;
 		} else if ($txn['to_account_id'] == $factoryId) {
-			$factoryTxns .= $prefix.'<td>'.getMoneyFormat($factoryAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($factoryBalance, true).'</td></tr>';
+			$factoryTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($factoryBalance, true).'</td></tr>';
 			$factoryBalance -= $factoryAmount;
 		}
 		if ($txn['from_account_id'] == $cashId) {
 			$cashAmount = $cashAmount * -1;
-			$cashTxns .= $prefix.'<td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
 			$cashBalance -= $cashAmount;
 		} else if($txn['to_account_id'] == $cashId) {
-			$cashTxns .= $prefix.'<td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
 			$cashBalance -= $cashAmount;
 		}
 		$i++;
