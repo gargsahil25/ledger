@@ -66,9 +66,9 @@ function displayAccountTxns($txns, $id) {
 		$amount = $txn["amount"];
 		if ($txn["from_account_id"] == $id) {
 			$amount = $amount * -1;
-			echo '<td>&nbsp;</td><td>'.getMoneyFormat($amount, true).'</td>';
-		} else {
 			echo '<td>'.getMoneyFormat($amount, true).'</td><td>&nbsp;</td>';
+		} else {
+			echo '<td>&nbsp;</td><td>'.getMoneyFormat($amount, true).'</td>';
 		}
 		echo '<td>'.getMoneyFormat($balance, true).'</td></tr>';
 		$balance = $balance - $amount;
