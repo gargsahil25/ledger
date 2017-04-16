@@ -93,11 +93,11 @@ $profitBalance = getBalanceByType('factory');
 				</button>
 				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#pay">
 					<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> 
-					Payment
+					Debit
 				</button>
 				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#earn">
 					<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> 
-					Earn
+					Credit
 				</button>
 			</div>
 			
@@ -150,13 +150,13 @@ $profitBalance = getBalanceByType('factory');
 					<div class="modal-content">
 		      			<div class="modal-header">
 		      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Pay</h2>
+							<h2>Debit</h2>
 						</div>
 						<div class="modal-body">
 							<form method="post">
 							<input type="text" name="pay-desc" placeholder="Payment Description"/>
 							<select name="pay-to">
-								<option value="">Pay to</option>
+								<option value="">Party Name</option>
 								<?php displayAccounts($accounts, null, null); ?>
 							</select>
 							<input type="number" name="pay-amount" placeholder="Amount"/>
@@ -172,13 +172,13 @@ $profitBalance = getBalanceByType('factory');
 					<div class="modal-content">
 		      			<div class="modal-header">
 		      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Earn</h2>
+							<h2>Credit</h2>
 						</div>
 						<div class="modal-body">
 							<form method="post">
 							<input type="text" name="earn-desc" placeholder="Item Description"/>
 							<select name="earn-from">
-								<option value="">Earn from</option>
+								<option value="">Party Name</option>
 								<?php displayAccounts($accounts, null, null); ?>
 							</select>
 							<input type="number" name="earn-amount" placeholder="Amount"/>
