@@ -1,12 +1,14 @@
 <?php
 
+include_once "mysql.php";
+
 function displayAccounts($accounts, $type, $selectedAccount) {
 	foreach($accounts as $account) {
 		if (!$type || $account['type'] == $type) {
 			if ($selectedAccount == $account['id']) {
-				echo '<option selected value="'.$account['id'].'">'.$account['name'] .' &#8377; '.$account['balance'].'</option>';
+				echo '<option selected value="'.$account['id'].'">'.$account['name'] .' '.getMoneyFormat($account['balance']).'</option>';
 			} else {
-				echo '<option value="'.$account['id'].'">'.$account['name'] .' &#8377; '.$account['balance'].'</option>';
+				echo '<option value="'.$account['id'].'">'.$account['name'] .' '.getMoneyFormat($account['balance']).'</option>';
 			}
 		}
 	}
@@ -15,21 +17,40 @@ function displayAccounts($accounts, $type, $selectedAccount) {
 function displayTxns($txns) {
 	$i = 0;
 	foreach($txns as $txn) {
-		echo '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td><a href="./transactions.php?id='.$txn["from_account_id"].'">'.$txn["from_account_name"].'</a></td><td><a href="./transactions.php?id='.$txn["to_account_id"].'">'.$txn["to_account_name"].'</a></td><td>'.$txn["description"].'</td><td>'.$txn["amount"].'</td></tr>';
+		echo '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["from_account_name"].'</td><td>'.$txn["to_account_name"].'</td><td>'.$txn["description"].'</td><td>'.getMoneyFormat($txn["amount"], true).'</td></tr>';
 		$i++;
 	}
 }
 
 function displayTxnsWithBalance($txns, $id) {
 	$balance = getBalanceByAccountId($id);
+	$i = 0;
 	foreach($txns as $txn) {
+		echo '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["description"].'</td>';
 		$amount = $txn["amount"];
 		if ($txn["from_account_id"] == $id) {
 			$amount = $amount * -1;
+			echo '<td>&nbsp;</td><td>'.getMoneyFormat($amount, true).'</td>';
+		} else {
+			echo '<td>'.getMoneyFormat($amount, true).'</td><td>&nbsp;</td>';
 		}
-		echo '<tr><td>'.$txn["date"].'</td><td><a href="./transactions.php?id='.$txn["from_account_id"].'">'.$txn["from_account_name"].'</a></td><td><a href="./transactions.php?id='.$txn["to_account_id"].'">'.$txn["to_account_name"].'</a></td><td>'.$txn["description"].'</td><td>'.$amount.'</td><td>'.$balance.'</td></tr>';
+		echo '<td>'.getMoneyFormat($balance, true).'</td></tr>';
 		$balance = $balance - $amount;
+		$i++;
 	}
+}
+
+function getProfit($txns) {
+	$profit = 0;
+	$factoryId = getAccounts('factory')[0]['id'];
+	foreach($txns as $txn) {
+		if ($txn["from_account_id"] == $factoryId) {
+			$profit += $txn["amount"];
+		} else if ($txn["to_account_id"] == $factoryId) {
+			$profit -= $txn["amount"];
+		}
+	}
+	return $profit;
 }
 
 function displayDays($count, $selectedDate) {

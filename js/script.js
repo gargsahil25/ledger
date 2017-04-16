@@ -45,7 +45,7 @@ $(document).ready(function() {
     });
 
     $('input[name="txn-delete-confirm"]').on('click', function(e) {
-    	var index = e.currentTarget.dataset.index;
+        var index = e.currentTarget.dataset.index;
         var $form = $(this).closest('form');
         e.preventDefault();
         $('#confirm-' + index).modal({
@@ -53,8 +53,12 @@ $(document).ready(function() {
                 keyboard: false
             })
             .one('click', '.delete', function(e) {
-            	$form.find('input[name="txn-delete-submit"]').val('Delete');
+                $form.find('input[name="txn-delete-submit"]').val('Delete');
                 $form.trigger('submit');
             });
+    });
+
+    $("form").submit(function(event) {
+        $('.loader').fadeIn();
     });
 });

@@ -48,8 +48,8 @@ table {
 
 table td,th {
     text-align: center;
-    padding: 2px;
-    font-size: 0.7em;
+    padding: 4px;
+    font-size: 0.8em;
     color: #333;
 }
 
@@ -70,11 +70,29 @@ table tr:nth-child(odd) {
     width: 100%;
     height: 100%;
     position: fixed;
-    z-index: 100;
+    z-index: 10000;
     background-image: url(../images/loading.gif);
     background-repeat: no-repeat;
     background-position: center;
     background-color: rgba(0,0,0,0.7);
+}
+
+.balance {
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.balance.success {
+    background: #5cb85c;
+}
+
+.balance.failure {
+    background: #d9534f;
+}
+
+.modal-header h2 {
+    text-align: center;
 }
 
 .page-header {
@@ -171,12 +189,4 @@ table tr:nth-child(odd) {
 
 .txns-heading {
     margin: 10px;
-}
-
-.accounts {
-    margin-top: 10px;
-    margin-left: 30%;
-    margin-bottom: 10px;
-    width: 40%;
-    display: inline-block;
 }

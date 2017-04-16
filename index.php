@@ -22,7 +22,7 @@ $txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
 // Getting data for the page
 date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
-$txns = getTransactions();
+$txns = getTransactions($txnAccount, $txnDate, $txnMonth);
 $cashBalance = getBalanceByType('cash'); 
 $clientBalance = getBalanceByType('client');
 $capitalBalance = getBalanceByType('capital');
@@ -37,7 +37,7 @@ $profitBalance = getBalanceByType('factory');
 <title>Ledger</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="css/style.css?v8"> 
+<link rel="stylesheet" href="css/style.css?v9"> 
 </head>
 <body>
 	<div class="loader" style="display:none;"></div>
@@ -202,7 +202,9 @@ $profitBalance = getBalanceByType('factory');
 		</div>
 		<div class="txns">
 			<div class="txns-heading">
-				<?php 
+				<?php
+					$balance = getProfit($txns);
+					$class = "balance success";
 					if($txnDate) {
 						$date = date_create($txnDate);
 						echo "Transactions on <strong>".date_format($date, "jS M")."</strong>";
@@ -211,15 +213,35 @@ $profitBalance = getBalanceByType('factory');
 						echo "Transactions in <strong>".date_format($date, "M Y")."</strong>";
 					} else if ($txnAccount) {
 						$account = getAccountById($txnAccount);
+						$balance = getBalanceByAccountId($txnAccount);
 						echo "Transactions for <strong>".$account['name']."</strong>";
 					} else {
 						echo "Recent transactions";
 					}
+					if ($balance < 0) {
+						$class = "balance failure";
+					}
+					echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>";
 				?>
 			</div>
 			<table>
-			<tr><th>Date</th><th>From</th><th>To</th><th>Desc</th><th>Amount</th></tr>
-			<?php displayTxns($txns); ?>
+			<?php
+				if ($txnAccount) {
+					echo "<tr><th>Date</th><th>Desc</th><th>Credit</th><th>Debit</th><th>Balance</th></tr>";
+					if (sizeof($txns) == 0) {
+						echo "<tr><td colspan='5'>No transactions</td></tr>";
+					} else {
+						displayTxnsWithBalance($txns, $txnAccount);
+					}
+				} else {
+					echo "<tr><th>Date</th><th>From</th><th>To</th><th>Desc</th><th>Amount</th></tr>";
+					if (sizeof($txns) == 0) {
+						echo "<tr><td colspan='5'>No transactions</td></tr>";
+					} else {
+						displayTxns($txns); 
+					}
+				}
+			?>
 			</table>
 
 			<?php for($i = 0; $i < sizeof($txns); $i++) { $txn = $txns[$i]; ?>

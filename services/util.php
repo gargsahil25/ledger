@@ -1,7 +1,12 @@
 <?php
 
 
-function getMoneyFormat($money) {
+function getMoneyFormat($money, $skipSymbol = false) {
+    $sign = '';
+    if ($money < 0) {
+        $sign = '-';
+        $money = str_replace('-', '', $money); 
+    }
 	$len = strlen($money);
     $m = '';
     $money = strrev($money);
@@ -11,7 +16,11 @@ function getMoneyFormat($money) {
         }
         $m .=$money[$i];
     }
-    return "&#8377; ".strrev($m);
+    if ($skipSymbol) {
+        return $sign.strrev($m);
+    } else {
+        return "&#8377; ".$sign.strrev($m);
+    }
 }
 
 function redirect() {
