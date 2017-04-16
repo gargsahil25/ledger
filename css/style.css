@@ -30,11 +30,6 @@ input.half {
     width: 41%;
 }
 
-a {
-    text-decoration: none;
-    color: #F44336;
-}
-
 a:hover {
     text-decoration: underline;
     color: #E91E63;
@@ -48,9 +43,9 @@ table {
 
 table td,th {
     text-align: center;
-    padding: 4px;
-    font-size: 0.8em;
+    padding: 5px;
     color: #333;
+    border: 1px solid white;
 }
 
 table th {
@@ -107,6 +102,11 @@ table tr:nth-child(odd) {
     text-align: center;
     vertical-align: middle;
     line-height: 35px;
+}
+
+.page-header a {
+    text-decoration: none;
+    color: #FFF;
 }
 
 .page-header .glyphicon {
@@ -177,7 +177,7 @@ table tr:nth-child(odd) {
 }
 
 .txn-selector select {
-    width: 30%;
+    width: 45%;
     margin: 10px 1px 10px 1px;
     max-width: 200px;
 }

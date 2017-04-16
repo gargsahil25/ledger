@@ -14,15 +14,47 @@ function displayAccounts($accounts, $type, $selectedAccount) {
 	}
 }
 
-function displayTxns($txns) {
+function displayDateTxns($txns) {
 	$i = 0;
+	$factoryId = getAccounts('factory')[0]['id'];
+	$cashId = getAccounts('cash')[0]['id'];
+	$factoryBalance = getBalanceByAccountId($factoryId);
+	$cashBalance = getBalanceByAccountId($cashId);
+	$cashTitle = "<tr><td colspan='5'><strong>Cash balance: ".getMoneyFormat($cashBalance)."</strong></td></tr>";
+	$factoryTitle = "<tr><td colspan='5'><strong>Factory Transactions</strong></td></tr>";
+	$cashTxns = "";
+	$factoryTxns = "";
 	foreach($txns as $txn) {
-		echo '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["from_account_name"].'</td><td>'.$txn["to_account_name"].'</td><td>'.$txn["description"].'</td><td>'.getMoneyFormat($txn["amount"], true).'</td></tr>';
+		$prefix = '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["description"].'</td>';
+		$factoryAmount = $txn["amount"];
+		$cashAmount = $txn["amount"];
+		if ($txn['from_account_id'] == $factoryId) {
+			$factoryAmount = $factoryAmount * -1;
+			$factoryTxns .= $prefix.'<td>&nbsp;</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>'.getMoneyFormat($factoryBalance, true).'</td></tr>';
+			$factoryBalance -= $factoryAmount;
+		} else if ($txn['to_account_id'] == $factoryId) {
+			$factoryTxns .= $prefix.'<td>'.getMoneyFormat($factoryAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($factoryBalance, true).'</td></tr>';
+			$factoryBalance -= $factoryAmount;
+		}
+		if ($txn['from_account_id'] == $cashId) {
+			$cashAmount = $cashAmount * -1;
+			$cashTxns .= $prefix.'<td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashBalance -= $cashAmount;
+		} else if($txn['to_account_id'] == $cashId) {
+			$cashTxns .= $prefix.'<td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashBalance -= $cashAmount;
+		}
 		$i++;
 	}
+	echo $cashTitle;
+	echo $cashTxns;
+	echo "<tr><td colspan='5'><strong>Initial Cash: ".getMoneyFormat($cashBalance)."</strong></td></tr>";
+	echo "<tr><td colspan='5'>&nbsp;</td></tr>";
+	echo $factoryTitle;
+	echo $factoryTxns;
 }
 
-function displayTxnsWithBalance($txns, $id) {
+function displayAccountTxns($txns, $id) {
 	$balance = getBalanceByAccountId($id);
 	$i = 0;
 	foreach($txns as $txn) {

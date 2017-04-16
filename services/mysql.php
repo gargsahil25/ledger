@@ -79,7 +79,7 @@ function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null) 
 		$sql .= " AND t.date LIKE '".date_format($date, "Y-m")."%'";
 	}
 
-	$sql .= " ORDER BY date desc LIMIT 0,10";
+	$sql .= " ORDER BY date desc";
 	$txnRows = mysqlQuery($sql);
 	$txns = array();
 	while($txn = $txnRows->fetch_assoc()) {

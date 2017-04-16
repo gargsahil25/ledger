@@ -19,6 +19,10 @@ $txnDate = isset($_GET['txn-date']) ? $_GET['txn-date'] : null;
 $txnMonth = isset($_GET['txn-month']) ? $_GET['txn-month'] : null;
 $txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
 
+if ($txnDate == null && $txnMonth == null && $txnAccount == null) {
+	$txnDate = date('Y-m-d');
+}
+
 // Getting data for the page
 date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
@@ -37,14 +41,14 @@ $profitBalance = getBalanceByType('factory');
 <title>Ledger</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="css/style.css?v9"> 
+<link rel="stylesheet" href="css/style.css?v10"> 
 </head>
 <body>
 	<div class="loader" style="display:none;"></div>
 	<section class="page-header">
 		<h5>			
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
-			Ledger
+			<a href="/">Ledger</a>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
 			<span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span>
 		</h5>
@@ -192,9 +196,9 @@ $profitBalance = getBalanceByType('factory');
 			<select name="txn-date">
 				<?php displayDays(10, $txnDate); ?>
 			</select>
-			<select name="txn-month">
+			<!-- <select name="txn-month">
 				<?php displayMonths(10, $txnMonth); ?>
-			</select>
+			</select> -->
 			<select name="txn-account">
 				<option value="">Account</option>
 				<?php displayAccounts($accounts, null, $txnAccount); ?>
@@ -203,43 +207,30 @@ $profitBalance = getBalanceByType('factory');
 		<div class="txns">
 			<div class="txns-heading">
 				<?php
-					$balance = getProfit($txns);
-					$class = "balance success";
 					if($txnDate) {
 						$date = date_create($txnDate);
 						echo "Transactions on <strong>".date_format($date, "jS M")."</strong>";
-					} else if ($txnMonth) {
-						$date = date_create($txnMonth);
-						echo "Transactions in <strong>".date_format($date, "M Y")."</strong>";
 					} else if ($txnAccount) {
+						$class = "balance success";
 						$account = getAccountById($txnAccount);
 						$balance = getBalanceByAccountId($txnAccount);
+						if ($balance < 0) {
+							$class = "balance failure";
+						}
 						echo "Transactions for <strong>".$account['name']."</strong>";
-					} else {
-						echo "Recent transactions";
+						echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>";
 					}
-					if ($balance < 0) {
-						$class = "balance failure";
-					}
-					echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>";
 				?>
 			</div>
 			<table>
+				<tr><th>Date</th><th>Desc</th><th>Credit</th><th>Debit</th><th>Balance</th></tr>
 			<?php
-				if ($txnAccount) {
-					echo "<tr><th>Date</th><th>Desc</th><th>Credit</th><th>Debit</th><th>Balance</th></tr>";
-					if (sizeof($txns) == 0) {
-						echo "<tr><td colspan='5'>No transactions</td></tr>";
-					} else {
-						displayTxnsWithBalance($txns, $txnAccount);
-					}
+				if (sizeof($txns) == 0) {
+					echo "<tr><td colspan='5'>No transactions</td></tr>";
+				} else if ($txnAccount) {
+					displayAccountTxns($txns, $txnAccount);
 				} else {
-					echo "<tr><th>Date</th><th>From</th><th>To</th><th>Desc</th><th>Amount</th></tr>";
-					if (sizeof($txns) == 0) {
-						echo "<tr><td colspan='5'>No transactions</td></tr>";
-					} else {
-						displayTxns($txns); 
-					}
+					displayDateTxns($txns);
 				}
 			?>
 			</table>
