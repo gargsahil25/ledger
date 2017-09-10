@@ -7,10 +7,6 @@ include_once "services/display.php";
 
 // Post request handlers
 newEntryHandler($_POST);
-buyStuffHandler($_POST);
-sellStuffHandler($_POST);
-payAmountHandler($_POST);
-getPaymentHandler($_POST);
 newClientHandler($_POST);
 updateTxnHandler($_POST);
 deleteTxnHandler($_POST);
@@ -32,11 +28,6 @@ if ($txnDate == null && $txnMonth == null && $txnAccount == null) {
 date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
 $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
-$cashBalance = getBalanceByType('cash'); 
-$clientBalance = getBalanceByType('client');
-$capitalBalance = getBalanceByType('capital');
-$homeBalance = getBalanceByType('home');
-$profitBalance = getBalanceByType('factory');
 $cashId = getAccounts('cash')[0]['id'];
 
 ?>
@@ -60,8 +51,6 @@ $cashId = getAccounts('cash')[0]['id'];
 			<?php if ($txnAccount != null) { ?>
 			<span class="header-menu"><span id="newEntryButton" class="glyphicon glyphicon-edit collapsed" data-target="#newEntry" data-toggle="modal"></span></span>
 			<?php } ?>
-			<!-- <span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span> -->
-			<!-- <span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span> -->
 		</h5>
 	</section>
 	<section>
@@ -82,36 +71,8 @@ $cashId = getAccounts('cash')[0]['id'];
 			</div>
 		</div>
 	</section>
-	<section class="summary">
-		<div id="summary" class="collapse">
-			<div class="label <?php if ($cashBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Cash</span><?php echo getMoneyFormat($cashBalance); ?></div>
-			<div class="label <?php if ($clientBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Party</span><?php echo getMoneyFormat($clientBalance); ?></div>
-			<div class="label <?php if ($capitalBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Capital</span><?php echo getMoneyFormat($capitalBalance); ?></div>
-			<div class="label <?php if ($homeBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Home</span><?php echo getMoneyFormat($homeBalance); ?></div>
-			<div class="label full <?php if ($profitBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Profit/Loss</span><?php echo getMoneyFormat($profitBalance).' + Stock'; ?></div>
-		</div>
-	</section>
 	<section class="entry-container">
 		<div id="entry">
-			<!-- <div class="entry">
-				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#purchase">
-					<span class="glyphicon glyphicon-object-align-left" aria-hidden="true"></span> 
-					Purchase
-				</button>
-				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#sale">
-					<span class="glyphicon glyphicon-object-align-right" aria-hidden="true"></span> 
-					Sale
-				</button>
-				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#pay">
-					<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> 
-					Debit
-				</button>
-				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#earn">
-					<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> 
-					Credit
-				</button>
-			</div> -->
-
 			<div id="newEntry" class="modal fade" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
@@ -130,95 +91,6 @@ $cashId = getAccounts('cash')[0]['id'];
 							<input type="number" name="entry-amount" placeholder="Amount"/>
 							<input type="text" name="entry-desc" placeholder="Item Description"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="entry-submit" value="Submit"/>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div id="purchase" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-					<div class="modal-content">
-		      			<div class="modal-header">
-		      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Purchase</h2>
-						</div>
-						<div class="modal-body">
-							<form method="post">
-							<input type="text" name="buy-desc" placeholder="Item Description"/>
-							<select name="buy-from">
-								<option value="">Purchase from</option>
-								<?php displayAccounts($accounts, 'client', null); ?>
-							</select>
-							<input type="number" name="buy-amount" placeholder="Amount"/>
-							<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" class="btn btn-warning btn-lg" name="buy-submit" value="Submit"/>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="sale" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-					<div class="modal-content">
-		      			<div class="modal-header">
-		      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Sale</h2>
-						</div>
-						<div class="modal-body">
-							<form method="post">
-							<input type="text" name="sell-desc" placeholder="Item Description"/>
-							<select name="sell-to">
-								<option value="">Sell to</option>
-								<?php displayAccounts($accounts, 'client', null); ?>
-							</select>
-							<input type="number" name="sell-amount" placeholder="Amount"/>
-							<input type="date" name="sell-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" class="btn btn-warning btn-lg" name="sell-submit" value="Submit"/>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="pay" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-					<div class="modal-content">
-		      			<div class="modal-header">
-		      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Debit</h2>
-						</div>
-						<div class="modal-body">
-							<form method="post">
-							<input type="text" name="pay-desc" placeholder="Payment Description"/>
-							<select name="pay-to">
-								<option value="">Party Name</option>
-								<?php displayAccounts($accounts, null, null); ?>
-							</select>
-							<input type="number" name="pay-amount" placeholder="Amount"/>
-							<input type="date" name="pay-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" class="btn btn-warning btn-lg" name="pay-submit" value="Submit"/>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="earn" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-					<div class="modal-content">
-		      			<div class="modal-header">
-		      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Credit</h2>
-						</div>
-						<div class="modal-body">
-							<form method="post">
-							<input type="text" name="earn-desc" placeholder="Item Description"/>
-							<select name="earn-from">
-								<option value="">Party Name</option>
-								<?php displayAccounts($accounts, null, null); ?>
-							</select>
-							<input type="number" name="earn-amount" placeholder="Amount"/>
-							<input type="date" name="earn-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="submit" class="btn btn-warning btn-lg" name="earn-submit" value="Submit"/>
 							</form>
 						</div>
 					</div>
