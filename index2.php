@@ -6,7 +6,6 @@ include_once "services/handler.php";
 include_once "services/display.php";
 
 // Post request handlers
-newEntryHandler($_POST);
 buyStuffHandler($_POST);
 sellStuffHandler($_POST);
 payAmountHandler($_POST);
@@ -19,10 +18,6 @@ deleteTxnHandler($_POST);
 $txnDate = isset($_GET['txn-date']) ? $_GET['txn-date'] : null;
 $txnMonth = isset($_GET['txn-month']) ? $_GET['txn-month'] : null;
 $txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
-$txnAccountName = "";
-if ($txnAccount != null) {
-	$txnAccountName = getAccountById($txnAccount)['name'];
-}
 
 if ($txnDate == null && $txnMonth == null && $txnAccount == null) {
 	$txnDate = date('Y-m-d');
@@ -37,7 +32,6 @@ $clientBalance = getBalanceByType('client');
 $capitalBalance = getBalanceByType('capital');
 $homeBalance = getBalanceByType('home');
 $profitBalance = getBalanceByType('factory');
-$cashId = getAccounts('cash')[0]['id'];
 
 ?>
 
@@ -55,10 +49,7 @@ $cashId = getAccounts('cash')[0]['id'];
 		<h5>			
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
 			<a href="/">Ledger</a>
-			<?php if ($txnAccount != null) { ?>
-			<span class="header-menu"><span id="newEntryButton" class="glyphicon glyphicon-edit collapsed" data-target="#newEntry" data-toggle="modal"></span></span>
-			<?php } ?>
-			<!-- <span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span> -->
+			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
 			<!-- <span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span> -->
 		</h5>
 	</section>
@@ -90,8 +81,8 @@ $cashId = getAccounts('cash')[0]['id'];
 		</div>
 	</section>
 	<section class="entry-container">
-		<div id="entry">
-			<!-- <div class="entry">
+		<div id="entry" class="collapse">
+			<div class="entry">
 				<button type="button" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#purchase">
 					<span class="glyphicon glyphicon-object-align-left" aria-hidden="true"></span> 
 					Purchase
@@ -108,30 +99,6 @@ $cashId = getAccounts('cash')[0]['id'];
 					<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> 
 					Credit
 				</button>
-			</div> -->
-
-			<div id="newEntry" class="modal fade" role="dialog">
-				<div class="modal-dialog">
-					<div class="modal-content">
-		      			<div class="modal-header">
-		      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Entry - <?php echo $txnAccountName; ?></h2>
-						</div>
-						<div class="modal-body">
-							<form method="post">
-							<input type="date" name="entry-date" value="<?php echo date("Y-m-d") ?>"/>
-							<input type="hidden" name="entry-account" value="<?php echo $txnAccount ?>"/>
-							<input type="radio" name="entry-type" id="credit" value="credit"/> 
-							<label for="credit">Credit</label>
-							<input type="radio" name="entry-type" id="debit" value="debit"/>
-							<label for="debit">Debit</label>
-							<input type="number" name="entry-amount" placeholder="Amount"/>
-							<input type="text" name="entry-desc" placeholder="Item Description"/>
-							<input type="submit" class="btn btn-warning btn-lg" name="entry-submit" value="Submit"/>
-							</form>
-						</div>
-					</div>
-				</div>
 			</div>
 			
 			<div id="purchase" class="modal fade" role="dialog">
@@ -245,57 +212,52 @@ $cashId = getAccounts('cash')[0]['id'];
 						echo "Transactions on <strong>".date_format($date, "jS M")."</strong>";
 					} else if ($txnAccount) {
 						$class = "balance success";
+						$account = getAccountById($txnAccount);
 						$balance = getBalanceByAccountId($txnAccount);
 						if ($balance < 0) {
 							$class = "balance failure";
 						}
-						echo "Transactions for <strong>".$txnAccountName."</strong>";
+						echo "Transactions for <strong>".$account['name']."</strong>";
 						echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>";
 					}
 				?>
 			</div>
 			<table>
+				<tr><th>Date</th><th>Desc</th><th>Credit</th><th>Debit</th><th>Balance</th></tr>
 			<?php
 				if (sizeof($txns) == 0) {
-					echo "<tr><th>Date</th><th>Desc</th><th>Credit</th><th>Debit</th><th>Balance</th></tr>";
 					echo "<tr><td colspan='5'>No transactions</td></tr>";
 				} else if ($txnAccount) {
-					echo "<tr><th>Date</th><th>Desc</th><th>Credit</th><th>Debit</th><th>Balance</th></tr>";
 					displayAccountTxns($txns, $txnAccount);
 				} else {
-					echo "<tr><th>Date</th><th>Client</th><th>Desc</th><th>Credit</th><th>Debit</th></tr>";
 					displayDateTxns($txns);
 				}
 			?>
 			</table>
 
-			<?php for($i = 0; $i < sizeof($txns); $i++) { 
-				$txn = $txns[$i];
-				$tAccountId = $txn['to_account_id'];
-				if ($txn['to_account_id'] == $cashId) { 
-					$tAccountId = $txn['from_account_id']; 
-				}
-				$tAccountName = getAccountById($tAccountId)['name'];
-			?>
+			<?php for($i = 0; $i < sizeof($txns); $i++) { $txn = $txns[$i]; ?>
 			<div id="txn-<?php echo $i; ?>" class="modal fade" role="dialog">
 				<div class="modal-dialog">
 					<div class="modal-content">
 	    	  			<div class="modal-header">
 	    	  				<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h2>Update - <?php echo $tAccountName; ?></h2>
+							<h2>Update</h2>
 						</div>
 						<div class="modal-body">
 							<form method="post">
 							<input type="hidden" name="txn-id" value="<?php echo $txn['id']; ?>"/>
+							<input type="text" name="txn-desc" placeholder="Item Description" value="<?php echo $txn['description']; ?>"/>
+							<select name="txn-from">
+								<option value="">From</option>
+								<?php displayAccounts($accounts, null, $txn['from_account_id']); ?>
+							</select>
+							<select name="txn-to">
+								<option value="">To</option>
+								<?php displayAccounts($accounts, null, $txn['to_account_id']); ?>
+							</select>
+							<input type="number" name="txn-amount" placeholder="Amount" value="<?php echo $txn['amount']; ?>"/>
 							<?php $d = date_create($txn['date']); ?>
 							<input type="date" name="txn-date" value="<?php echo date_format($d, 'Y-m-d'); ?>"/>
-							<input type="radio" name="txn-type" id="credit" value="credit" <?php if ($txn['from_account_id'] == $cashId) { echo "checked"; } ?>/> 
-							<label for="credit">Credit</label>
-							<input type="radio" name="txn-type" id="debit" value="debit" <?php if ($txn['to_account_id'] == $cashId) { echo "checked"; } ?>/>
-							<label for="debit">Debit</label>
-							<input type="number" name="txn-amount" placeholder="Amount" value="<?php echo $txn['amount']; ?>"/>
-							<input type="hidden" name="txn-account" value="<?php echo $tAccountId; ?>"/> 
-							<input type="text" name="txn-desc" placeholder="Item Description" value="<?php echo $txn['description']; ?>"/>
 							<input type="hidden" name="txn-delete-submit" value=""/>
 							<input type="submit" class="btn btn-danger btn-lg half" data-index="<?php echo $i; ?>" name="txn-delete-confirm" value="Delete" data-dismiss="modal"/>							
 							<input type="submit" class="btn btn-warning btn-lg half" name="txn-update-submit" value="Update"/>

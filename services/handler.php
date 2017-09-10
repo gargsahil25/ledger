@@ -5,6 +5,28 @@ include_once "util.php";
 
 date_default_timezone_set('Asia/Kolkata');
 
+function newEntryHandler($post) {
+	if(isset($post['entry-submit']) && 
+		!empty($post['entry-desc']) && 
+		!empty($post['entry-type']) && 
+		!empty($post['entry-amount']) && 
+		!empty($post['entry-account']) && 
+		!empty($post['entry-date'])) {
+
+		$cashId = getAccounts('cash')[0]['id'];
+		$date = $post['entry-date']." ".date('H:i:s', time());
+		$from = $post['entry-account'];
+		$to = $post['entry-account'];
+		if ($post['entry-type'] == 'credit') {
+			$from = $cashId;
+		} else {
+			$to = $cashId;
+		}
+		addTransaction($from, $to, $post['entry-desc'], $post['entry-amount'], $date);
+		header('Location: /');
+	}
+}
+
 function buyStuffHandler($post) {
 	if(isset($post['buy-submit']) && 
 		!empty($post['buy-desc']) && 
@@ -70,7 +92,15 @@ function newClientHandler($post) {
 
 function updateTxnHandler($post) {
 	if(isset($post['txn-update-submit']) && !empty($post['txn-update-submit'])) {
-		updateTransaction($post['txn-id'], $post['txn-desc'], $post['txn-from'], $post['txn-to'], $post['txn-amount'], $post['txn-date']);
+		$cashId = getAccounts('cash')[0]['id'];
+		$from = $post['txn-account'];
+		$to = $post['txn-account'];
+		if ($post['txn-type'] == "credit") {
+			$from = $cashId;
+		} else {
+			$to = $cashId;
+		}
+		updateTransaction($post['txn-id'], $post['txn-desc'], $from, $to, $post['txn-amount'], $post['txn-date']);
 		redirect();
 	}
 }

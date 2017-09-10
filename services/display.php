@@ -29,7 +29,11 @@ function displayDateTxns($txns) {
 	$cashTxns = "";
 	$factoryTxns = "";
 	foreach($txns as $txn) {
-		$prefix = '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td>';
+		$class = "debit";
+		if ($txn['from_account_id'] == $cashId) {
+			$class = "credit";
+		}
+		$prefix = '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td>';
 		$factoryAmount = $txn["amount"];
 		$cashAmount = $txn["amount"];
 		if ($txn['from_account_id'] == $factoryId) {
@@ -41,34 +45,41 @@ function displayDateTxns($txns) {
 			$factoryBalance -= $factoryAmount;
 		}
 		if ($txn['from_account_id'] == $cashId) {
-			$cashAmount = $cashAmount * -1;
-			$cashTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			// $cashAmount = $cashAmount * -1;
+			// $cashTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashTxns .= $prefix.'<td>'.$txn['to_account_name'].'</td><td>'.$txn["description"].'</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td></tr>';
 			$cashBalance -= $cashAmount;
 		} else if($txn['to_account_id'] == $cashId) {
-			$cashTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashAmount = $cashAmount * -1;
+			$cashTxns .= $prefix.'<td>'.$txn['from_account_name'].'</td><td>'.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td></tr>';
+			// $cashTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
 			$cashBalance -= $cashAmount;
 		}
 		$i++;
 	}
-	echo $cashTitle;
+	// echo $cashTitle;
 	echo $cashTxns;
-	echo "<tr><td colspan='5'><strong>Initial Cash: ".getMoneyFormat($cashBalance)."</strong></td></tr>";
-	echo "<tr><td colspan='5'>&nbsp;</td></tr>";
-	echo $factoryTitle;
-	echo $factoryTxns;
+	// echo "<tr><td colspan='5'><strong>Initial Cash: ".getMoneyFormat($cashBalance)."</strong></td></tr>";
+	// echo "<tr><td colspan='5'>&nbsp;</td></tr>";
+	// echo $factoryTitle;
+	// echo $factoryTxns;
 }
 
 function displayAccountTxns($txns, $id) {
 	$balance = getBalanceByAccountId($id);
 	$i = 0;
 	foreach($txns as $txn) {
-		echo '<tr data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["description"].'</td>';
+		$class = "debit";
+		if ($txn['to_account_id'] == $id) {
+			$class = "credit";
+		}
+		echo '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["description"].'</td>';
 		$amount = $txn["amount"];
 		if ($txn["from_account_id"] == $id) {
 			$amount = $amount * -1;
-			echo '<td>'.getMoneyFormat($amount, true).'</td><td>&nbsp;</td>';
-		} else {
 			echo '<td>&nbsp;</td><td>'.getMoneyFormat($amount, true).'</td>';
+		} else {
+			echo '<td>'.getMoneyFormat($amount, true).'</td><td>&nbsp;</td>';
 		}
 		echo '<td>'.getMoneyFormat($balance, true).'</td></tr>';
 		$balance = $balance - $amount;

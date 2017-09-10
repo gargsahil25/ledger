@@ -13,6 +13,18 @@ select {
     background-color: #f5f5f5;
 }
 
+input[type=radio] {
+    width: 30px;
+    margin: 0 0 10px 5%;
+}
+
+label {
+    width: 12%;
+    line-height: 35px;
+    margin: 0 5% 10px 1%;
+    vertical-align: top;
+}
+
 select {
     padding: 5px;
 }
@@ -49,7 +61,7 @@ table td,th {
 }
 
 table th {
-    background-color: #009688;
+    background-color: #555;
     color: #FFF;
 }
 
@@ -59,6 +71,14 @@ table tr:nth-child(even) {
 
 table tr:nth-child(odd) {
     background-color: rgba(0, 150, 136, 0.4);
+}
+
+table tr.credit {
+    background-color: rgba(76, 175, 80, 0.66);
+}
+
+table tr.debit {
+    background-color: rgba(244, 67, 54, 0.66);
 }
 
 .loader {
