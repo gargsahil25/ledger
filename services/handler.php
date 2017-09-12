@@ -23,7 +23,7 @@ function newEntryHandler($post) {
 			$to = $cashId;
 		}
 		addTransaction($from, $to, $post['entry-desc'], $post['entry-amount'], $date);
-		header('Location: /');
+		redirect();
 	}
 }
 
@@ -37,7 +37,7 @@ function buyStuffHandler($post) {
 		$factoryId = getAccounts('factory')[0]['id'];
 		$date = $post['buy-date']." ".date('H:i:s', time());
 		addTransaction($post['buy-from'], $factoryId, $post['buy-desc'], $post['buy-amount'], $date);
-		header('Location: /');
+		redirect();
 	}
 }
 
@@ -51,7 +51,7 @@ function sellStuffHandler($post) {
 		$factoryId = getAccounts('factory')[0]['id'];
 		$date = $post['sell-date']." ".date('H:i:s', time());
 		addTransaction($factoryId, $post['sell-to'], $post['sell-desc'], $post['sell-amount'], $date);
-		header('Location: /');
+		redirect();
 	}
 }
 
@@ -65,7 +65,7 @@ function payAmountHandler($post) {
 		$cashId = getAccounts('cash')[0]['id'];
 		$date = $post['pay-date']." ".date('H:i:s', time());
 		addTransaction($cashId, $post['pay-to'], $post['pay-desc'], $post['pay-amount'], $date);
-		header('Location: /');
+		redirect();
 	}
 }
 
@@ -79,14 +79,14 @@ function getPaymentHandler($post) {
 		$cashId = getAccounts('cash')[0]['id'];
 		$date = $post['earn-date']." ".date('H:i:s', time());
 		addTransaction($post['earn-from'], $cashId, $post['earn-desc'], $post['earn-amount'], $date);
-		header('Location: /');
+		redirect();
 	}
 }
 
 function newClientHandler($post) {
 	if(isset($post['client-submit']) && !empty($post['client-name'])) {
-		addAccount($post['client-name'], 'client');
-		header('Location: /');
+		$id = addAccount($post['client-name'], 'client');
+		header('Location: /?txn-account='.$id);
 	}
 }
 
@@ -108,7 +108,7 @@ function updateTxnHandler($post) {
 function deleteTxnHandler($post) {
 	if(isset($post['txn-delete-submit']) && !empty($post['txn-delete-submit'])) {
 		deleteTransaction($post['txn-id']);
-		header('Location: /');
+		redirect();
 	}
 }
 

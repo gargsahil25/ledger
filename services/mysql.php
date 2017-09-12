@@ -30,6 +30,13 @@ function mysqlQuery($sql) {
 	    echo "Error: " . $sql . "<br>" . $conn->error;
 	}
 
+	preg_match('/INSERT INTO/', $sql, $matches);
+	if (sizeof($matches) > 0) {
+		$id = $conn->insert_id;
+		$conn->close();
+		return $id;
+	}
+
 	$conn->close();
 
 	return $result;
