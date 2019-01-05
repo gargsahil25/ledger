@@ -52,7 +52,7 @@ $profitBalance = getBalanceByType('factory');
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
 			<a href="/">Ledger</a>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
-			<!-- <span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span> -->
+			<span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span>
 		</h5>
 	</section>
 	<section>
@@ -79,7 +79,7 @@ $profitBalance = getBalanceByType('factory');
 			<div class="label <?php if ($clientBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Party</span><?php echo getMoneyFormat($clientBalance); ?></div>
 			<div class="label <?php if ($capitalBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Capital</span><?php echo getMoneyFormat($capitalBalance); ?></div>
 			<div class="label <?php if ($homeBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Home</span><?php echo getMoneyFormat($homeBalance); ?></div>
-			<div class="label full <?php if ($profitBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Profit/Loss</span><?php echo getMoneyFormat($profitBalance).' + Stock'; ?></div>
+			<!-- <div class="label full <?php if ($profitBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Profit/Loss</span><?php echo getMoneyFormat($profitBalance).' + Stock'; ?></div> -->
 		</div>
 	</section>
 	<section class="entry-container">
@@ -199,7 +199,7 @@ $profitBalance = getBalanceByType('factory');
 				<?php displayDays(10, $txnDate); ?>
 			</select>
 			<!-- <select name="txn-month">
-				<?php displayMonths(10, $txnMonth); ?>
+				<?php //displayMonths(10, $txnMonth); ?>
 			</select> -->
 			<select name="txn-account">
 				<option value="">Account</option>
@@ -225,7 +225,7 @@ $profitBalance = getBalanceByType('factory');
 				?>
 			</div>
 			<table>
-				<tr><th>Date</th><th>Desc</th><th>Credit</th><th>Debit</th><th>Balance</th></tr>
+				<tr><th>Date</th><th>Desc</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>
 			<?php
 				if (sizeof($txns) == 0) {
 					echo "<tr><td colspan='5'>No transactions</td></tr>";

@@ -4,7 +4,7 @@ function mysqlQuery($sql) {
 	
 	$servername = "localhost:3306";
 	$username = "root";
-	$password = "root";
+	$password = "root@123";
 	$dbname = "ledger";
 
 	$url = getenv("CLEARDB_DATABASE_URL");
@@ -55,6 +55,16 @@ function getAccounts($type = null) {
 		array_push($accounts, $account);
 	}
 	return $accounts;
+}
+
+function getAccountByName($name) {
+	$sql = "SELECT * FROM accounts WHERE name = '".$name."'";
+	$accountRows = mysqlQuery($sql);
+	$accounts = array();
+	while($account = $accountRows->fetch_assoc()) {
+		array_push($accounts, $account);
+	}
+	return $accounts[0];
 }
 
 function getAccountById($id) {

@@ -13,7 +13,7 @@ function newEntryHandler($post) {
 		!empty($post['entry-account']) && 
 		!empty($post['entry-date'])) {
 
-		$cashId = getAccounts('cash')[0]['id'];
+		$cashId = getAccountByName('CASH')['id'];
 		$date = $post['entry-date']." ".date('H:i:s', time());
 		$from = $post['entry-account'];
 		$to = $post['entry-account'];
@@ -34,7 +34,7 @@ function buyStuffHandler($post) {
 		!empty($post['buy-amount']) && 
 		!empty($post['buy-date'])) {
 
-		$factoryId = getAccounts('factory')[0]['id'];
+		$factoryId = getAccountByName('FACTORY MALL')['id'];
 		$date = $post['buy-date']." ".date('H:i:s', time());
 		addTransaction($post['buy-from'], $factoryId, $post['buy-desc'], $post['buy-amount'], $date);
 		redirect();
@@ -48,7 +48,7 @@ function sellStuffHandler($post) {
 		!empty($post['sell-amount']) && 
 		!empty($post['sell-date'])) {
 
-		$factoryId = getAccounts('factory')[0]['id'];
+		$factoryId = getAccountByName('FACTORY MALL')['id'];
 		$date = $post['sell-date']." ".date('H:i:s', time());
 		addTransaction($factoryId, $post['sell-to'], $post['sell-desc'], $post['sell-amount'], $date);
 		redirect();
@@ -62,7 +62,7 @@ function payAmountHandler($post) {
 		!empty($post['pay-amount']) && 
 		!empty($post['pay-date'])) {
 
-		$cashId = getAccounts('cash')[0]['id'];
+		$cashId = getAccountByName('CASH')['id'];
 		$date = $post['pay-date']." ".date('H:i:s', time());
 		addTransaction($cashId, $post['pay-to'], $post['pay-desc'], $post['pay-amount'], $date);
 		redirect();
@@ -76,7 +76,7 @@ function getPaymentHandler($post) {
 		!empty($post['earn-amount']) && 
 		!empty($post['earn-date'])) {
 
-		$cashId = getAccounts('cash')[0]['id'];
+		$cashId = getAccountByName('CASH')['id'];
 		$date = $post['earn-date']." ".date('H:i:s', time());
 		addTransaction($post['earn-from'], $cashId, $post['earn-desc'], $post['earn-amount'], $date);
 		redirect();
@@ -92,15 +92,7 @@ function newClientHandler($post) {
 
 function updateTxnHandler($post) {
 	if(isset($post['txn-update-submit']) && !empty($post['txn-update-submit'])) {
-		$cashId = getAccounts('cash')[0]['id'];
-		$from = $post['txn-account'];
-		$to = $post['txn-account'];
-		if ($post['txn-type'] == "credit") {
-			$from = $cashId;
-		} else {
-			$to = $cashId;
-		}
-		updateTransaction($post['txn-id'], $post['txn-desc'], $from, $to, $post['txn-amount'], $post['txn-date']);
+		updateTransaction($post['txn-id'], $post['txn-desc'], $post['txn-from'], $post['txn-to'], $post['txn-amount'], $post['txn-date']);
 		redirect();
 	}
 }
