@@ -27,11 +27,19 @@ if ($txnDate == null && $txnMonth == null && $txnAccount == null) {
 date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
 $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
-$cashBalance = getBalanceByType('cash'); 
-$clientBalance = getBalanceByType('client');
-$capitalBalance = getBalanceByType('capital');
-$homeBalance = getBalanceByType('home');
-$profitBalance = getBalanceByType('factory');
+// $cashBalance = getBalanceByType('cash'); 
+// $clientBalance = getBalanceByType('client');
+// $capitalBalance = getBalanceByType('capital');
+// $homeBalance = getBalanceByType('home');
+// $profitBalance = getBalanceByType('factory');
+
+/**
+ * PROFIT: (ActualFactoryMallValue - FactoryMallAccountBalance) 
+ *			+ (ActualFactoryPropertyValue - FactoryPropertyAccountBalance) 
+ *			- (FactoryExpensesAccountBalance)
+ * OR
+ * 	   ActualFactoryMallValue - (FactoryMallAccountBalance + FactoryExpensesAccountBalance)
+ */
 
 ?>
 
@@ -52,7 +60,7 @@ $profitBalance = getBalanceByType('factory');
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
 			<a href="/">Ledger</a>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
-			<span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span>
+			<!-- <span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span> -->
 		</h5>
 	</section>
 	<section>
@@ -75,11 +83,11 @@ $profitBalance = getBalanceByType('factory');
 	</section>
 	<section class="summary">
 		<div id="summary" class="collapse">
-			<div class="label <?php if ($cashBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Cash</span><?php echo getMoneyFormat($cashBalance); ?></div>
-			<div class="label <?php if ($clientBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Party</span><?php echo getMoneyFormat($clientBalance); ?></div>
-			<div class="label <?php if ($capitalBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Capital</span><?php echo getMoneyFormat($capitalBalance); ?></div>
-			<div class="label <?php if ($homeBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Home</span><?php echo getMoneyFormat($homeBalance); ?></div>
-			<!-- <div class="label full <?php if ($profitBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Profit/Loss</span><?php echo getMoneyFormat($profitBalance).' + Stock'; ?></div> -->
+			<!-- <div class="label <?php if ($cashBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Cash</span><?php //echo getMoneyFormat($cashBalance); ?></div>
+			<div class="label <?php if ($clientBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Party</span><?php //echo getMoneyFormat($clientBalance); ?></div>
+			<div class="label <?php if ($capitalBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Capital</span><?php //echo getMoneyFormat($capitalBalance); ?></div>
+			<div class="label <?php if ($homeBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Home</span><?php //echo getMoneyFormat($homeBalance); ?></div>
+			<div class="label full <?php if ($profitBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Profit/Loss</span><?php //echo getMoneyFormat($profitBalance).' + Stock'; ?></div> -->
 		</div>
 	</section>
 	<section class="entry-container">
