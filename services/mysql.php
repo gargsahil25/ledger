@@ -68,6 +68,9 @@ function getAccountByName($name) {
 }
 
 function getAccountById($id) {
+	if (!$id) {
+		return;
+	}
 	$sql = "SELECT * FROM accounts WHERE id = ".$id;
 	$accountRows = mysqlQuery($sql);
 	$accounts = array();
@@ -83,7 +86,7 @@ function addAccount($name, $type) {
 }
 
 function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null) {
-	$sql = "SELECT t.id AS id, t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, ta.id AS to_account_id, ta.name AS to_account_name FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id WHERE 1 = 1";
+	$sql = "SELECT t.id AS id, t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, ta.id AS to_account_id, ta.name AS to_account_name FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id WHERE t.is_deleted = 0";
 	if ($txnAccount) {
 		$sql .= " AND t.from_account = ".$txnAccount." OR t.to_account = ".$txnAccount;
 	}
@@ -116,18 +119,18 @@ function updateTransaction($txnId, $desc, $from, $to, $amount, $date) {
 }
 
 function deleteTransaction($txnId) {
-	$sql = "DELETE FROM `transactions` WHERE id = ".$txnId;
+	$sql = "UPDATE `transactions` SET `is_deleted` = 1 WHERE id = ".$txnId;
 	return mysqlQuery($sql);
 }
 
 function getBalanceByType($type) {
-	$sql = "SELECT sum(amount) AS from_amount FROM transactions t JOIN accounts fa ON t.from_account = fa.id WHERE fa.type = '".$type."'";
+	$sql = "SELECT sum(amount) AS from_amount FROM transactions t JOIN accounts fa ON t.from_account = fa.id WHERE fa.type = '".$type."' AND t.is_deleted = 0";
 	$txnRows = mysqlQuery($sql);
 	$fromAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
 		$fromAmount += $txn['from_amount'];
 	}
-	$sql = "SELECT sum(amount) AS to_amount FROM transactions t JOIN accounts ta ON t.to_account = ta.id WHERE ta.type = '".$type."'";
+	$sql = "SELECT sum(amount) AS to_amount FROM transactions t JOIN accounts ta ON t.to_account = ta.id WHERE ta.type = '".$type."' AND t.is_deleted = 0";
 	$txnRows = mysqlQuery($sql);
 	$toAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
@@ -136,14 +139,23 @@ function getBalanceByType($type) {
 	return $toAmount - $fromAmount;
 }
 
-function getBalanceByAccountId($id) {
-	$sql = "SELECT sum(amount) AS from_amount FROM transactions t WHERE t.from_account = '".$id."'";
+function getBalanceByAccountId($id, $date = null) {
+	if (!$id) {
+		return;
+	}
+	$sql = "SELECT sum(amount) AS from_amount FROM transactions t WHERE t.from_account = '".$id."' AND t.is_deleted = 0";
+	if ($date) {
+		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 99:99:99'";
+	}
 	$txnRows = mysqlQuery($sql);
 	$fromAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
 		$fromAmount += $txn['from_amount'];
 	}
-	$sql = "SELECT sum(amount) AS to_amount FROM transactions t WHERE t.to_account = '".$id."'";
+	$sql = "SELECT sum(amount) AS to_amount FROM transactions t WHERE t.to_account = '".$id."' AND t.is_deleted = 0";
+	if ($date) {
+		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 99:99:99'";
+	}
 	$txnRows = mysqlQuery($sql);
 	$toAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {

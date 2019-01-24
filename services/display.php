@@ -18,11 +18,11 @@ function displayAccounts($accounts, $type, $selectedAccount, $showBalance = null
 	}
 }
 
-function displayDateTxns($txns) {
+function displayDateTxns($txns, $txnDate) {
 	$i = 0;
 	$factoryId = getAccountByName('FACTORY MALL')['id'];
 	$cashId = getAccountByName('CASH')['id'];
-	$cashBalance = getBalanceByAccountId($cashId);
+	$cashBalance = getBalanceByAccountId($cashId, $txnDate);
 	$cashTitle = "<tr><td colspan='5'><strong>Cash balance: ".getMoneyFormat($cashBalance)."</strong></td></tr>";
 	$factoryTitle = "<tr><td colspan='5'><strong>Factory Transactions</strong></td></tr>";
 	$cashTxns = "";
@@ -68,15 +68,24 @@ function displayDateTxns($txns) {
 	echo $factoryTxns;
 }
 
-function displayAccountTxns($txns, $id) {
-	$balance = getBalanceByAccountId($id);
+function displayAccountTxns($txns, $account, $balance) {
+	$id = $account['id'];
 	$i = 0;
 	foreach($txns as $txn) {
 		$class = "debit";
 		if ($txn['to_account_id'] == $id) {
 			$class = "credit";
 		}
-		echo '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$txn["description"].'</td>';
+		$description_prefix = "";
+		if ($account['type'] == 'cash' || $account['type'] == 'factory_mall') {
+			if($txn["from_account_id"] == $id) {
+				$description_prefix = $txn['to_account_name'].": ";
+			} else {
+				$description_prefix = $txn['from_account_name'].": ";
+			}
+		}
+		echo '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"jS M").'</td><td>'.$description_prefix.$txn["description"].'</td>';
+
 		$amount = $txn["amount"];
 		if ($txn["from_account_id"] == $id) {
 			$amount = $amount * -1;
@@ -88,19 +97,6 @@ function displayAccountTxns($txns, $id) {
 		$balance = $balance - $amount;
 		$i++;
 	}
-}
-
-function getProfit($txns) {
-	$profit = 0;
-	$factoryId = getAccountByName('FACTORY MALL')['id'];
-	foreach($txns as $txn) {
-		if ($txn["from_account_id"] == $factoryId) {
-			$profit += $txn["amount"];
-		} else if ($txn["to_account_id"] == $factoryId) {
-			$profit -= $txn["amount"];
-		}
-	}
-	return $profit;
 }
 
 function displayDays($count, $selectedDate) {

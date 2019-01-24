@@ -27,6 +27,10 @@ if ($txnDate == null && $txnMonth == null && $txnAccount == null) {
 date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
 $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
+
+$account = getAccountById($txnAccount);
+$balance = getBalanceByAccountId($txnAccount);
+
 // $cashBalance = getBalanceByType('cash'); 
 // $clientBalance = getBalanceByType('client');
 // $capitalBalance = getBalanceByType('capital');
@@ -222,8 +226,6 @@ $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
 						echo "Transactions on <strong>".date_format($date, "jS M")."</strong>";
 					} else if ($txnAccount) {
 						$class = "balance success";
-						$account = getAccountById($txnAccount);
-						$balance = getBalanceByAccountId($txnAccount);
 						if ($balance < 0) {
 							$class = "balance failure";
 						}
@@ -238,9 +240,9 @@ $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
 				if (sizeof($txns) == 0) {
 					echo "<tr><td colspan='5'>No transactions</td></tr>";
 				} else if ($txnAccount) {
-					displayAccountTxns($txns, $txnAccount);
+					displayAccountTxns($txns, $account, $balance);
 				} else {
-					displayDateTxns($txns);
+					displayDateTxns($txns, $txnDate);
 				}
 			?>
 			</table>
