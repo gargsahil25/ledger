@@ -28,6 +28,11 @@ $(document).ready(function() {
     if (getCookie('entry') == 'true') {
         $('#entryButton').click();
     }
+    if (getCookie('hindi') == 'true') {
+        $('#hindiButton').removeClass('collapsed');
+    } else {
+        $('#hindiButton').addClass('collapsed');
+    }
 
     $('.header-menu').click(function(e) {
         var cookieName = e.currentTarget.dataset.cookie;
@@ -36,6 +41,10 @@ $(document).ready(function() {
         } else {
             setCookie(cookieName, false);
         }
+    });
+
+    $('#hindiButton').click(function(e) {
+        window.location.reload();
     });
 
     $('.txn-selector select').change(function(e) {

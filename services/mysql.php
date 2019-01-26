@@ -1,5 +1,10 @@
 <?php 
 
+include_once "constant.php";
+include_once "util.php";
+
+$ALL_ACCOUNTS = array();
+
 function mysqlQuery($sql) {
 	
 	$servername = "localhost:3306";
@@ -42,42 +47,45 @@ function mysqlQuery($sql) {
 	return $result;
 }
 
-function getAccounts($type = null) {
-	$sql = "SELECT * FROM accounts";
-	if ($type) {
-		$sql .= " WHERE type = '".$type."'";
+function getAccounts() {
+	global $ALL_ACCOUNTS;
+	if (sizeof($ALL_ACCOUNTS) > 0) {
+		return $ALL_ACCOUNTS;
 	}
-	$sql .= " ORDER BY name";
+	$sql = "SELECT * FROM accounts ORDER BY name";
 	$accountRows = mysqlQuery($sql);
-	$accounts = array();
+	$ALL_ACCOUNTS = array();
 	while($account = $accountRows->fetch_assoc()) {
 		$account['balance'] = getBalanceByAccountId($account['id']);
-		array_push($accounts, $account);
+		$account['original_name'] = $account['name'];
+		$account['name'] = getLangText($account['name']);
+		array_push($ALL_ACCOUNTS, $account);
 	}
-	return $accounts;
+	return $ALL_ACCOUNTS;
 }
 
 function getAccountByName($name) {
-	$sql = "SELECT * FROM accounts WHERE name = '".$name."'";
-	$accountRows = mysqlQuery($sql);
-	$accounts = array();
-	while($account = $accountRows->fetch_assoc()) {
-		array_push($accounts, $account);
+	global $ALL_ACCOUNTS;
+	if (sizeof($ALL_ACCOUNTS) == 0) {
+		$ALL_ACCOUNTS = getAccounts();
 	}
-	return $accounts[0];
+	for($i=0; $i < sizeof($ALL_ACCOUNTS); $i++) {
+		if ($ALL_ACCOUNTS[$i]['original_name'] == $name) {
+			return $ALL_ACCOUNTS[$i];
+		}
+	}
 }
 
 function getAccountById($id) {
-	if (!$id) {
-		return;
+	global $ALL_ACCOUNTS;
+	if (sizeof($ALL_ACCOUNTS) == 0) {
+		$ALL_ACCOUNTS = getAccounts();
 	}
-	$sql = "SELECT * FROM accounts WHERE id = ".$id;
-	$accountRows = mysqlQuery($sql);
-	$accounts = array();
-	while($account = $accountRows->fetch_assoc()) {
-		array_push($accounts, $account);
+	for($i=0; $i < sizeof($ALL_ACCOUNTS); $i++) {
+		if ($ALL_ACCOUNTS[$i]['id'] == $id) {
+			return $ALL_ACCOUNTS[$i];
+		}
 	}
-	return $accounts[0];
 }
 
 function addAccount($name, $type) {

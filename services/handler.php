@@ -1,7 +1,7 @@
 <?php
 
-include_once "mysql.php";
 include_once "util.php";
+include_once "mysql.php";
 
 date_default_timezone_set('Asia/Kolkata');
 
@@ -34,7 +34,7 @@ function buyStuffHandler($post) {
 		!empty($post['buy-amount']) && 
 		!empty($post['buy-date'])) {
 
-		$factoryId = getAccountByName('FACTORY MALL')['id'];
+		$factoryId = getAccountByName('FACTORY_MALL')['id'];
 		$date = $post['buy-date']." ".date('H:i:s', time());
 		addTransaction($post['buy-from'], $factoryId, $post['buy-desc'], $post['buy-amount'], $date);
 		redirect();
@@ -48,7 +48,7 @@ function sellStuffHandler($post) {
 		!empty($post['sell-amount']) && 
 		!empty($post['sell-date'])) {
 
-		$factoryId = getAccountByName('FACTORY MALL')['id'];
+		$factoryId = getAccountByName('FACTORY_MALL')['id'];
 		$date = $post['sell-date']." ".date('H:i:s', time());
 		addTransaction($factoryId, $post['sell-to'], $post['sell-desc'], $post['sell-amount'], $date);
 		redirect();

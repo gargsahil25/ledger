@@ -1,5 +1,6 @@
 <?php
 
+include_once "constant.php";
 
 function getMoneyFormat($money, $skipSymbol = false) {
     $sign = '';
@@ -27,6 +28,18 @@ function redirect() {
     $url = '/index.php?'.$_SERVER['QUERY_STRING'];
     header('Location: '.$url);
     exit();
+}
+
+function getLangText($key) {
+    global $LANG_MAP;
+    $lang = 0;
+    if (isset($_COOKIE['hindi']) && $_COOKIE['hindi'] == 'true') {
+        $lang = 1;
+    }
+    if (isset($LANG_MAP[$key])) {
+        return $LANG_MAP[$key][$lang];
+    }
+    return $key;
 }
 
 ?>
