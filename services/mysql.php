@@ -96,7 +96,7 @@ function addAccount($name, $type) {
 function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null) {
 	$sql = "SELECT t.id AS id, t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, ta.id AS to_account_id, ta.name AS to_account_name FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id WHERE t.is_deleted = 0";
 	if ($txnAccount) {
-		$sql .= " AND t.from_account = ".$txnAccount." OR t.to_account = ".$txnAccount;
+		$sql .= " AND (t.from_account = ".$txnAccount." OR t.to_account = ".$txnAccount.")";
 	}
 	if ($txnDate) {
 		$date = date_create($txnDate);
