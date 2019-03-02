@@ -197,12 +197,7 @@ $balance = getBalanceByAccountId($txnAccount);
 	</section>
 	<section>
 		<div class="txn-selector">
-			<select name="txn-date">
-				<?php displayDays(10, $txnDate); ?>
-			</select>
-			<!-- <select name="txn-month">
-				<?php //displayMonths(10, $txnMonth); ?>
-			</select> -->
+			<input type="date" name="txn-date" value="<?php echo $txnDate; ?>"/>
 			<select name="txn-account">
 				<option value=""><?php echo getLangText('ACCOUNT'); ?></option>
 				<?php displayAccounts($accounts, null, $txnAccount, true); ?>

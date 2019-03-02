@@ -24,7 +24,7 @@ $(document).ready(function() {
         window.location.reload();
     });
 
-    $('.txn-selector select').change(function(e) {
+    $('.txn-selector select, .txn-selector input').change(function(e) {
         $('.loader').fadeIn();
         var element = e.currentTarget;
         window.location.search = "?" + element.name + "=" + element.value;

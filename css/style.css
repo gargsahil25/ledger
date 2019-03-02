@@ -213,7 +213,7 @@ table td.editable {
     text-align: center;
 }
 
-.txn-selector select {
+.txn-selector input, .txn-selector select {
     width: 45%;
     margin: 10px 1px 10px 1px;
     max-width: 200px;
