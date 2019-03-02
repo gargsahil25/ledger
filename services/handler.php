@@ -1,5 +1,6 @@
 <?php
 
+include_once "constant.php";
 include_once "util.php";
 include_once "mysql.php";
 
@@ -84,8 +85,9 @@ function getPaymentHandler($post) {
 }
 
 function newClientHandler($post) {
+	global $ACCOUNT_TYPE;
 	if(isset($post['client-submit']) && !empty($post['client-name'])) {
-		$id = addAccount($post['client-name'], 'client');
+		$id = addAccount($post['client-name'], $ACCOUNT_TYPE['CLIENT']);
 		header('Location: /?txn-account='.$id);
 	}
 }
