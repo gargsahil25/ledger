@@ -197,7 +197,7 @@ $balance = getBalanceByAccountId($txnAccount);
 	</section>
 	<section>
 		<div class="txn-selector">
-			<input type="date" name="txn-date" value="<?php echo $txnDate; ?>"/>
+			<input type="date" name="txn-date" value="<?php echo $txnDate; ?>" placeholder="Date"/>
 			<select name="txn-account">
 				<option value=""><?php echo getLangText('ACCOUNT'); ?></option>
 				<?php displayAccounts($accounts, null, $txnAccount, true); ?>
