@@ -35,7 +35,7 @@ $accounts = getAccounts();
 		<div class="txns">
 			<div class="txns-heading">
 				<?php
-					echo getLangText('PROFIT_LOSS')." <span class='totalprofitloss balance'></span>";
+					echo getLangText('PROFIT_LOSS')." on <strong>".date_format(date_create(), "j F Y")."</strong> <span class='totalprofitloss balance'></span>";
 				?>
 			</div>
 			<table class="accounts">
@@ -45,5 +45,6 @@ $accounts = getAccounts();
 		</div>
 	</section>
 	<?php include('includes/footer.php'); ?>
+
 </body>
 </html>

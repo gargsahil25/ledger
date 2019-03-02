@@ -63,7 +63,18 @@ $(document).ready(function() {
 function updateProfitLoss($element) {
     var balance = $element.find(".account-balance").html();
     var actualBalance = $element.find(".account-actualbalance").val();
-    $element.find(".account-profitloss").html(actualBalance - balance);
+    var profit = parseInt(actualBalance) - parseInt(balance);
+    $element.find(".account-profitloss").html(profit);
+
+    var className = "";
+    if (profit > 0) {
+        className = "credit";
+    } else if (profit < 0) {
+        className = "debit";
+    }
+    $element.removeClass("credit");
+    $element.removeClass("debit");
+    $element.addClass(className);
 }
 
 function updateTotalProfitLoss() {

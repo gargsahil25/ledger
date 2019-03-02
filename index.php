@@ -213,7 +213,7 @@ $balance = getBalanceByAccountId($txnAccount);
 				<?php
 					if($txnDate) {
 						$date = date_create($txnDate);
-						echo getLangText('TRANSACTION')." - <strong>".date_format($date, "jS M")."</strong>";
+						echo getLangText('TRANSACTION')." - <strong>".date_format($date, "j F Y")."</strong>";
 					} else if ($txnAccount) {
 						$class = "balance";
 						if ($balance >= 0) {
