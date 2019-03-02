@@ -28,6 +28,8 @@ function mysqlQuery($sql) {
 	    die("Connection failed: " . $conn->connect_error);
 	} 
 
+	mysqli_set_charset($conn,"latin1");
+
 	//echo $sql;
 	$result = $conn->query($sql);
 
@@ -52,7 +54,7 @@ function getAccounts() {
 	if (sizeof($ALL_ACCOUNTS) > 0) {
 		return $ALL_ACCOUNTS;
 	}
-	$sql = "SELECT * FROM accounts ORDER BY name";
+	$sql = "SELECT * FROM accounts ORDER BY type, name";
 	$accountRows = mysqlQuery($sql);
 	$ALL_ACCOUNTS = array();
 	while($account = $accountRows->fetch_assoc()) {

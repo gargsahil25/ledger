@@ -1,26 +1,3 @@
-function setCookie(cname, cvalue, exdays) {
-    exdays = exdays || 1000;
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-
 $(document).ready(function() {
     if (getCookie('summary') == 'true') {
         $('#summaryButton').click();
@@ -70,4 +47,67 @@ $(document).ready(function() {
     $("form").submit(function(event) {
         $('.loader').fadeIn();
     });
+
+    // Profit loss page
+    for (var i = 0; i < $('.account-row').length; i++) {
+        updateProfitLoss($($('.account-row')[i]));
+    }
+    updateTotalProfitLoss();
+
+    $(".account-actualbalance").change(function(e) {
+        updateProfitLoss($(e.currentTarget).closest('.account-row'));
+        updateTotalProfitLoss();
+    });
 });
+
+function updateProfitLoss($element) {
+    var balance = $element.find(".account-balance").html();
+    var actualBalance = $element.find(".account-actualbalance").val();
+    $element.find(".account-profitloss").html(actualBalance - balance);
+}
+
+function updateTotalProfitLoss() {
+    var total = 0;
+    for (var i = 0; i < $('.account-profitloss').length; i++) {
+        total += parseInt($($('.account-profitloss')[i]).html());
+    }
+    if (total >= 0) {
+        $(".totalprofitloss").addClass("green");
+    } else {
+        $(".totalprofitloss").removeClass("green");
+    }
+    $(".totalprofitloss").html(formatMoney(total));
+}
+
+function setCookie(cname, cvalue, exdays) {
+    exdays = exdays || 1000;
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function formatMoney(num) {
+    var n1, n2;
+    num = num + '' || '';
+    n1 = num.split('.');
+    n2 = n1[1] || null;
+    n1 = n1[0].replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+    num = n2 ? n1 + '.' + n2 : n1;
+    return "&#8377; " + num;
+};

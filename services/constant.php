@@ -2,6 +2,7 @@
 
 $LANG_MAP = array(
 	"LEDGER" => array("Ledger", "खाता बही"),
+	"PROFIT_LOSS" => array("Profit Loss", "लाभ हानि"),
 	"PURCHASE" => array("Purchase", "ख़रीदा"),
 	"SALE" => array("Sale", "बेचा"),
 	"DEBIT" => array("Debit", "डेबिट"),
@@ -18,6 +19,7 @@ $LANG_MAP = array(
 	"ACCOUNT" => array("Account", "खाता"),
 	"DATE" => array("Date", "तारीख"),
 	"BALANCE" => array("Balance", "शेष"),
+	"ACTUAL_BALANCE" => array("Actual Balance", "वास्तविक शेष"),
 	"UPDATE" => array("Update", "अपडेट"),
 	"FROM_ACCOUNT" => array("From Account", "किस खाते से"),
 	"TO_ACCOUNT" => array("To Account", "किस खाते में"),
@@ -38,10 +40,11 @@ $LANG_MAP = array(
 );
 
 $ACCOUNT_TYPE = array(
-	"CLIENT" => "client",
+	"CLIENT" => "zclient",
 	"CASH" => "cash",
 	"FACTORY" => "factory",
 	"FACTORY_MALL" => "factory_mall",
+	"FACTORY_EXPENSE" => "factory_expense",
 	"HOME" => "home",
 	"CAPITAL" => "capital"
 );

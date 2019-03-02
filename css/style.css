@@ -87,6 +87,10 @@ table tr.debit {
     background-color: rgba(244, 67, 54, 0.66);
 }
 
+table td.editable {
+    padding: 0px;
+}
+
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
     outline: none;
 }
@@ -106,14 +110,11 @@ table tr.debit {
     color: white;
     padding: 5px;
     border-radius: 5px;
-}
-
-.balance.success {
-    background: #5cb85c;
-}
-
-.balance.failure {
     background: #d9534f;
+}
+
+.balance.green {
+    background: #5cb85c;
 }
 
 .modal-header h2 {
@@ -132,11 +133,17 @@ table tr.debit {
     text-align: center;
     vertical-align: middle;
     line-height: 35px;
+    font-weight: 300;
 }
 
 .page-header a {
     text-decoration: none;
     color: #FFF;
+    padding: 10px;
+}
+
+.page-header a.active {
+    font-weight: 500;
 }
 
 .page-header .glyphicon {
@@ -220,4 +227,17 @@ table tr.debit {
 .txns-heading {
     margin: 10px;
     text-align: center;
+}
+
+.accounts input {
+    margin: 0px;
+    border: 0px;
+    width: 100%;
+    text-align: center;
+    border-radius: 0px;
+    background-color: inherit;
+}
+
+.accounts input:focus {
+    background-color: #fcfcfc;
 }

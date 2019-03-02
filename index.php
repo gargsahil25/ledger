@@ -38,32 +38,20 @@ $balance = getBalanceByAccountId($txnAccount);
 // $homeBalance = getBalanceByType('home');
 // $profitBalance = getBalanceByType('factory');
 
-/**
- * PROFIT: (ActualFactoryMallValue - FactoryMallAccountBalance) 
- *			+ (ActualFactoryPropertyValue - FactoryPropertyAccountBalance) 
- *			- (FactoryExpensesAccountBalance)
- * OR
- * 	   ActualFactoryMallValue - (FactoryMallAccountBalance + FactoryExpensesAccountBalance)
- */
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <title><?php echo getLangText("LEDGER"); ?></title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="shortcut icon" href="images/icon/icon-128.png" type="image/x-icon" />
-<link id="manifest" rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v10"> 
+<?php include('includes/header.php'); ?>
 </head>
 <body>
 	<div class="loader" style="display:none;"></div>
 	<section class="page-header">
 		<h5>			
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
-			<a href="/"><?php echo getLangText("LEDGER"); ?></a> 
+			<a class="active" href="/"><?php echo getLangText("LEDGER"); ?></a> | <a href="/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a> 
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
 			<span class="header-menu" data-cookie="hindi"><span id="hindiButton" class="glyphicon glyphicon-header collapsed"></span></span>
 			<!-- <span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span> -->
@@ -227,9 +215,9 @@ $balance = getBalanceByAccountId($txnAccount);
 						$date = date_create($txnDate);
 						echo getLangText('TRANSACTION')." - <strong>".date_format($date, "jS M")."</strong>";
 					} else if ($txnAccount) {
-						$class = "balance success";
-						if ($balance < 0) {
-							$class = "balance failure";
+						$class = "balance";
+						if ($balance >= 0) {
+							$class = "balance green";
 						}
 						echo getLangText('ACCOUNT')." - <strong>".$account['name']."</strong>";
 						echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>";
@@ -296,8 +284,6 @@ $balance = getBalanceByAccountId($txnAccount);
 			<?php } ?>
 		</div>
 	</section>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<script type="text/javascript" src="js/script.js"></script>
+	<?php include('includes/footer.php'); ?>
 </body>
 </html>

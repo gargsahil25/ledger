@@ -20,6 +20,17 @@ function displayAccounts($accounts, $type, $selectedAccount, $showBalance = null
 	}
 }
 
+function displayAccountBalance($accounts) {
+	global $ACCOUNT_TYPE;
+	foreach($accounts as $account) {
+		$actualBalance = $account['balance'];
+		if ($account['type'] == $ACCOUNT_TYPE['FACTORY_EXPENSE']) {
+			$actualBalance = 0;
+		}
+		echo '<tr class="account-row"><td>'.$account['name'].'</td><td class="account-balance">'.$account['balance'].'</td><td class="editable"><input type="text" class="account-actualbalance" value="'.$actualBalance.'"/></td><td class="account-profitloss"></td></tr>';
+	}
+}
+
 function displayDateTxns($txns, $txnDate) {
 	$i = 0;
 	$factoryId = getAccountByName('FACTORY_MALL')['id'];
