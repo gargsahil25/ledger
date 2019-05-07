@@ -1,7 +1,4 @@
 $(document).ready(function() {
-    if (getCookie('summary') == 'true') {
-        $('#summaryButton').click();
-    }
     if (getCookie('entry') == 'true') {
         $('#entryButton').click();
     }
@@ -12,16 +9,18 @@ $(document).ready(function() {
     }
 
     $('.header-menu').click(function(e) {
-        var cookieName = e.currentTarget.dataset.cookie;
+        var data = e.currentTarget.dataset;
         if ($(e.currentTarget).find('span').hasClass('collapsed')) {
-            setCookie(cookieName, true);
+            setCookie(data.cookie, true);
         } else {
-            setCookie(cookieName, false);
+            deleteCookie(data.cookie);
         }
-    });
-
-    $('#hindiButton').click(function(e) {
-        window.location.reload();
+        if (data.removecookie) {
+            deleteCookie(data.cookie);
+        }
+        if (data.reload == "true") {
+            window.location.reload();
+        }
     });
 
     $('.txn-selector select, .txn-selector input').change(function(e) {
@@ -112,6 +111,10 @@ function getCookie(cname) {
     }
     return "";
 }
+
+var deleteCookie = function(name) {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
 
 function formatMoney(num) {
     var n1, n2;

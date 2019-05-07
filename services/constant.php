@@ -1,13 +1,15 @@
 <?php
 
 $LANG_MAP = array(
-	"LEDGER" => array("Ledger", "खाता बही"),
+	"LEDGER" => array("Ledger", "बही खाता"),
 	"PROFIT_LOSS" => array("Profit Loss", "लाभ हानि"),
+	"LOGIN" => array("Login", "लॉग इन"),
 	"PURCHASE" => array("Purchase", "ख़रीदा"),
 	"SALE" => array("Sale", "बेचा"),
 	"DEBIT" => array("Debit", "डेबिट"),
 	"CREDIT" => array("Credit", "क्रेडिट"),
 	"NEW_PARTY" => array("New Party", "नई पार्टी"),
+	"EDIT_PARTY" => array("Edit Party", "नई पार्टी"),
 	"PARTY_NAME" => array("Name of Party", "पार्टी का नाम"),
 	"SUBMIT" => array("Submit", "जमा करें"),
 	"DESC" => array("Description", "विवरण"),
@@ -36,7 +38,8 @@ $LANG_MAP = array(
 	"FACTORY_MALL" => array("Factory Mall", "फैक्टरी मॉल"),
 	"FACTORY_PROPERTY" => array("Factory Property", "फैक्टरी संपत्ति"),
 	"HOME_EXPENSE" => array("Home Expense", "घर खर्चा"),
-	"CAPITAL" => array("Capital", "कैपिटल")
+	"CAPITAL" => array("Capital", "कैपिटल"),
+	"PASSWORD" => array("Password", "पासवर्ड")
 );
 
 $ACCOUNT_TYPE = array(

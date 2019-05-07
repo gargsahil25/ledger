@@ -144,6 +144,7 @@ table td.editable {
 
 .page-header a.active {
     font-weight: 500;
+    pointer-events: none;
 }
 
 .page-header .glyphicon {
@@ -164,34 +165,6 @@ table td.editable {
 
 .page-header .glyphicon.collapsed {
     background: none;
-}
-
-.summary {
-    margin: 5px;
-    text-align: center;
-}
-
-.summary .label {
-    padding: .3em;
-    margin: 3px;
-    font-size: 100%;
-    line-height: 1.3em;
-    display: inline-block;
-    width: 47%;
-    max-width: 200px;
-}
-
-.summary .label.full {
-    width: 97%;
-    max-width: 300px;
-}
-
-
-.summary .title {
-    color: #ddd;
-    font-size: 80%;
-    text-transform: uppercase;
-    display: block;
 }
 
 .entry-container {
@@ -229,6 +202,10 @@ table td.editable {
     text-align: center;
 }
 
+.txns-heading .glyphicon {
+    margin-left: 5px; 
+}
+
 .accounts input {
     margin: 0px;
     border: 0px;
@@ -240,4 +217,13 @@ table td.editable {
 
 .accounts input:focus {
     background-color: #fcfcfc;
+}
+
+.login-form-container {
+    text-align: center;
+}
+
+.login-form-container form {
+    display: inline-block;
+    margin-top: 100px;
 }

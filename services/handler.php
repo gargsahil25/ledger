@@ -2,29 +2,18 @@
 
 include_once "constant.php";
 include_once "util.php";
+include_once "sessionUtil.php";
 include_once "mysql.php";
 
 date_default_timezone_set('Asia/Kolkata');
 
-function newEntryHandler($post) {
-	if(isset($post['entry-submit']) && 
-		!empty($post['entry-desc']) && 
-		!empty($post['entry-type']) && 
-		!empty($post['entry-amount']) && 
-		!empty($post['entry-account']) && 
-		!empty($post['entry-date'])) {
 
-		$cashId = getAccountByName('CASH')['id'];
-		$date = $post['entry-date']." ".date('H:i:s', time());
-		$from = $post['entry-account'];
-		$to = $post['entry-account'];
-		if ($post['entry-type'] == 'credit') {
-			$from = $cashId;
-		} else {
-			$to = $cashId;
-		}
-		addTransaction($from, $to, $post['entry-desc'], $post['entry-amount'], $date);
-		redirect();
+function loginUserHandler($post) {
+	if(isset($post['login-submit']) && 
+		!empty($post['password'])) {
+
+		$user = getUserByPassword($post['password']);
+		setLoginUser($user);
 	}
 }
 
@@ -88,7 +77,14 @@ function newClientHandler($post) {
 	global $ACCOUNT_TYPE;
 	if(isset($post['client-submit']) && !empty($post['client-name'])) {
 		$id = addAccount($post['client-name'], $ACCOUNT_TYPE['CLIENT']);
-		header('Location: /?txn-account='.$id);
+		redirect('/?txn-account='.$id);
+	}
+}
+
+function updateClientHandler($post) {
+	if(isset($post['client-update']) && !empty($post['client-update'])) {
+		updateAccount($post['client-id'], $post['client-name']);
+		redirect('/?txn-account='.$post['client-id']);
 	}
 }
 

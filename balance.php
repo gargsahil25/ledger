@@ -1,11 +1,14 @@
 <?php
+session_start();
 
 include_once "services/constant.php";
 include_once "services/util.php";
+include_once "services/sessionUtil.php";
 include_once "services/mysql.php";
 include_once "services/handler.php";
 include_once "services/display.php";
 
+$user = getLoggedInUser(true);
 $accounts = getAccounts();
 
 /**
@@ -27,8 +30,9 @@ $accounts = getAccounts();
 <body>
 	<section class="page-header">
 		<h5>			
-			<a href="/"><?php echo getLangText("LEDGER"); ?></a> | <a class="active" href="/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a> 
-			<span class="header-menu" data-cookie="hindi"><span id="hindiButton" class="glyphicon glyphicon-header collapsed"></span></span>
+			<a href="/"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> | <a class="active" href="/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a> 
+			<span class="header-menu" data-cookie="PHPSESSID" data-reload="true" data-removecookie="true"><span class="glyphicon glyphicon-off collapsed"></span></span>
+			<span class="header-menu" data-cookie="hindi" data-reload="true"><span id="hindiButton" class="glyphicon glyphicon-header collapsed"></span></span>
 		</h5>
 	</section>
 	<section>

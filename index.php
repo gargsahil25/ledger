@@ -1,10 +1,14 @@
 <?php
+session_start();
 
 include_once "services/constant.php";
 include_once "services/util.php";
+include_once "services/sessionUtil.php";
 include_once "services/mysql.php";
 include_once "services/handler.php";
 include_once "services/display.php";
+
+$user = getLoggedInUser(true);
 
 // Post request handlers
 buyStuffHandler($_POST);
@@ -12,6 +16,7 @@ sellStuffHandler($_POST);
 payAmountHandler($_POST);
 getPaymentHandler($_POST);
 newClientHandler($_POST);
+updateClientHandler($_POST);
 updateTxnHandler($_POST);
 deleteTxnHandler($_POST);
 
@@ -30,13 +35,7 @@ $accounts = getAccounts();
 $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
 
 $account = getAccountById($txnAccount);
-$balance = getBalanceByAccountId($txnAccount);
-
-// $cashBalance = getBalanceByType('cash'); 
-// $clientBalance = getBalanceByType('client');
-// $capitalBalance = getBalanceByType('capital');
-// $homeBalance = getBalanceByType('home');
-// $profitBalance = getBalanceByType('factory');
+$balance = $account['balance'];
 
 ?>
 
@@ -51,10 +50,11 @@ $balance = getBalanceByAccountId($txnAccount);
 	<section class="page-header">
 		<h5>			
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
-			<a class="active" href="/"><?php echo getLangText("LEDGER"); ?></a> | <a href="/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a> 
+			<a class="active" href="/"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> | <a href="/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
+			<span class="header-menu" data-cookie="PHPSESSID" data-reload="true" data-removecookie="true"><span class="glyphicon glyphicon-off collapsed"></span></span>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
-			<span class="header-menu" data-cookie="hindi"><span id="hindiButton" class="glyphicon glyphicon-header collapsed"></span></span>
-			<!-- <span class="header-menu" data-cookie="summary"><span id="summaryButton" class="glyphicon glyphicon-th-large collapsed" data-toggle="collapse" data-target="#summary"></span></span> -->
+			<span class="header-menu" data-cookie="hindi" data-reload="true"><span id="hindiButton" class="glyphicon glyphicon-header collapsed"></span></span>
+
 		</h5>
 	</section>
 	<section>
@@ -73,15 +73,6 @@ $balance = getBalanceByAccountId($txnAccount);
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section class="summary">
-		<div id="summary" class="collapse">
-			<!-- <div class="label <?php if ($cashBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Cash</span><?php //echo getMoneyFormat($cashBalance); ?></div>
-			<div class="label <?php if ($clientBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Party</span><?php //echo getMoneyFormat($clientBalance); ?></div>
-			<div class="label <?php if ($capitalBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Capital</span><?php //echo getMoneyFormat($capitalBalance); ?></div>
-			<div class="label <?php if ($homeBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Home</span><?php //echo getMoneyFormat($homeBalance); ?></div>
-			<div class="label full <?php if ($profitBalance >= 0) { echo 'label-success'; } else { echo 'label-danger'; } ?>"><span class="title">Profit/Loss</span><?php //echo getMoneyFormat($profitBalance).' + Stock'; ?></div> -->
 		</div>
 	</section>
 	<section class="entry-container">
@@ -206,6 +197,7 @@ $balance = getBalanceByAccountId($txnAccount);
 		<div class="txns">
 			<div class="txns-heading">
 				<?php
+					
 					if($txnDate) {
 						$date = date_create($txnDate);
 						echo getLangText('TRANSACTION')." - <strong>".date_format($date, "j F Y")."</strong>";
@@ -215,9 +207,28 @@ $balance = getBalanceByAccountId($txnAccount);
 							$class = "balance green";
 						}
 						echo getLangText('ACCOUNT')." - <strong>".$account['name']."</strong>";
-						echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>";
-					}
-				?>
+						echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>"; ?>
+
+						<span class='glyphicon glyphicon-edit' data-toggle='modal' data-target='#update-account'></span>
+						<div id="update-account" class="modal fade" role="dialog">
+							<div class="modal-dialog">
+								<div class="modal-content">
+					      			<div class="modal-header">
+					      				<button type="button" class="close" data-dismiss="modal">&times;</button>
+										<h2><?php echo getLangText('UPDATE'); ?></h2>
+									</div>
+									<div class="modal-body">
+										<form method="post">
+										<input type="hidden" name="client-id" value="<?php echo $account['id']; ?>"/>
+										<input type="text" name="client-name" value="<?php echo $account['original_name']; ?>"/>
+										<input type="submit" class="btn btn-warning btn-lg" name="client-update" value="<?php echo getLangText('UPDATE'); ?>"/>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+
+				<?php } ?>
 			</div>
 			<table>
 				<tr><th><?php echo getLangText('DATE'); ?></th><th><?php echo getLangText('DESC'); ?></th><th><?php echo getLangText('DEBIT'); ?></th><th><?php echo getLangText('CREDIT'); ?></th><th><?php echo getLangText('BALANCE'); ?></th></tr>

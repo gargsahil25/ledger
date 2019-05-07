@@ -24,8 +24,10 @@ function getMoneyFormat($money, $skipSymbol = false) {
     }
 }
 
-function redirect() {
-    $url = '/index.php?'.$_SERVER['QUERY_STRING'];
+function redirect($url = false) {
+    if (!$url) {
+        $url = '/index.php?'.$_SERVER['QUERY_STRING'];
+    }
     header('Location: '.$url);
     exit();
 }
