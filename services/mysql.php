@@ -69,12 +69,6 @@ function getAccounts() {
 	$accountRows = mysqlQuery($sql);
 	$ALL_ACCOUNTS = array();
 	while($account = $accountRows->fetch_assoc()) {
-		
-		// temporatry code to add intitial balance
-		if ($account['balance'] == 0) {
-			$account['balance'] = updateAccountBalance($account['id']);
-		}
-
 		$account['original_name'] = $account['name'];
 		$account['name'] = getLangText($account['name']);
 		array_push($ALL_ACCOUNTS, $account);
