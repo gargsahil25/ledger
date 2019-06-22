@@ -157,10 +157,12 @@ function addTransaction($fromAccount, $toAccount, $description, $amount, $date) 
 }
 
 function updateTransaction($txnId, $desc, $from, $to, $amount, $date) {
-	$sql = "UPDATE `transactions` SET `from_account` = ".$from.", `to_account` = ".$to.", `description` = '".$desc."', `amount` = '".$amount."', `date` = '".$date."' WHERE id = ".$txnId;
-	mysqlQuery($sql);
-	updateAccountBalance($from);
-	updateAccountBalance($to);
+	addTransaction($from, $to, $desc, $amount, $date);
+	deleteTransaction($txnId);
+	// $sql = "UPDATE `transactions` SET `from_account` = ".$from.", `to_account` = ".$to.", `description` = '".$desc."', `amount` = '".$amount."', `date` = '".$date."' WHERE id = ".$txnId;
+	// mysqlQuery($sql);
+	// updateAccountBalance($from);
+	// updateAccountBalance($to);
 }
 
 function deleteTransaction($txnId) {
