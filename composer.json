@@ -1,0 +1,6 @@
+{
+  "require": {
+    "sendgrid/sendgrid": "~5.0.9",
+    "php": "^8.0.7"
+  }
+}

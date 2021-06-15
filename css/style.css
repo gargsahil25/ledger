@@ -25,10 +25,10 @@ input:focus {
 }
 
 label {
-    width: 12%;
     line-height: 35px;
-    margin: 0 5% 10px 1%;
+    margin: 0 5% 10px 2%;
     vertical-align: top;
+    font-weight: normal;
 }
 
 select {

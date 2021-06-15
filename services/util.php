@@ -44,4 +44,14 @@ function getLangText($key) {
     return $key;
 }
 
+function isAccountEditable($account) {
+    global $ACCOUNT_TYPE;
+    if ($account['type'] == $ACCOUNT_TYPE['CLIENT'] ||
+        $account['type'] == $ACCOUNT_TYPE['FACTORY_EXPENSE'] ||
+        $account['type'] == $ACCOUNT_TYPE['HOME']) {
+            return true;
+        }
+    return false;
+}
+
 ?>

@@ -4,9 +4,56 @@ include_once "constant.php";
 include_once "util.php";
 include_once "mysql.php";
 
-function displayAccounts($accounts, $type, $selectedAccount, $showBalance = null) {
+function displayUsers($userNames) {
+	echo '<option value="">'.getLangText("SELECT_USER").'</option>';
+	foreach($userNames as $u) {
+		echo '<option value="'.$u['name'].'">'.$u['name'].'</option>';
+	}
+}
+
+function displayAccountTypes($selectedAccountType = null) {
+	global $ACCOUNT_TYPE;
+	$accTypes = array(
+		array(
+			"type" => $ACCOUNT_TYPE['CLIENT'],
+			"name" => getLangText('CLIENT')
+		),
+		array(
+			"type" => $ACCOUNT_TYPE['FACTORY_EXPENSE'],
+			"name" => getLangText('FACTORY_EXPENSE')
+		),
+		array(
+			"type" => $ACCOUNT_TYPE['HOME'],
+			"name" => getLangText('HOME_EXPENSE')
+		)
+	);
+
+	echo '<option value="">'.getLangText("ACCOUNT_TYPE").'</option>';
+	foreach($accTypes as $at) {
+		if ($selectedAccountType == $at['type']) {
+			echo '<option selected value="'. $at['type'].'">'.$at['name'].'</option>';
+		} else {
+			echo '<option value="'. $at['type'].'">'.$at['name'].'</option>';
+		}
+	}
+}
+
+function displayTxnType() {
+	echo '<input type="radio" id="credit" name="cash-txn" value="0" checked>';
+	echo '<label for="credit">Credit</label>';
+	echo '<input type="radio" id="cash" name="cash-txn" value="1">';
+	echo '<label for="cash">Cash</label>';
+}
+
+function displayAccounts($accounts, $type, $selectedAccount = null, $showBalance = false) {
+	global $ACCOUNT_TYPE;
 	foreach($accounts as $account) {
-		if (!$type || $account['type'] == $type) {
+		if (($type == "all") ||				// to show all accounts for viewing ledger or update txn scenario 
+			($type == $account['type']) || 	// for sale and purchase entries
+			(!$type && 						// for credit and debit entries
+				$account['type'] !=  $ACCOUNT_TYPE['CASH'] && 
+				$account['type'] !=  $ACCOUNT_TYPE['FACTORY_MALL'])) {	
+
 			$balance = '';
 			if ($showBalance) {
 				$balance = ' '.getMoneyFormat($account['balance']);
@@ -33,8 +80,8 @@ function displayAccountBalance($accounts) {
 
 function displayDateTxns($txns, $txnDate) {
 	$i = 0;
-	$factoryId = getAccountByName('FACTORY_MALL')['id'];
-	$cashId = getAccountByName('CASH')['id'];
+	$factoryId = getStockAccountId();
+	$cashId = getCashAccountId();
 	$cashBalance = getBalanceByAccountId($cashId, $txnDate);
 	$cashTitle = "<tr><td colspan='5'><strong>".getLangText('CASH_BALANCE').": ".getMoneyFormat($cashBalance)."</strong></td></tr>";
 	$factoryTitle = "<tr><td colspan='5'><strong>".getLangText('FAC_TRANSACTION')."</strong></td></tr>";
@@ -50,16 +97,16 @@ function displayDateTxns($txns, $txnDate) {
 		$cashAmount = $txn["amount"];
 		if ($txn['from_account_id'] == $factoryId) {
 			$factoryAmount = $factoryAmount * -1;
-			$factoryTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
+			$factoryTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>&nbsp;</td></tr>';
 		} else if ($txn['to_account_id'] == $factoryId) {
-			$factoryTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>&nbsp;</td></tr>';
+			$factoryTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($factoryAmount, true).'</td><td>&nbsp;</td><td>&nbsp;</td></tr>';
 		}
 		if ($txn['from_account_id'] == $cashId) {
 			$cashAmount = $cashAmount * -1;
-			$cashTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashTxns .= $prefix.'<td>'.$txn['to_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
 			$cashBalance -= $cashAmount;
 		} else if($txn['to_account_id'] == $cashId) {
-			$cashTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
+			$cashTxns .= $prefix.'<td>'.$txn['from_account_name'].': '.$txn["description"].'</td><td>'.getMoneyFormat($cashAmount, true).'</td><td>&nbsp;</td><td>'.getMoneyFormat($cashBalance, true).'</td></tr>';
 			$cashBalance -= $cashAmount;
 		}
 		$i++;
@@ -84,10 +131,12 @@ function displayDateTxns($txns, $txnDate) {
 function displayAccountTxns($txns, $account, $balance) {
 	global $ACCOUNT_TYPE;
 	$id = $account['id'];
+	$factoryId = getStockAccountId();
+	$cashId = getCashAccountId();
 	$i = 0;
 	foreach($txns as $txn) {
 		$class = "debit";
-		if ($txn['to_account_id'] == $id) {
+		if ($txn['to_account_id'] == $factoryId || $txn['to_account_id'] == $cashId) {
 			$class = "credit";
 		}
 		$description_prefix = "";
@@ -101,10 +150,10 @@ function displayAccountTxns($txns, $account, $balance) {
 		echo '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"j F Y").'</td><td>'.$description_prefix.$txn["description"].'</td>';
 
 		$amount = $txn["amount"];
-		if ($txn["from_account_id"] == $id) {
-			$amount = $amount * -1;
+		if ($class == "credit") {
 			echo '<td>'.getMoneyFormat($amount, true).'</td><td>&nbsp;</td>';
 		} else {
+			$amount = $amount * -1;
 			echo '<td>&nbsp;</td><td>'.getMoneyFormat($amount, true).'</td>';
 		}
 		echo '<td>'.getMoneyFormat($balance, true).'</td></tr>';

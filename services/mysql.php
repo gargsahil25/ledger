@@ -3,15 +3,15 @@
 include_once "constant.php";
 include_once "util.php";
 include_once "sessionUtil.php";
+// include_once "sendEmail.php";
 
 $ALL_ACCOUNTS = array();
 $LOGGED_IN_USER = getLoggedInUser();
 
-function mysqlQuery($sql) {
-	
+function mysqlConn() {
 	$servername = "localhost:3306";
 	$username = "root";
-	$password = "root@123";
+	$password = "";
 	$dbname = "ledger";
 
 	$url = getenv("CLEARDB_DATABASE_URL");
@@ -25,13 +25,21 @@ function mysqlQuery($sql) {
 
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);
+	
 	// Check connection
 	if ($conn->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
+		die("Connection failed: " . $conn->connect_error);
 	} 
 
 	mysqli_set_charset($conn,"latin1");
 
+	return $conn;
+}
+
+function mysqlQuery($sql) {
+
+	$conn = mysqlConn();
+	
 	// echo $sql.'<br><br>';
 	$result = $conn->query($sql);
 
@@ -42,17 +50,27 @@ function mysqlQuery($sql) {
 	preg_match('/INSERT INTO/', $sql, $matches);
 	if (sizeof($matches) > 0) {
 		$id = $conn->insert_id;
-		$conn->close();
+		// $conn->close();
 		return $id;
 	}
 
-	$conn->close();
+	//$conn->close();
 
 	return $result;
 }
 
-function getUserByPassword($password) {
-	$sql = "SELECT * FROM users WHERE password = '".$password."'";
+function getAllUserNames() {
+	$sql = "SELECT name FROM users";
+	$userRows = mysqlQuery($sql);
+	$users = array();
+	while($u = $userRows->fetch_assoc()) {
+		array_push($users, $u);
+	}
+	return $users;
+}
+
+function getUserByPassword($username, $password) {
+	$sql = "SELECT * FROM users WHERE name= '".$username."' AND password = '".$password."'";
 	$userRows = mysqlQuery($sql);
 	$user = $userRows->fetch_assoc();
 	return $user;
@@ -88,6 +106,14 @@ function getAccountByName($name) {
 	}
 }
 
+function getCashAccountId() {
+	return getAccountByName('CASH')['id'];
+}
+
+function getStockAccountId() {
+	return getAccountByName('FACTORY_MALL')['id'];
+}
+
 function getAccountById($id) {
 	global $ALL_ACCOUNTS;
 	if (sizeof($ALL_ACCOUNTS) == 0) {
@@ -104,12 +130,15 @@ function addAccount($name, $type) {
 	global $LOGGED_IN_USER;
 	$sql = "INSERT INTO `accounts` (`user_id`, `name`, `type`) 
 			VALUES (".$LOGGED_IN_USER['userId'].", '".$name."', '".$type."')";
-	return mysqlQuery($sql);
+	$resp = mysqlQuery($sql);
+	$msg = "Adding new account with name: ".$name." and type: ".$type;
+	// sendEmail($LOGGED_IN_USER, $msg, $sql, $resp);
+	return $resp;
 }
 
-function updateAccount($accountId, $accountName) {
+function updateAccount($accountId, $accountName, $type) {
 	global $LOGGED_IN_USER;
-	$sql = "UPDATE `accounts` SET `name` = '".$accountName."' WHERE id = ".$accountId.
+	$sql = "UPDATE `accounts` SET `name` = '".$accountName."', `type` = '".$type."' WHERE id = ".$accountId.
 				" AND user_id = ".$LOGGED_IN_USER['userId'];
 	return mysqlQuery($sql);
 }
@@ -148,30 +177,26 @@ function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null) 
 	return $txns;
 }
 
-function addTransaction($fromAccount, $toAccount, $description, $amount, $date) {
+function addTransaction($fromAccount, $toAccount, $description, $amount, $date, $updateBalance = true) {
 	$sql = "INSERT INTO `transactions` (`from_account`, `to_account`, `description`, `amount`, `date`) 
 			VALUES (".$fromAccount.", ".$toAccount.", '".$description."', ".$amount.", '".$date."')";
 	mysqlQuery($sql);
-	updateAccountBalance($fromAccount);
-	updateAccountBalance($toAccount);
+	if ($updateBalance) {
+		updateAccountBalance($fromAccount);
+		updateAccountBalance($toAccount);
+	}
 }
 
 function updateTransaction($txnId, $desc, $from, $to, $amount, $date) {
-	addTransaction($from, $to, $desc, $amount, $date);
-	deleteTransaction($txnId);
-	// $sql = "UPDATE `transactions` SET `from_account` = ".$from.", `to_account` = ".$to.", `description` = '".$desc."', `amount` = '".$amount."', `date` = '".$date."' WHERE id = ".$txnId;
-	// mysqlQuery($sql);
-	// updateAccountBalance($from);
-	// updateAccountBalance($to);
+	addTransaction($from, $to, $desc, $amount, $date, false);
+	deleteTransaction($txnId, $from, $to);
 }
 
-function deleteTransaction($txnId) {
-	$txnRows = mysqlQuery("SELECT * FROM `transactions` WHERE id = ".$txnId);
-	$txn = $txnRows->fetch_assoc();
+function deleteTransaction($txnId, $from, $to) {
 	$sql = "UPDATE `transactions` SET `is_deleted` = 1 WHERE id = ".$txnId;
 	mysqlQuery($sql);
-	updateAccountBalance($txn['from_account']);
-	updateAccountBalance($txn['to_account']);
+	updateAccountBalance($from);
+	updateAccountBalance($to);
 }
 
 function getBalanceByType($type) {
@@ -188,16 +213,24 @@ function getBalanceByType($type) {
 	while($txn = $txnRows->fetch_assoc()) {
 		$toAmount += $txn['to_amount'];
 	}
-	return $toAmount - $fromAmount;
+
+	$factoryId = getStockAccountId();
+	$cashId = getCashAccountId();
+
+	if ($id == $factoryId || $id == $cashId) {
+		return $toAmount - $fromAmount;
+	}
+	return $fromAmount - $toAmount;
 }
 
 function getBalanceByAccountId($id, $date = null) {
 	if (!$id) {
 		return;
 	}
+
 	$sql = "SELECT sum(amount) AS from_amount FROM transactions t WHERE t.from_account = '".$id."' AND t.is_deleted = 0";
 	if ($date) {
-		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 99:99:99'";
+		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 23:59:59'";
 	}
 	$txnRows = mysqlQuery($sql);
 	$fromAmount = 0;
@@ -206,14 +239,20 @@ function getBalanceByAccountId($id, $date = null) {
 	}
 	$sql = "SELECT sum(amount) AS to_amount FROM transactions t WHERE t.to_account = '".$id."' AND t.is_deleted = 0";
 	if ($date) {
-		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 99:99:99'";
+		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 23:59:59'";
 	}
 	$txnRows = mysqlQuery($sql);
 	$toAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
 		$toAmount += $txn['to_amount'];
 	}
-	return $toAmount - $fromAmount;
+	$factoryId = getStockAccountId();
+	$cashId = getCashAccountId();
+
+	if ($id == $factoryId || $id == $cashId) {
+		return $toAmount - $fromAmount;
+	}
+	return $fromAmount - $toAmount;
 }
 
 ?>

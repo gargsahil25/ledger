@@ -3,12 +3,16 @@ session_start();
 
 include_once "services/util.php";
 include_once "services/sessionUtil.php";
+include_once "services/mysql.php";
 include_once "services/handler.php";
+include_once "services/display.php";
 
 loggedInRedirect();
 
 // Post request handlers
 loginUserHandler($_POST);
+
+$userNames = getAllUserNames();
 
 ?>
 
@@ -27,7 +31,10 @@ loginUserHandler($_POST);
 	</section>
 	<section class= "login-form-container">
 		<form method="post">
-			<input type="password" name="password" placeholder="<?php echo getLangText("PASSWORD"); ?>"/>
+			<select required name="username">
+				<?php displayUsers($userNames); ?>
+			</select>
+			<input required autocomplete="off" type="password" name="password" placeholder="<?php echo getLangText("PASSWORD"); ?>"/>
 			<input type="submit" class="btn btn-warning btn-lg" name="login-submit" value="<?php echo getLangText('LOGIN'); ?>"/>
 		</form>
 	</section>

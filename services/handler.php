@@ -12,7 +12,7 @@ function loginUserHandler($post) {
 	if(isset($post['login-submit']) && 
 		!empty($post['password'])) {
 
-		$user = getUserByPassword($post['password']);
+		$user = getUserByPassword($post['username'], $post['password']);
 		setLoginUser($user);
 	}
 }
@@ -24,10 +24,14 @@ function buyStuffHandler($post) {
 		!empty($post['buy-amount']) && 
 		!empty($post['buy-date'])) {
 
-		$factoryId = getAccountByName('FACTORY_MALL')['id'];
+		$factoryId = getStockAccountId();
+		$cashId = getCashAccountId();
 		$date = $post['buy-date']." ".date('H:i:s', time());
 		addTransaction($post['buy-from'], $factoryId, $post['buy-desc'], $post['buy-amount'], $date);
-		redirect();
+		if ($post['cash-txn'] == '1') {
+			addTransaction($cashId, $post['buy-from'], "cash payment for ".$post['buy-desc'], $post['buy-amount'], $date);
+		}
+		redirect('/?txn-account='.$post['buy-from']);
 	}
 }
 
@@ -38,10 +42,14 @@ function sellStuffHandler($post) {
 		!empty($post['sell-amount']) && 
 		!empty($post['sell-date'])) {
 
-		$factoryId = getAccountByName('FACTORY_MALL')['id'];
+		$factoryId = getStockAccountId();
+		$cashId = getCashAccountId();
 		$date = $post['sell-date']." ".date('H:i:s', time());
 		addTransaction($factoryId, $post['sell-to'], $post['sell-desc'], $post['sell-amount'], $date);
-		redirect();
+		if ($post['cash-txn'] == '1') {
+			addTransaction($post['sell-to'], $cashId, "cash payment for ".$post['sell-desc'], $post['sell-amount'], $date);
+		}
+		redirect('/?txn-account='.$post['sell-to']);
 	}
 }
 
@@ -52,10 +60,10 @@ function payAmountHandler($post) {
 		!empty($post['pay-amount']) && 
 		!empty($post['pay-date'])) {
 
-		$cashId = getAccountByName('CASH')['id'];
+		$cashId = getCashAccountId();
 		$date = $post['pay-date']." ".date('H:i:s', time());
 		addTransaction($cashId, $post['pay-to'], $post['pay-desc'], $post['pay-amount'], $date);
-		redirect();
+		redirect('/?txn-account='.$post['pay-to']);
 	}
 }
 
@@ -66,24 +74,23 @@ function getPaymentHandler($post) {
 		!empty($post['earn-amount']) && 
 		!empty($post['earn-date'])) {
 
-		$cashId = getAccountByName('CASH')['id'];
+		$cashId = getCashAccountId();
 		$date = $post['earn-date']." ".date('H:i:s', time());
 		addTransaction($post['earn-from'], $cashId, $post['earn-desc'], $post['earn-amount'], $date);
-		redirect();
+		redirect('/?txn-account='.$post['earn-from']);
 	}
 }
 
 function newClientHandler($post) {
-	global $ACCOUNT_TYPE;
-	if(isset($post['client-submit']) && !empty($post['client-name'])) {
-		$id = addAccount($post['client-name'], $ACCOUNT_TYPE['CLIENT']);
+	if(isset($post['client-submit']) && !empty($post['client-name']) && !empty($post['account_type'])) {
+		$id = addAccount($post['client-name'], $post['account_type']);
 		redirect('/?txn-account='.$id);
 	}
 }
 
 function updateClientHandler($post) {
-	if(isset($post['client-update']) && !empty($post['client-update'])) {
-		updateAccount($post['client-id'], $post['client-name']);
+	if(isset($post['client-update']) && !empty($post['client-update']) && !empty($post['account_type'])) {
+		updateAccount($post['client-id'], $post['client-name'], $post['account_type']);
 		redirect('/?txn-account='.$post['client-id']);
 	}
 }
@@ -97,7 +104,7 @@ function updateTxnHandler($post) {
 
 function deleteTxnHandler($post) {
 	if(isset($post['txn-delete-submit']) && !empty($post['txn-delete-submit'])) {
-		deleteTransaction($post['txn-id']);
+		deleteTransaction($post['txn-id'], $post['txn-from'], $post['txn-to']);
 		redirect();
 	}
 }

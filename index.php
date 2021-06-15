@@ -34,8 +34,10 @@ date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
 $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
 
-$account = getAccountById($txnAccount);
-$balance = $account['balance'];
+if ($txnAccount) {
+	$account = getAccountById($txnAccount);
+	$balance = $account['balance'];
+}
 
 ?>
 
@@ -50,7 +52,7 @@ $balance = $account['balance'];
 	<section class="page-header">
 		<h5>			
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
-			<a class="active" href="/"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> | <a href="/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
+			<a class="active" href="/"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> <a href="/balance.php"><?php //echo getLangText("PROFIT_LOSS"); ?></a>
 			<span class="header-menu" data-cookie="PHPSESSID" data-reload="true" data-removecookie="true"><span class="glyphicon glyphicon-off collapsed"></span></span>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
 			<span class="header-menu" data-cookie="hindi" data-reload="true"><span id="hindiButton" class="glyphicon glyphicon-header collapsed"></span></span>
@@ -63,11 +65,14 @@ $balance = $account['balance'];
 				<div class="modal-content">
 	      			<div class="modal-header">
 	      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2><?php echo getLangText("NEW_PARTY"); ?></h2>
+						<h2><?php echo getLangText("NEW_ACCOUNT"); ?></h2>
 					</div>
 					<div class="modal-body">
 						<form method="post">
-						<input type="text" name="client-name" placeholder="<?php echo getLangText('PARTY_NAME'); ?>"/>
+						<input type="text" required autocomplete="off" name="client-name" placeholder="<?php echo getLangText('ACCOUNT_NAME'); ?>"/>
+						<select name="account_type" required>
+							<?php displayAccountTypes(); ?>
+						</select>
 						<input type="submit" class="btn btn-warning btn-lg" name="client-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 						</form>
 					</div>
@@ -105,13 +110,14 @@ $balance = $account['balance'];
 						</div>
 						<div class="modal-body">
 							<form method="post">
-							<input type="text" name="buy-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
-							<select name="buy-from">
+							<input required autocomplete="off" type="text" name="buy-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
+							<select required name="buy-from">
 								<option value=""><?php echo getLangText("PURCHASE_FROM"); ?></option>
-								<?php displayAccounts($accounts, $ACCOUNT_TYPE['CLIENT'], null); ?>
+								<?php displayAccounts($accounts, $ACCOUNT_TYPE['CLIENT'], $txnAccount); ?>
 							</select>
-							<input type="number" name="buy-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
-							<input type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input required autocomplete="off" type="number" name="buy-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
+							<?php displayTxnType(); ?>
+							<input required type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="buy-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -127,13 +133,14 @@ $balance = $account['balance'];
 						</div>
 						<div class="modal-body">
 							<form method="post">
-							<input type="text" name="sell-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
-							<select name="sell-to">
+							<input required autocomplete="off" type="text" name="sell-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
+							<select required name="sell-to">
 								<option value=""><?php echo getLangText("SELL_TO"); ?></option>
-								<?php displayAccounts($accounts, $ACCOUNT_TYPE['CLIENT'], null); ?>
+								<?php displayAccounts($accounts, $ACCOUNT_TYPE['CLIENT'], $txnAccount); ?>
 							</select>
-							<input type="number" name="sell-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
-							<input type="date" name="sell-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input required autocomplete="off" type="number" name="sell-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
+							<?php displayTxnType(); ?>
+							<input required type="date" name="sell-date" value="<?php echo date("Y-m-d") ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="sell-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -149,13 +156,13 @@ $balance = $account['balance'];
 						</div>
 						<div class="modal-body">
 							<form method="post">
-							<input type="text" name="pay-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
-							<select name="pay-to">
+							<input required autocomplete="off" type="text" name="pay-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
+							<select required name="pay-to">
 								<option value=""><?php echo getLangText('PAID_TO'); ?></option>
-								<?php displayAccounts($accounts, null, null); ?>
+								<?php displayAccounts($accounts, null, $txnAccount); ?>
 							</select>
-							<input type="number" name="pay-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
-							<input type="date" name="pay-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input required autocomplete="off" type="number" name="pay-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
+							<input required type="date" name="pay-date" value="<?php echo date("Y-m-d") ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="pay-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -171,13 +178,13 @@ $balance = $account['balance'];
 						</div>
 						<div class="modal-body">
 							<form method="post">
-							<input type="text" name="earn-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
-							<select name="earn-from">
+							<input required autocomplete="off" type="text" name="earn-desc" placeholder="<?php echo getLangText("DESC"); ?>"/>
+							<select required name="earn-from">
 								<option value=""><?php echo getLangText('PAYMENT_FROM'); ?></option>
-								<?php displayAccounts($accounts, null, null); ?>
+								<?php displayAccounts($accounts, null, $txnAccount); ?>
 							</select>
-							<input type="number" name="earn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
-							<input type="date" name="earn-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input required autocomplete="off" type="number" name="earn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
+							<input required type="date" name="earn-date" value="<?php echo date("Y-m-d") ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="earn-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -191,7 +198,7 @@ $balance = $account['balance'];
 			<input type="date" name="txn-date" value="<?php echo $txnDate; ?>" max="<?php echo date_format(date_create(), "Y-m-d"); ?>"/>
 			<select name="txn-account">
 				<option value=""><?php echo getLangText('ACCOUNT'); ?></option>
-				<?php displayAccounts($accounts, null, $txnAccount, true); ?>
+				<?php displayAccounts($accounts, "all", $txnAccount, true); ?>
 			</select>
 		</div>
 		<div class="txns">
@@ -209,29 +216,33 @@ $balance = $account['balance'];
 						echo getLangText('ACCOUNT')." - <strong>".$account['name']."</strong>";
 						echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>"; ?>
 
-						<span class='glyphicon glyphicon-edit' data-toggle='modal' data-target='#update-account'></span>
-						<div id="update-account" class="modal fade" role="dialog">
-							<div class="modal-dialog">
-								<div class="modal-content">
-					      			<div class="modal-header">
-					      				<button type="button" class="close" data-dismiss="modal">&times;</button>
-										<h2><?php echo getLangText('UPDATE'); ?></h2>
-									</div>
-									<div class="modal-body">
-										<form method="post">
-										<input type="hidden" name="client-id" value="<?php echo $account['id']; ?>"/>
-										<input type="text" name="client-name" value="<?php echo $account['original_name']; ?>"/>
-										<input type="submit" class="btn btn-warning btn-lg" name="client-update" value="<?php echo getLangText('UPDATE'); ?>"/>
-										</form>
+						<?php if (isAccountEditable($account)) { ?>
+							<span class='glyphicon glyphicon-edit' data-toggle='modal' data-target='#update-account'></span>
+							<div id="update-account" class="modal fade" role="dialog">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal">&times;</button>
+											<h2><?php echo getLangText('UPDATE'); ?></h2>
+										</div>
+										<div class="modal-body">
+											<form method="post">
+											<input type="hidden" name="client-id" value="<?php echo $account['id']; ?>"/>
+											<input required autocomplete="off" type="text" name="client-name" value="<?php echo $account['original_name']; ?>"/>
+											<select name="account_type" required>
+												<?php displayAccountTypes($account['type']); ?>
+											</select>
+											<input type="submit" class="btn btn-warning btn-lg" name="client-update" value="<?php echo getLangText('UPDATE'); ?>"/>
+											</form>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-
-				<?php } ?>
+						<?php } ?>
+					<?php } ?>
 			</div>
 			<table>
-				<tr><th><?php echo getLangText('DATE'); ?></th><th><?php echo getLangText('DESC'); ?></th><th><?php echo getLangText('DEBIT'); ?></th><th><?php echo getLangText('CREDIT'); ?></th><th><?php echo getLangText('BALANCE'); ?></th></tr>
+				<tr><th><?php echo getLangText('DATE'); ?></th><th><?php echo getLangText('DESC'); ?></th><th><?php echo getLangText('CREDIT'); ?></th><th><?php echo getLangText('DEBIT'); ?></th><th><?php echo getLangText('BALANCE'); ?></th></tr>
 			<?php
 				if (sizeof($txns) == 0) {
 					echo "<tr><td colspan='5'>".getLangText('NO_TRANSACTION')."</td></tr>";
@@ -254,18 +265,18 @@ $balance = $account['balance'];
 						<div class="modal-body">
 							<form method="post">
 							<input type="hidden" name="txn-id" value="<?php echo $txn['id']; ?>"/>
-							<input type="text" name="txn-desc" placeholder="<?php echo getLangText('DESC'); ?>" value="<?php echo $txn['description']; ?>"/>
-							<select name="txn-from">
+							<input required autocomplete="off" type="text" name="txn-desc" placeholder="<?php echo getLangText('DESC'); ?>" value="<?php echo $txn['description']; ?>"/>
+							<select required name="txn-from">
 								<option value=""><?php echo getLangText('FROM_ACCOUNT'); ?></option>
-								<?php displayAccounts($accounts, null, $txn['from_account_id']); ?>
+								<?php displayAccounts($accounts, "all", $txn['from_account_id']); ?>
 							</select>
-							<select name="txn-to">
+							<select required name="txn-to">
 								<option value=""><?php echo getLangText('TO_ACCOUNT'); ?></option>
-								<?php displayAccounts($accounts, null, $txn['to_account_id']); ?>
+								<?php displayAccounts($accounts, "all", $txn['to_account_id']); ?>
 							</select>
-							<input type="number" name="txn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>" value="<?php echo $txn['amount']; ?>"/>
+							<input required autocomplete="off" type="number" name="txn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>" value="<?php echo $txn['amount']; ?>"/>
 							<?php $d = date_create($txn['date']); ?>
-							<input type="date" name="txn-date" value="<?php echo date_format($d, 'Y-m-d'); ?>"/>
+							<input required type="date" name="txn-date" value="<?php echo date_format($d, 'Y-m-d'); ?>"/>
 							<input type="hidden" name="txn-delete-submit" value=""/>
 							<input type="submit" class="btn btn-danger btn-lg half" data-index="<?php echo $i; ?>" name="txn-delete-confirm" value="<?php echo getLangText('DELETE'); ?>" data-dismiss="modal"/>
 							<input type="submit" class="btn btn-warning btn-lg half" name="txn-update-submit" value="<?php echo getLangText('UPDATE'); ?>"/>
