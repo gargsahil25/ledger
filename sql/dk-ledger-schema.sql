@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `type` varchar(45) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `type` varchar(64) NOT NULL,
   `balance` bigint(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_id_idx` (`user_id`),
