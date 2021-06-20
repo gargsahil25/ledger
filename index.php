@@ -277,6 +277,8 @@ if ($txnAccount) {
 							<input required autocomplete="off" type="number" name="txn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>" value="<?php echo $txn['amount']; ?>"/>
 							<?php $d = date_create($txn['date']); ?>
 							<input required type="date" name="txn-date" value="<?php echo date_format($d, 'Y-m-d'); ?>"/>
+							<input type="hidden" name="txn-from-old" value="<?php echo $txn['from_account_id']; ?>"/>
+							<input type="hidden" name="txn-to-old" value="<?php echo $txn['to_account_id']; ?>"/>
 							<input type="hidden" name="txn-delete-submit" value=""/>
 							<input type="submit" class="btn btn-danger btn-lg half" data-index="<?php echo $i; ?>" name="txn-delete-confirm" value="<?php echo getLangText('DELETE'); ?>" data-dismiss="modal"/>
 							<input type="submit" class="btn btn-warning btn-lg half" name="txn-update-submit" value="<?php echo getLangText('UPDATE'); ?>"/>

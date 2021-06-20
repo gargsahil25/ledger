@@ -97,7 +97,7 @@ function updateClientHandler($post) {
 
 function updateTxnHandler($post) {
 	if(isset($post['txn-update-submit']) && !empty($post['txn-update-submit'])) {
-		updateTransaction($post['txn-id'], $post['txn-desc'], $post['txn-from'], $post['txn-to'], $post['txn-amount'], $post['txn-date']);
+		updateTransaction($post['txn-id'], $post['txn-desc'], $post['txn-from'], $post['txn-to'], $post['txn-amount'], $post['txn-date'], $post['txn-from-old'], $post['txn-to-old']);
 		redirect();
 	}
 }

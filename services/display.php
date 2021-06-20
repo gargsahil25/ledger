@@ -162,6 +162,22 @@ function displayAccountTxns($txns, $account, $balance) {
 	}
 }
 
+function displayAllTxns($txns) {
+	foreach($txns as $txn) {
+		$class = "credit";
+		if ($txn['is_deleted']) {
+			$class = "debit";
+		}
+		echo '<tr class="'.$class.'">';
+		echo '<td>'.date_format(date_create($txn["date"]),"j F Y").'</td>';
+		echo '<td>'.$txn["description"].'</td>';
+		echo '<td>'.$txn["from_account_name"].'</td>';
+		echo '<td>'.$txn["to_account_name"].'</td>';
+		echo '<td>'.$txn["amount"].'</td>';
+		echo '</tr>';
+	}
+}
+
 function displayDays($count, $selectedDate) {
 	if (!$selectedDate) {
 		echo "<option selected value=''>".getLangText('DATE')."</option>";
