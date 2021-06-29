@@ -12,7 +12,7 @@ function loginUserHandler($post) {
 	if(isset($post['login-submit']) && 
 		!empty($post['password'])) {
 
-		$user = getUserByPassword($post['username'], $post['password']);
+		$user = getUserByPassword($post['userId'], $post['password']);
 		setLoginUser($user);
 	}
 }

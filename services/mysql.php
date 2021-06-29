@@ -59,8 +59,8 @@ function mysqlQuery($sql) {
 	return $result;
 }
 
-function getAllUserNames() {
-	$sql = "SELECT name FROM users";
+function getAllUsers() {
+	$sql = "SELECT id, name FROM users";
 	$userRows = mysqlQuery($sql);
 	$users = array();
 	while($u = $userRows->fetch_assoc()) {
@@ -69,21 +69,23 @@ function getAllUserNames() {
 	return $users;
 }
 
-function getUserByPassword($username, $password) {
-	$sql = "SELECT * FROM users WHERE name= '".$username."' AND password = '".$password."'";
+function getUserByPassword($userId, $password) {
+	$sql = "SELECT * FROM users WHERE id= '".$userId."' AND password = '".$password."'";
 	$userRows = mysqlQuery($sql);
 	$user = $userRows->fetch_assoc();
 	return $user;
 }
 
-function getAccounts() {
+function getAccounts($userId = null) {
 	global $ALL_ACCOUNTS;
 	global $LOGGED_IN_USER;
-
+	if ($userId == null) {
+		$userId = $LOGGED_IN_USER['userId'];
+	}
 	if (sizeof($ALL_ACCOUNTS) > 0) {
 		return $ALL_ACCOUNTS;
 	}
-	$sql = "SELECT * FROM accounts WHERE user_id = ".$LOGGED_IN_USER['userId']." ORDER BY type, name";
+	$sql = "SELECT * FROM accounts WHERE user_id = ".$userId." ORDER BY type, name";
 	$accountRows = mysqlQuery($sql);
 	$ALL_ACCOUNTS = array();
 	while($account = $accountRows->fetch_assoc()) {
@@ -152,9 +154,12 @@ function updateAccountBalance($accountId) {
 	return $balance;
 }
 
-function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, $showDeleted = false) {
+function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, $showDeleted = false, $userId = null) {
 	global $LOGGED_IN_USER;
-	$sql = "SELECT t.id AS id, t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, ta.id AS to_account_id, ta.name AS to_account_name, t.is_deleted AS is_deleted FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id WHERE fa.user_id = ".$LOGGED_IN_USER['userId']." AND ta.user_id = ".$LOGGED_IN_USER['userId'];
+	if ($userId == null) {
+		$userId = $LOGGED_IN_USER['userId'];
+	}
+	$sql = "SELECT t.id AS id, t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, fa.type AS from_account_type, ta.id AS to_account_id, ta.name AS to_account_name, ta.type AS to_account_type, t.is_deleted AS is_deleted FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id WHERE fa.user_id = ".$userId." AND ta.user_id = ".$userId;
 
 	if (!$showDeleted) {
 		$sql .= " AND t.is_deleted = 0"; 

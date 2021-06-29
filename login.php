@@ -12,7 +12,7 @@ loggedInRedirect();
 // Post request handlers
 loginUserHandler($_POST);
 
-$userNames = getAllUserNames();
+$users = getAllUsers();
 
 ?>
 
@@ -31,8 +31,8 @@ $userNames = getAllUserNames();
 	</section>
 	<section class= "login-form-container">
 		<form method="post">
-			<select required name="username">
-				<?php displayUsers($userNames); ?>
+			<select required name="userId">
+				<?php displayUsers($users); ?>
 			</select>
 			<input required autocomplete="off" type="password" name="password" placeholder="<?php echo getLangText("PASSWORD"); ?>"/>
 			<input type="submit" class="btn btn-warning btn-lg" name="login-submit" value="<?php echo getLangText('LOGIN'); ?>"/>

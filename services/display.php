@@ -4,10 +4,14 @@ include_once "constant.php";
 include_once "util.php";
 include_once "mysql.php";
 
-function displayUsers($userNames) {
+function displayUsers($users, $selectedUserId = null) {
 	echo '<option value="">'.getLangText("SELECT_USER").'</option>';
-	foreach($userNames as $u) {
-		echo '<option value="'.$u['name'].'">'.$u['name'].'</option>';
+	foreach($users as $u) {
+		if ($selectedUserId == $u['id']) {
+			echo '<option selected value="'.$u['id'].'">'.$u['name'].'</option>';
+		} else {
+			echo '<option value="'.$u['id'].'">'.$u['name'].'</option>';
+		}
 	}
 }
 
@@ -171,8 +175,8 @@ function displayAllTxns($txns) {
 		echo '<tr class="'.$class.'">';
 		echo '<td>'.date_format(date_create($txn["date"]),"j F Y").'</td>';
 		echo '<td>'.$txn["description"].'</td>';
-		echo '<td>'.$txn["from_account_name"].'</td>';
-		echo '<td>'.$txn["to_account_name"].'</td>';
+		echo '<td>'.$txn["from_account_name"].' ('.$txn["from_account_type"].')</td>';
+		echo '<td>'.$txn["to_account_name"].' ('.$txn["to_account_type"].')</td>';
 		echo '<td>'.$txn["amount"].'</td>';
 		echo '</tr>';
 	}
