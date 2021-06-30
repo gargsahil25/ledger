@@ -62,7 +62,7 @@ $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 				if ($txnData == null) {
 					echo "<tr><td colspan='5'>".getLangText('NO_TRANSACTION')."</td></tr>";
 				} else {
-					echo "<tr><td colspan='5'>Value: ".$txnData['value']."</td></tr>";
+					echo "<tr><td colspan='5'>Value: <strong>".getMoneyFormat($txnData['value'])."</strong></td></tr>";
 					displayAllTxns($txnData['txns']);
 				}
 			?>
