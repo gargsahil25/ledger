@@ -23,11 +23,11 @@ function displayAccountTypes($selectedAccountType = null) {
 			"name" => getLangText('CLIENT')
 		),
 		array(
-			"type" => $ACCOUNT_TYPE['FACTORY_EXPENSE'],
-			"name" => getLangText('FACTORY_EXPENSE')
+			"type" => $ACCOUNT_TYPE['BUSINESS_EXPENSE'],
+			"name" => getLangText('BUSINESS_EXPENSE')
 		),
 		array(
-			"type" => $ACCOUNT_TYPE['HOME'],
+			"type" => $ACCOUNT_TYPE['HOME_EXPENSE'],
 			"name" => getLangText('HOME_EXPENSE')
 		)
 	);
@@ -56,7 +56,7 @@ function displayAccounts($accounts, $type, $selectedAccount = null, $showBalance
 			($type == $account['type']) || 	// for sale and purchase entries
 			(!$type && 						// for credit and debit entries
 				$account['type'] !=  $ACCOUNT_TYPE['CASH'] && 
-				$account['type'] !=  $ACCOUNT_TYPE['FACTORY_MALL'])) {	
+				$account['type'] !=  $ACCOUNT_TYPE['STOCK'])) {	
 
 			$balance = '';
 			if ($showBalance) {
@@ -75,10 +75,10 @@ function displayAccountBalance($accounts) {
 	global $ACCOUNT_TYPE;
 	foreach($accounts as $account) {
 		$actualBalance = $account['balance'];
-		if ($account['type'] == $ACCOUNT_TYPE['FACTORY_EXPENSE']) {
+		if ($account['type'] == $ACCOUNT_TYPE['BUSINESS_EXPENSE']) {
 			$actualBalance = 0;
 		}
-		echo '<tr class="account-row"><td>'.$account['name'].'</td><td class="account-balance">'.$account['balance'].'</td><td class="editable"><input type="text" class="account-actualbalance" value="'.$actualBalance.'"/></td><td class="account-profitloss"></td></tr>';
+		echo '<tr class="account-row"><td>'.$account['name'].' ('.$account['type'].')</td><td class="account-balance">'.$account['balance'].'</td><td class="editable"><input type="text" class="account-actualbalance" value="'.$actualBalance.'"/></td><td class="account-profitloss"></td></tr>';
 	}
 }
 
@@ -144,7 +144,7 @@ function displayAccountTxns($txns, $account, $balance) {
 			$class = "credit";
 		}
 		$description_prefix = "";
-		if ($account['type'] == $ACCOUNT_TYPE['CASH'] || $account['type'] == $ACCOUNT_TYPE['FACTORY_MALL']) {
+		if ($account['type'] == $ACCOUNT_TYPE['CASH'] || $account['type'] == $ACCOUNT_TYPE['STOCK']) {
 			if($txn["from_account_id"] == $id) {
 				$description_prefix = $txn['to_account_name'].": ";
 			} else {
@@ -169,7 +169,7 @@ function displayAccountTxns($txns, $account, $balance) {
 function displayAllTxns($txns) {
 	foreach($txns as $txn) {
 		$class = "credit";
-		if ($txn['is_deleted']) {
+		if (isset($txn['is_deleted']) && $txn['is_deleted']) {
 			$class = "debit";
 		}
 		echo '<tr class="'.$class.'">';
@@ -177,7 +177,7 @@ function displayAllTxns($txns) {
 		echo '<td>'.$txn["description"].'</td>';
 		echo '<td>'.$txn["from_account_name"].' ('.$txn["from_account_type"].')</td>';
 		echo '<td>'.$txn["to_account_name"].' ('.$txn["to_account_type"].')</td>';
-		echo '<td>'.$txn["amount"].'</td>';
+		echo '<td>'.getMoneyFormat($txn["amount"], true).'</td>';
 		echo '</tr>';
 	}
 }

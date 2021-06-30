@@ -18,10 +18,10 @@ LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
 INSERT INTO `accounts` (user_id, name, type, balance) VALUES 
     (6,'CASH','cash',0),
-    (6,'HOME_EXPENSE','home',0),
-    (6,'FACTORY_EXPENSE','factory_expense',0),
-    (6,'FACTORY_MALL','factory_mall',0),
+    (6,'HOME_EXPENSE','home_expense',0),
+    (6,'BUSINESS_EXPENSE','business_expense',0),
+    (6,'STOCK','stock',0),
     (6,'CAPITAL','capital',0),
-    (6,'FACTORY_PROPERTY','factory',0);
+    (6,'BUSINESS_PROPERTY','business_property',0);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;

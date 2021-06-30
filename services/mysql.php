@@ -113,7 +113,7 @@ function getCashAccountId() {
 }
 
 function getStockAccountId() {
-	return getAccountByName('FACTORY_MALL')['id'];
+	return getAccountByName('STOCK')['id'];
 }
 
 function getAccountById($id) {
@@ -268,6 +268,34 @@ function getBalanceByAccountId($id, $date = null) {
 		return $toAmount - $fromAmount;
 	}
 	return $fromAmount - $toAmount;
+}
+
+function getTransactionsForAllUsers() {
+	$sql = "SELECT 
+			t.id AS id, t.date AS date, 
+			t.description AS description, 
+			t.amount AS amount, 
+			fa.id AS from_account_id, 
+			fa.name AS from_account_name, 
+			fa.type AS from_account_type, 
+			ta.id AS to_account_id, 
+			ta.name AS to_account_name, 
+			ta.type AS to_account_type,
+			u.id AS user_id,
+			u.name AS user_name
+		FROM transactions t 
+			JOIN accounts fa ON t.from_account = fa.id 
+			JOIN accounts ta ON t.to_account = ta.id 
+			JOIN users u ON fa.user_id = u.id
+		WHERE t.is_deleted = 0 
+		ORDER BY date asc";
+
+	$txnRows = mysqlQuery($sql);
+	$txns = array();
+	while($txn = $txnRows->fetch_assoc()) {
+		array_push($txns, $txn);
+	}
+	return $txns;
 }
 
 ?>

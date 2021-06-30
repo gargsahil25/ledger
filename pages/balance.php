@@ -36,6 +36,7 @@ if ($userId != null) {
 		<h5>			
 			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> | 
 			<a href="/pages/txns.php"><?php echo "All Transactions" ?></a> | 
+			<a href="/pages/stats.php"><?php echo "Stats" ?></a> | 
 			<a class="active" href="/pages/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
 		</h5>
 	</section>

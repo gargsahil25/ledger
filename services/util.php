@@ -47,8 +47,8 @@ function getLangText($key) {
 function isAccountEditable($account) {
     global $ACCOUNT_TYPE;
     if ($account['type'] == $ACCOUNT_TYPE['CLIENT'] ||
-        $account['type'] == $ACCOUNT_TYPE['FACTORY_EXPENSE'] ||
-        $account['type'] == $ACCOUNT_TYPE['HOME']) {
+        $account['type'] == $ACCOUNT_TYPE['BUSINESS_EXPENSE'] ||
+        $account['type'] == $ACCOUNT_TYPE['HOME_EXPENSE']) {
             return true;
         }
     return false;

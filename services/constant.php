@@ -20,6 +20,7 @@ $LANG_MAP = array(
 	"PAID_TO" => array("Paid To", "किसको रुपए दिए"),
 	"PAYMENT_FROM" => array("Payment From", "किससे रुपए लिए"),
 	"ACCOUNT" => array("Account", "खाता"),
+	"PASSWORD" => array("Password", "पासवर्ड"),
 	"DATE" => array("Date", "तारीख"),
 	"BALANCE" => array("Balance", "शेष"),
 	"ACTUAL_BALANCE" => array("Actual Balance", "वास्तविक शेष"),
@@ -34,24 +35,23 @@ $LANG_MAP = array(
 	"FAC_TRANSACTION" => array("Factory Transactions", "फैक्टरी लेनदेन"),
 	"STARTING_CASH" => array("Starting Cash", "शुरू का नकद"),
 	"CASH_BALANCE" => array("Cash Balance", "नकदी शेष"),
-	"CASH" => array("Cash", "नकद"),
-	"FACTORY_EXPENSE" => array("Business Expense", "व्यापार खर्चा"),
-	"FACTORY_MALL" => array("Stock", "माल"),
-	"FACTORY_PROPERTY" => array("Business Property", "व्यापार संपत्ति"),
-	"HOME_EXPENSE" => array("Home Expense", "घर खर्चा"),
+	"BUSINESS_PROPERTY" => array("Business Property", "व्यापार संपत्ति"),
 	"CAPITAL" => array("Capital", "कैपिटल"),
-	"CLIENT" => array("Party", "पार्टी"),
-	"PASSWORD" => array("Password", "पासवर्ड")
+	"CASH" => array("Cash", "नकद"),
+	"STOCK" => array("Stock", "माल"),
+	"BUSINESS_EXPENSE" => array("Business Expense", "व्यापार खर्चा"),
+	"HOME_EXPENSE" => array("Home Expense", "घर खर्चा"),
+	"CLIENT" => array("Party", "पार्टी")
 );
 
 $ACCOUNT_TYPE = array(
-	"CLIENT" => "zclient",
-	"CASH" => "cash",
-	"FACTORY" => "factory",
-	"FACTORY_MALL" => "factory_mall",
-	"FACTORY_EXPENSE" => "factory_expense",
-	"HOME" => "home",
-	"CAPITAL" => "capital"
+	"BUSINESS_PROPERTY" => "business_property",
+	"CASH" => "cash",	
+	"CAPITAL" => "capital",
+	"STOCK" => "stock",
+	"BUSINESS_EXPENSE" => "business_expense",
+	"HOME_EXPENSE" => "home_expense",
+	"CLIENT" => "zclient"
 );
 
 ?>
