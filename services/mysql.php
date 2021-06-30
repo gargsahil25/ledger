@@ -288,6 +288,7 @@ function getTransactionsForAllUsers() {
 			JOIN accounts ta ON t.to_account = ta.id 
 			JOIN users u ON fa.user_id = u.id
 		WHERE t.is_deleted = 0 
+			AND t.date > '2021-04-01'
 		ORDER BY date asc";
 
 	$txnRows = mysqlQuery($sql);

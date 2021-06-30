@@ -9,7 +9,7 @@ include_once "mysql.php";
             userName: {
                 dateRange: {
                     value: number,
-                    txns: []
+                    txns: array
                 }
             }
         }
@@ -18,16 +18,8 @@ include_once "mysql.php";
 function getDataForStats() {
     global $ACCOUNT_TYPE;
     $txns = getTransactionsForAllUsers();
-    $data = array(
-        'home_expense' => array(),
-        'business_expense' => array(),
-        'capital' => array(),
-        'factory_property' => array(),
-        'credit' => array(),
-        'debit' => array(),
-        'sale' => array(),
-        'purchase' => array()
-    );
+    $data = initialiseData();
+    
     foreach($txns as $t) {
         $fromAccType = $t['from_account_type'];
         $toAccType = $t['to_account_type'];
@@ -74,6 +66,41 @@ function getDataForStats() {
             $data['purchase'] = $chartData;
         }
 	}
+    return $data;
+}
+
+function initialiseData() {
+    $data = array(
+        'home_expense' => array(),
+        'business_expense' => array(),
+        'capital' => array(),
+        'factory_property' => array(),
+        'credit' => array(),
+        'debit' => array(),
+        'sale' => array(),
+        'purchase' => array()
+    );
+
+    $users = getAllUsers();
+    foreach($data as $t => $tData) {
+        foreach($users as $user) {
+            $u = $user['name'];
+            $data[$t][$u] = array();
+            $start = $month = strtotime('2021-04-01');
+            $end = strtotime('2021-10-01');
+            while($month < $end)
+            {
+                $d = date('M Y', $month);
+                if (!isset($data[$t][$u][$d])) {
+                    $data[$t][$u][$d] = array(
+                        "value" => 0,
+                        "txns" => array()
+                    );
+                }
+                $month = strtotime("+1 month", $month);
+            }
+        }
+    }
     return $data;
 }
 
