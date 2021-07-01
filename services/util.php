@@ -57,7 +57,7 @@ function isAccountEditable($account) {
 function getDateFormat($date = null, $format = null) {
     if ($date == null) {
         $date = date_create();
-    } else {
+    } else if (is_string($date)) {
         $date = date_create($date);
     }
     if ($format == null) {
