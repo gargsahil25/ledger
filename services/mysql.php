@@ -159,7 +159,25 @@ function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, 
 	if ($userId == null) {
 		$userId = $LOGGED_IN_USER['userId'];
 	}
-	$sql = "SELECT t.id AS id, t.date AS date, t.description AS description, t.amount AS amount, fa.id AS from_account_id, fa.name AS from_account_name, fa.type AS from_account_type, ta.id AS to_account_id, ta.name AS to_account_name, ta.type AS to_account_type, t.is_deleted AS is_deleted FROM transactions t JOIN accounts fa ON t.from_account = fa.id JOIN accounts ta ON t.to_account = ta.id WHERE fa.user_id = ".$userId." AND ta.user_id = ".$userId;
+	$sql = "SELECT 
+			t.id AS id, 
+			t.date AS date, 
+			t.description AS description, 
+			t.amount AS amount, 
+			fa.id AS from_account_id, 
+			fa.name AS from_account_name, 
+			fa.type AS from_account_type, 
+			ta.id AS to_account_id, 
+			ta.name AS to_account_name, 
+			ta.type AS to_account_type, 
+			t.is_deleted AS is_deleted,
+			t.created_date AS created_date
+		FROM transactions t 
+			JOIN accounts fa ON t.from_account = fa.id 
+			JOIN accounts ta ON t.to_account = ta.id 
+		WHERE 
+			fa.user_id = ".$userId." 
+			AND ta.user_id = ".$userId;
 
 	if (!$showDeleted) {
 		$sql .= " AND t.is_deleted = 0"; 
@@ -170,11 +188,11 @@ function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, 
 	}
 	if ($txnDate) {
 		$date = date_create($txnDate);
-		$sql .= " AND t.date LIKE '".date_format($date, "Y-m-d")."%'";
+		$sql .= " AND t.date LIKE '".getDateFormat($date, "Y-m-d")."%'";
 	}
 	if ($txnMonth) {
 		$date = date_create($txnMonth);
-		$sql .= " AND t.date LIKE '".date_format($date, "Y-m")."%'";
+		$sql .= " AND t.date LIKE '".getDateFormat($date, "Y-m")."%'";
 	}
 
 	$sql .= " ORDER BY date desc";
@@ -245,7 +263,7 @@ function getBalanceByAccountId($id, $date = null) {
 
 	$sql = "SELECT sum(amount) AS from_amount FROM transactions t WHERE t.from_account = '".$id."' AND t.is_deleted = 0";
 	if ($date) {
-		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 23:59:59'";
+		$sql .= " AND date <= '".getDateFormat($date, "Y-m-d")." 23:59:59'";
 	}
 	$txnRows = mysqlQuery($sql);
 	$fromAmount = 0;
@@ -254,7 +272,7 @@ function getBalanceByAccountId($id, $date = null) {
 	}
 	$sql = "SELECT sum(amount) AS to_amount FROM transactions t WHERE t.to_account = '".$id."' AND t.is_deleted = 0";
 	if ($date) {
-		$sql .= " AND date <= '".date_format(date_create($date), "Y-m-d")." 23:59:59'";
+		$sql .= " AND date <= '".getDateFormat($date, "Y-m-d")." 23:59:59'";
 	}
 	$txnRows = mysqlQuery($sql);
 	$toAmount = 0;

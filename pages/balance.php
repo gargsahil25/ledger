@@ -49,7 +49,7 @@ if ($userId != null) {
 					</select>
 				</form>
 				<?php
-					echo getLangText('PROFIT_LOSS')." on <strong>".date_format(date_create(), "j F Y")."</strong> <span class='totalprofitloss balance'></span>";
+					echo getLangText('PROFIT_LOSS')." on <strong>".getDateFormat()."</strong> <span class='totalprofitloss balance'></span>";
 				?>
 			</div>
 			<table class="accounts">

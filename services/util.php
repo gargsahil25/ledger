@@ -54,4 +54,16 @@ function isAccountEditable($account) {
     return false;
 }
 
+function getDateFormat($date = null, $format = null) {
+    if ($date == null) {
+        $date = date_create();
+    } else {
+        $date = date_create($date);
+    }
+    if ($format == null) {
+        $format = "jS M y";
+    }
+    return date_format($date, $format);
+}
+
 ?>

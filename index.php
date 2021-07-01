@@ -195,7 +195,7 @@ if ($txnAccount) {
 	</section>
 	<section>
 		<div class="txn-selector">
-			<input type="date" name="txn-date" value="<?php echo $txnDate; ?>" max="<?php echo date_format(date_create(), "Y-m-d"); ?>"/>
+			<input type="date" name="txn-date" value="<?php echo $txnDate; ?>" max="<?php echo getDateFormat(null, "Y-m-d"); ?>"/>
 			<select name="txn-account">
 				<option value=""><?php echo getLangText('ACCOUNT'); ?></option>
 				<?php displayAccounts($accounts, "all", $txnAccount, true); ?>
@@ -207,7 +207,7 @@ if ($txnAccount) {
 					
 					if($txnDate) {
 						$date = date_create($txnDate);
-						echo getLangText('TRANSACTION')." - <strong>".date_format($date, "j F Y")."</strong>";
+						echo getLangText('TRANSACTION')." - <strong>".getDateFormat($date)."</strong>";
 					} else if ($txnAccount) {
 						$class = "balance";
 						if ($balance >= 0) {
@@ -276,7 +276,7 @@ if ($txnAccount) {
 							</select>
 							<input required autocomplete="off" type="number" name="txn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>" value="<?php echo $txn['amount']; ?>"/>
 							<?php $d = date_create($txn['date']); ?>
-							<input required type="date" name="txn-date" value="<?php echo date_format($d, 'Y-m-d'); ?>"/>
+							<input required type="date" name="txn-date" value="<?php echo getDateFormat($d, 'Y-m-d'); ?>"/>
 							<input type="hidden" name="txn-from-old" value="<?php echo $txn['from_account_id']; ?>"/>
 							<input type="hidden" name="txn-to-old" value="<?php echo $txn['to_account_id']; ?>"/>
 							<input type="hidden" name="txn-delete-submit" value=""/>

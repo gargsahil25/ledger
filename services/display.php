@@ -96,7 +96,7 @@ function displayDateTxns($txns, $txnDate) {
 		if ($txn['to_account_id'] == $cashId || $txn['to_account_id'] == $factoryId) {
 			$class = "credit";
 		}
-		$prefix = '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"j F Y").'</td>';
+		$prefix = '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.getDateFormat($txn["date"]).'</td>';
 		$factoryAmount = $txn["amount"];
 		$cashAmount = $txn["amount"];
 		if ($txn['from_account_id'] == $factoryId) {
@@ -151,7 +151,7 @@ function displayAccountTxns($txns, $account, $balance) {
 				$description_prefix = $txn['from_account_name'].": ";
 			}
 		}
-		echo '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.date_format(date_create($txn["date"]),"j F Y").'</td><td>'.$description_prefix.$txn["description"].'</td>';
+		echo '<tr class="'.$class.'" data-toggle="modal" data-target="#txn-'.$i.'"><td>'.getDateFormat($txn["date"]).'</td><td>'.$description_prefix.$txn["description"].'</td>';
 
 		$amount = $txn["amount"];
 		if ($class == "credit") {
@@ -173,7 +173,8 @@ function displayAllTxns($txns) {
 			$class = "debit";
 		}
 		echo '<tr class="'.$class.'">';
-		echo '<td>'.date_format(date_create($txn["date"]),"j F Y").'</td>';
+		echo '<td>'.getDateFormat($txn["date"]).'</td>';
+		echo '<td>'.getDateFormat($txn["created_date"]).'</td>';
 		echo '<td>'.$txn["description"].'</td>';
 		echo '<td>'.$txn["from_account_name"].' ('.$txn["from_account_type"].')</td>';
 		echo '<td>'.$txn["to_account_name"].' ('.$txn["to_account_type"].')</td>';
