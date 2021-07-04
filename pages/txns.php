@@ -45,7 +45,7 @@ if ($userId != null) {
 				<tr><th><?php echo getLangText('DATE'); ?></th><th><?php echo "Created Date"; ?></th><th><?php echo getLangText('DESC'); ?></th><th><?php echo "From Account"; ?></th><th><?php echo "To Account"; ?></th><th><?php echo "Amount"; ?></th></tr>
 			<?php
 				if ($txns == null || sizeof($txns) == 0) {
-					echo "<tr><td colspan='5'>".getLangText('NO_TRANSACTION')."</td></tr>";
+					echo "<tr><td colspan='6'>".getLangText('NO_TRANSACTION')."</td></tr>";
 				} else {
 					displayAllTxns($txns);
 				}
