@@ -61,7 +61,7 @@ function getDateFormat($date = null, $format = null) {
         $date = date_create($date);
     }
     if ($format == null) {
-        $format = "jS M y";
+        $format = "j M Y";
     }
     return date_format($date, $format);
 }
