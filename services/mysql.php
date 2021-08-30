@@ -5,6 +5,8 @@ include_once "util.php";
 include_once "sessionUtil.php";
 // include_once "sendEmail.php";
 
+date_default_timezone_set('Asia/Kolkata');
+
 $ALL_ACCOUNTS = array();
 $LOGGED_IN_USER = getLoggedInUser();
 

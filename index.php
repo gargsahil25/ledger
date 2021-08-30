@@ -30,7 +30,6 @@ if ($txnDate == null && $txnMonth == null && $txnAccount == null) {
 }
 
 // Getting data for the page
-date_default_timezone_set('Asia/Kolkata');
 $accounts = getAccounts();
 $txns = getTransactions($txnAccount, $txnDate, $txnMonth);
 
