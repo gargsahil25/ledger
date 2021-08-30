@@ -37,7 +37,7 @@ if ($userId != null) {
 		<div class="txns">
 			<div class="txns-heading">
 				<form method="get">
-					<select name="userId" onchange="this.form.submit">
+					<select name="userId" onchange="this.form.submit()">
 						<?php displayUsers($users, $userId); ?>
 					</select>
 				</form>
@@ -46,7 +46,7 @@ if ($userId != null) {
 				<tr><th><?php echo getLangText('DATE'); ?></th>
 				<th><?php echo "Created Date 
 					<form type='get' class='sort-btn-form'>
-						<button class='glyphicon glyphicon-sort ".($sort ? "selected" : "")."' name='sort' value='".!$sort."' onclick='this.form.submit'/>
+						<button class='glyphicon glyphicon-sort ".($sort ? "selected" : "")."' name='sort' value='".!$sort."' onclick='this.form.submit()'/>
 						<input type='hidden' name='userId' value='".$userId."'/>
 					</form>
 				"; ?></th>
