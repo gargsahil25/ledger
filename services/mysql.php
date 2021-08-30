@@ -154,7 +154,7 @@ function updateAccountBalance($accountId) {
 	return $balance;
 }
 
-function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, $showDeleted = false, $userId = null) {
+function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, $showDeleted = false, $userId = null, $sortByCreatedDate = 0) {
 	global $LOGGED_IN_USER;
 	if ($userId == null) {
 		$userId = $LOGGED_IN_USER['userId'];
@@ -195,7 +195,14 @@ function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, 
 		$sql .= " AND t.date LIKE '".getDateFormat($date, "Y-m")."%'";
 	}
 
-	$sql .= " ORDER BY date desc";
+	$sql .= " ORDER BY ";
+
+	if ($sortByCreatedDate) {
+		$sql .= "t.created_date desc";
+	} else {
+		$sql .= "date desc";
+	}
+	
 	$txnRows = mysqlQuery($sql);
 	$txns = array();
 	while($txn = $txnRows->fetch_assoc()) {
@@ -299,6 +306,7 @@ function getTransactionsForAllUsers() {
 			ta.id AS to_account_id, 
 			ta.name AS to_account_name, 
 			ta.type AS to_account_type,
+			t.created_date AS created_date,
 			u.id AS user_id,
 			u.name AS user_name
 		FROM transactions t 

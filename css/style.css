@@ -240,3 +240,17 @@ table td.editable {
     display: inline-block;
     margin: 20px;
 }
+
+.sort-btn-form {
+    display: inline-block;
+}
+
+.sort-btn-form button {
+    color: white;
+    background-color: rgba(0,0,0,0);
+    border: none;
+}
+
+.sort-btn-form button.selected {
+    color: #89ca8c;
+}

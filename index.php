@@ -266,11 +266,11 @@ if ($txnAccount) {
 							<form method="post">
 							<input type="hidden" name="txn-id" value="<?php echo $txn['id']; ?>"/>
 							<input required autocomplete="off" type="text" name="txn-desc" placeholder="<?php echo getLangText('DESC'); ?>" value="<?php echo $txn['description']; ?>"/>
-							<select required name="txn-from">
+							<select required name="txn-from" disabled>
 								<option value=""><?php echo getLangText('FROM_ACCOUNT'); ?></option>
 								<?php displayAccounts($accounts, "all", $txn['from_account_id']); ?>
 							</select>
-							<select required name="txn-to">
+							<select required name="txn-to" disabled>
 								<option value=""><?php echo getLangText('TO_ACCOUNT'); ?></option>
 								<?php displayAccounts($accounts, "all", $txn['to_account_id']); ?>
 							</select>

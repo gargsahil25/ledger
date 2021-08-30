@@ -34,10 +34,10 @@ $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 	<section>
 		<div id="purchase" class="chart"></div>
 		<div id="sale" class="chart"></div>
-		<div id="debit" class="chart"></div>
-		<div id="credit" class="chart"></div>
 		<div id="home_expense" class="chart"></div>
 		<div id="business_expense" class="chart"></div>
+		<div id="debit" class="chart"></div>
+		<div id="credit" class="chart"></div>
 		<div id="capital" class="chart"></div>
 		<div id="factory_property" class="chart"></div>
 	</section>
@@ -45,24 +45,25 @@ $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 		<div class="txns">
 			<div class="txns-heading">
 				<form method="get">
-					<select name="txnType" class="chart-selection" onchange="this.form.submit()">
+					<select name="txnType" class="chart-selection">
 						<?php displayStatsTxnTypes($data, $txnType); ?>
 					</select>
-					<select name="userName" class="chart-selection" onchange="this.form.submit()">
+					<select name="userName" class="chart-selection">
 						<?php displayStatsUsers($data, $txnType, $userName); ?>
 					</select>
-					<select name="dateRange" class="chart-selection" onchange="this.form.submit()">
+					<select name="dateRange" class="chart-selection">
 						<?php displayStatsDateRanges($data, $txnType, $userName, $dateRange); ?>
 					</select>
+					<input type="submit" class="btn btn-primary chart-selection" name="submit" value="Submit"/>
 				</form>
 			</div>
 			<table>
-				<tr><th><?php echo getLangText('DATE'); ?></th><th><?php echo getLangText('DESC'); ?></th><th><?php echo "From Account"; ?></th><th><?php echo "To Account"; ?></th><th><?php echo "Amount"; ?></th></tr>
+				<tr><th><?php echo getLangText('DATE'); ?></th><th><?php echo "Created Date"; ?></th><th><?php echo getLangText('DESC'); ?></th><th><?php echo "From Account"; ?></th><th><?php echo "To Account"; ?></th><th><?php echo "Amount"; ?></th></tr>
 			<?php
 				if ($txnData == null) {
-					echo "<tr><td colspan='5'>".getLangText('NO_TRANSACTION')."</td></tr>";
+					echo "<tr><td colspan='6'>".getLangText('NO_TRANSACTION')."</td></tr>";
 				} else {
-					echo "<tr><td colspan='5'>Value: <strong>".getMoneyFormat($txnData['value'])."</strong></td></tr>";
+					echo "<tr><td colspan='6'>Value: <strong>".getMoneyFormat($txnData['value'])."</strong></td></tr>";
 					displayAllTxns($txnData['txns']);
 				}
 			?>
@@ -76,10 +77,10 @@ $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 		<?php 
 			renderChart("purchase", "Purchase", $data['purchase']);
 			renderChart("sale", "Sale", $data['sale']);
-			renderChart("debit", "Debit", $data['debit']);
-			renderChart("credit", "Credit", $data['credit']);
 			renderChart("home_expense", "Home Expense", $data['home_expense']);
 			renderChart("business_expense", "Business Expense", $data['business_expense']);
+			renderChart("debit", "Debit", $data['debit']);
+			renderChart("credit", "Credit", $data['credit']);
 			renderChart("capital", "Capital", $data['capital']);
 			renderChart("factory_property", "Factory Property", $data['factory_property']);
 		?>
