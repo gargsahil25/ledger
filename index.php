@@ -266,17 +266,19 @@ if ($txnAccount) {
 							<form method="post">
 							<input type="hidden" name="txn-id" value="<?php echo $txn['id']; ?>"/>
 							<input required autocomplete="off" type="text" name="txn-desc" placeholder="<?php echo getLangText('DESC'); ?>" value="<?php echo $txn['description']; ?>"/>
-							<select required name="txn-from" disabled>
+							<select required disabled>
 								<option value=""><?php echo getLangText('FROM_ACCOUNT'); ?></option>
 								<?php displayAccounts($accounts, "all", $txn['from_account_id']); ?>
 							</select>
-							<select required name="txn-to" disabled>
+							<select required disabled>
 								<option value=""><?php echo getLangText('TO_ACCOUNT'); ?></option>
 								<?php displayAccounts($accounts, "all", $txn['to_account_id']); ?>
 							</select>
 							<input required autocomplete="off" type="number" name="txn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>" value="<?php echo $txn['amount']; ?>"/>
 							<?php $d = date_create($txn['date']); ?>
 							<input required type="date" name="txn-date" value="<?php echo getDateFormat($d, 'Y-m-d'); ?>"/>
+							<input type="hidden" name="txn-from" value="<?php echo $txn['from_account_id']; ?>"/>
+							<input type="hidden" name="txn-to" value="<?php echo $txn['to_account_id']; ?>"/>
 							<input type="hidden" name="txn-from-old" value="<?php echo $txn['from_account_id']; ?>"/>
 							<input type="hidden" name="txn-to-old" value="<?php echo $txn['to_account_id']; ?>"/>
 							<input type="hidden" name="txn-delete-submit" value=""/>

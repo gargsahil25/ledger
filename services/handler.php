@@ -57,7 +57,7 @@ function payAmountHandler($post) {
 	if(isset($post['pay-submit']) && 
 		!empty($post['pay-desc']) && 
 		!empty($post['pay-to']) && 
-		!empty($post['pay-amount']) && 
+		(!empty($post['pay-amount']) || $post['pay-amount'] == 0) && 
 		!empty($post['pay-date'])) {
 
 		$cashId = getCashAccountId();
@@ -71,7 +71,7 @@ function getPaymentHandler($post) {
 	if(isset($post['earn-submit']) && 
 		!empty($post['earn-desc']) && 
 		!empty($post['earn-from']) && 
-		!empty($post['earn-amount']) && 
+		(!empty($post['pay-amount']) || $post['pay-amount'] == 0) && 
 		!empty($post['earn-date'])) {
 
 		$cashId = getCashAccountId();
