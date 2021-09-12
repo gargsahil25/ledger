@@ -149,7 +149,7 @@ function updateAccount($accountId, $accountName, $type) {
 
 function updateAccountBalance($accountId) {
 	global $LOGGED_IN_USER;
-	$balance = getBalanceByAccountId($accountId);
+	$balance = getBalanceByAccountId($accountId)['balance'];
 	$sql = "UPDATE `accounts` SET `balance` = ".$balance." WHERE id = ".$accountId.
 				" AND user_id = ".$LOGGED_IN_USER['userId'];
 	mysqlQuery($sql);
@@ -291,10 +291,18 @@ function getBalanceByAccountId($id, $date = null) {
 	$factoryId = getStockAccountId();
 	$cashId = getCashAccountId();
 
+	$amounts = array();
+
 	if ($id == $factoryId || $id == $cashId) {
-		return $toAmount - $fromAmount;
+		$amounts['credit'] = $toAmount;
+		$amounts['debit'] = $fromAmount;
+		$amounts['balance'] = $toAmount - $fromAmount;
+		return $amounts;
 	}
-	return $fromAmount - $toAmount;
+	$amounts['credit'] = $fromAmount;
+	$amounts['debit'] = $toAmount;
+	$amounts['balance'] = $fromAmount - $toAmount;
+	return $amounts;
 }
 
 function getTransactionsForAllUsers() {

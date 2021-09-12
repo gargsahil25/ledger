@@ -7,6 +7,7 @@ function getLoggedInUser($redirect = false) {
     	$user = array();
     	$user['userId'] = $_SESSION['userId'];
     	$user['userName'] = $_SESSION['userName'];
+        $user['isAdmin'] = (isset($_GET['mode']) && $_GET['mode'] == 'admin') ? true : false;
         return $user;
     } else if ($redirect) {
         return redirect('/login.php');

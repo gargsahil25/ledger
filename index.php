@@ -38,6 +38,11 @@ if ($txnAccount) {
 	$balance = $account['balance'];
 }
 
+$total = array();
+if ($user['isAdmin']) {
+	$total = getBalanceByAccountId($txnAccount);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -241,7 +246,13 @@ if ($txnAccount) {
 					<?php } ?>
 			</div>
 			<table>
-				<tr><th><?php echo getLangText('DATE'); ?></th><th><?php echo getLangText('DESC'); ?></th><th><?php echo getLangText('CREDIT'); ?></th><th><?php echo getLangText('DEBIT'); ?></th><th><?php echo getLangText('BALANCE'); ?></th></tr>
+				<tr>
+					<th><?php echo getLangText('DATE'); ?></th>
+					<th><?php echo getLangText('DESC'); ?></th>
+					<th><?php echo getLangText('CREDIT'); if ($user['isAdmin']) echo " (".$total['credit'].")"; ?></th>
+					<th><?php echo getLangText('DEBIT'); if ($user['isAdmin']) echo " (".$total['debit'].")"; ?></th>
+					<th><?php echo getLangText('BALANCE'); ?></th>
+				</tr>
 			<?php
 				if (sizeof($txns) == 0) {
 					echo "<tr><td colspan='5'>".getLangText('NO_TRANSACTION')."</td></tr>";
