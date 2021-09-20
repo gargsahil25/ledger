@@ -26,9 +26,7 @@ $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 	<section class="page-header">
 		<h5>			
 			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> | 
-			<a href="/pages/txns.php"><?php echo "All Transactions" ?></a> | 
-			<a class="active" href="/pages/stats.php"><?php echo "Stats" ?></a> | 
-			<a href="/pages/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
+			<a class="active" href="/pages/stats.php"><?php echo "Stats" ?></a> 
 		</h5>
 	</section>
 	<section>

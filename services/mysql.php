@@ -266,8 +266,14 @@ function getBalanceByType($type) {
 }
 
 function getBalanceByAccountId($id, $date = null) {
+	$amounts = array(
+		"credit" => 0,
+		"debit" => 0,
+		"balance" => 0
+	);
+
 	if (!$id) {
-		return;
+		return $amounts;
 	}
 
 	$sql = "SELECT sum(amount) AS from_amount FROM transactions t WHERE t.from_account = '".$id."' AND t.is_deleted = 0";
@@ -290,8 +296,6 @@ function getBalanceByAccountId($id, $date = null) {
 	}
 	$factoryId = getStockAccountId();
 	$cashId = getCashAccountId();
-
-	$amounts = array();
 
 	if ($id == $factoryId || $id == $cashId) {
 		$amounts['credit'] = $toAmount;
@@ -324,6 +328,35 @@ function getTransactionsForAllUsers() {
 			JOIN accounts ta ON t.to_account = ta.id 
 			JOIN users u ON fa.user_id = u.id
 		WHERE t.is_deleted = 0 
+			AND t.date > '2021-04-01'
+		ORDER BY date asc";
+
+	$txnRows = mysqlQuery($sql);
+	$txns = array();
+	while($txn = $txnRows->fetch_assoc()) {
+		array_push($txns, $txn);
+	}
+	return $txns;
+}
+
+function getTransactionsByUserId($userId) {
+	$sql = "SELECT 
+			t.id AS id, t.date AS date, 
+			t.description AS description, 
+			t.amount AS amount, 
+			fa.id AS from_account_id, 
+			fa.name AS from_account_name, 
+			fa.type AS from_account_type, 
+			ta.id AS to_account_id, 
+			ta.name AS to_account_name, 
+			ta.type AS to_account_type,
+			t.created_date AS created_date
+		FROM transactions t 
+			JOIN accounts fa ON t.from_account = fa.id 
+			JOIN accounts ta ON t.to_account = ta.id 
+		WHERE t.is_deleted = 0 
+			AND fa.user_id = ".$userId."
+			AND ta.user_id = ".$userId."
 			AND t.date > '2021-04-01'
 		ORDER BY date asc";
 

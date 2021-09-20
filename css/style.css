@@ -48,9 +48,13 @@ input.half {
     width: 41%;
 }
 
+a {
+    color: inherit;
+}
+
 a:hover {
-    text-decoration: underline;
-    color: #E91E63;
+    text-decoration: none;
+    color: #777;
 }
 
 table {
@@ -66,6 +70,14 @@ table td,th {
     border: 1px solid white;
 }
 
+table.report td,th {
+    vertical-align: top;
+}
+
+table.report-detail td,th {
+    font-size: 0.9em;
+}
+
 table th {
     background-color: #555;
     color: #FFF;
@@ -77,6 +89,14 @@ table tr:nth-child(even) {
 
 table tr:nth-child(odd) {
     background-color: rgba(0, 150, 136, 0.4);
+}
+
+table.report-detail tr:nth-child(odd) {
+    background-color: rgb(255, 227, 100);
+}
+
+table.report-detail tr:nth-child(even) {
+    background-color: rgb(255, 250, 185);
 }
 
 table tr.credit {

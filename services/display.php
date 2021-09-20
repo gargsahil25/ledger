@@ -86,7 +86,7 @@ function displayDateTxns($txns, $txnDate) {
 	$i = 0;
 	$factoryId = getStockAccountId();
 	$cashId = getCashAccountId();
-	$cashBalance = getBalanceByAccountId($cashId, $txnDate);
+	$cashBalance = getBalanceByAccountId($cashId, $txnDate)['balance'];
 	$cashTitle = "<tr><td colspan='5'><strong>".getLangText('CASH_BALANCE').": ".getMoneyFormat($cashBalance)."</strong></td></tr>";
 	$factoryTitle = "<tr><td colspan='5'><strong>".getLangText('FAC_TRANSACTION')."</strong></td></tr>";
 	$cashTxns = "";

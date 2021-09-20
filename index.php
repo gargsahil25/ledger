@@ -56,7 +56,13 @@ if ($user['isAdmin']) {
 	<section class="page-header">
 		<h5>			
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
-			<a class="active" href="/"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a>
+			<a class="active" href="/index.php"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> |
+			<a href="/pages/report.php"><?php echo "Report"; ?></a>
+			<?php if ($user['isAdmin']) { ?> | 
+				<a href="/pages/txns.php"><?php echo "All Transactions" ?></a> | 
+				<a href="/pages/stats.php"><?php echo "Stats" ?></a> | 
+				<a href="/pages/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
+			<?php } ?>
 			<span class="header-menu" data-cookie="PHPSESSID" data-reload="true" data-removecookie="true"><span class="glyphicon glyphicon-off collapsed"></span></span>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
 			<span class="header-menu" data-cookie="hindi" data-reload="true"><span id="hindiButton" class="glyphicon glyphicon-header collapsed"></span></span>
