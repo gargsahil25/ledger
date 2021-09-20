@@ -20,7 +20,7 @@ $profitPercent = isset($_GET['profit']) ? $_GET['profit'] : 15;
 <body>
 <section class="page-header">
 		<h5>			
-			<a href="/index.php"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> |
+			<a href="/index.php"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> &gt;
             <a class="active" href="/pages/report.php"><?php echo "Report"; ?></a>
 		</h5>
 	</section>

@@ -1,11 +1,15 @@
 <?php
+session_start();
 
 include_once "../services/constant.php";
 include_once "../services/util.php";
 include_once "../services/mysql.php";
+include_once "../services/sessionUtil.php";
 include_once "../services/display.php";
 
-$userId = isset($_GET['userId']) ? $_GET['userId'] : null;
+$user = getLoggedInUser(true);
+
+$userId = isset($_GET['userId']) ? $_GET['userId'] : $user['userId'];
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 0;
 $users = getAllUsers();
 
@@ -27,7 +31,7 @@ if ($userId != null) {
 <body>
 	<section class="page-header">
 		<h5>			
-			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> | 
+			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> &gt;
 			<a class="active" href="/pages/txns.php"><?php echo "All Transactions" ?></a>
 		</h5>
 	</section>

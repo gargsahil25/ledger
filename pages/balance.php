@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 include_once "../services/constant.php";
 include_once "../services/util.php";
@@ -6,8 +7,8 @@ include_once "../services/mysql.php";
 include_once "../services/handler.php";
 include_once "../services/display.php";
 
-// $user = getLoggedInUser(true);
-$userId = isset($_GET['userId']) ? $_GET['userId'] : null;
+$user = getLoggedInUser(true);
+$userId = isset($_GET['userId']) ? $_GET['userId'] :  $user['userId'];
 $users = getAllUsers();
 
 $accounts = null;
@@ -34,7 +35,7 @@ if ($userId != null) {
 <body>
 	<section class="page-header">
 		<h5>			
-			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> | 
+			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> &gt;  
 			<a class="active" href="/pages/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
 		</h5>
 	</section>

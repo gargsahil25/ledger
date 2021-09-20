@@ -25,7 +25,7 @@ $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 <body>
 	<section class="page-header">
 		<h5>			
-			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> | 
+			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> &gt;
 			<a class="active" href="/pages/stats.php"><?php echo "Stats" ?></a> 
 		</h5>
 	</section>
