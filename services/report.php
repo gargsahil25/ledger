@@ -201,15 +201,17 @@ function getFormattedData($txns) {
             $data = $chartData;
 
         } else if ($fromAccType == $ACCOUNT_TYPE['STOCK']) {
-            $account = getAccount($t, $ACCOUNT_TYPE['STOCK']);
+            $accountId = $t['to_account_id'];
+            $accountName = $t['to_account_name']; 
             $value = $amount;
-            $chartData = addTxnToData($data, 'sale', $t, $value, $account['id'], $account['name']);
+            $chartData = addTxnToData($data, 'sale', $t, $value, $accountId, $accountName);
             $data = $chartData;
 
         } else if ($toAccType == $ACCOUNT_TYPE['STOCK']) {
-            $account = getAccount($t, $ACCOUNT_TYPE['STOCK']);
+            $accountId = $t['from_account_id'];
+            $accountName = $t['from_account_name'];
             $value = $amount;
-            $chartData = addTxnToData($data, 'purchase', $t, $value, $account['id'], $account['name']);
+            $chartData = addTxnToData($data, 'purchase', $t, $value, $accountId, $accountName);
             $data = $chartData;
         }
 	}
