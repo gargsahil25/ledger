@@ -357,7 +357,7 @@ function getTransactionsByUserId($userId) {
 		WHERE t.is_deleted = 0 
 			AND fa.user_id = ".$userId."
 			AND ta.user_id = ".$userId."
-			AND t.date > '2021-04-01'
+			AND t.date > '2010-04-01'
 		ORDER BY date asc";
 
 	$txnRows = mysqlQuery($sql);
