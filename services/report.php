@@ -86,11 +86,13 @@ function getDataForReport($userId, $profitPercent) {
     }
 
     $accBalance = getAccountsBalance();
+    $accBalance['stock_balance']['value'] += $monthWiseData['total']['profit']['value'];
+
     $monthWiseData['total'] = $totalData;
     $monthWiseData['total']['credit_balance'] = $accBalance['credit_balance'];
     $monthWiseData['total']['debit_balance'] = $accBalance['debit_balance'];
     $monthWiseData['total']['cash_balance'] = $accBalance['cash_balance'];
-    $monthWiseData['total']['stock_balance'] = $accBalance['stock_balance'] + $monthWiseData['total']['profit'];
+    $monthWiseData['total']['stock_balance'] = $accBalance['stock_balance'];
     $monthWiseData['total']['cum_capital']['value'] = $cumCapital;
     $monthWiseData['total']['cum_balance_capital']['value'] = $cumCapital + $cumProfit - $cumHomeExp - $cumBizExp;
 
