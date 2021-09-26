@@ -86,7 +86,7 @@ function getDataForReport($userId, $profitPercent) {
     }
 
     $accBalance = getAccountsBalance();
-    $accBalance['stock_balance']['value'] += $monthWiseData['total']['profit']['value'];
+    $accBalance['stock_balance']['value'] += $totalData['profit']['value'];
 
     $monthWiseData['total'] = $totalData;
     $monthWiseData['total']['credit_balance'] = $accBalance['credit_balance'];
