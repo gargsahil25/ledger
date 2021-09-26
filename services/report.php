@@ -25,9 +25,9 @@ function displayReport($profitPercent) {
     displayRow($report, $months, 'Credit Balance', 'credit_balance');
     displayRow($report, $months, 'Debit Balance', 'debit_balance');
     displayRow($report, $months, 'Cash Balance', 'cash_balance');
-    displayRow($report, $months, 'Stock Balance', 'stock_balance');
+    displayRow($report, $months, '<span title="Stock + Profit">Actual Stock Balance</span>', 'stock_balance');
     displayRow($report, $months, 'Total Capital', 'cum_capital');
-    displayRow($report, $months, '<span title="Caital + Profit - Business Expense - Home Expense">Net Capital Balance</span>', 'cum_balance_capital');
+    displayRow($report, $months, '<span title="Capital + Profit - Business Expense - Home Expense">Net Capital Balance</span>', 'cum_balance_capital');
     echo "</table>";
 }
 
@@ -90,7 +90,7 @@ function getDataForReport($userId, $profitPercent) {
     $monthWiseData['total']['credit_balance'] = $accBalance['credit_balance'];
     $monthWiseData['total']['debit_balance'] = $accBalance['debit_balance'];
     $monthWiseData['total']['cash_balance'] = $accBalance['cash_balance'];
-    $monthWiseData['total']['stock_balance'] = $accBalance['stock_balance'];
+    $monthWiseData['total']['stock_balance'] = $accBalance['stock_balance'] + $monthWiseData['total']['profit'];
     $monthWiseData['total']['cum_capital']['value'] = $cumCapital;
     $monthWiseData['total']['cum_balance_capital']['value'] = $cumCapital + $cumProfit - $cumHomeExp - $cumBizExp;
 
