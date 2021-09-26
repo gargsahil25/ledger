@@ -38,10 +38,8 @@ if ($txnAccount) {
 	$balance = $account['balance'];
 }
 
-$total = array();
-if ($user['isAdmin']) {
-	$total = getBalanceByAccountId($txnAccount);
-}
+$isAdmin = $user['isAdmin'];
+$total = getBalanceByAccountId($txnAccount);
 
 ?>
 
@@ -58,7 +56,7 @@ if ($user['isAdmin']) {
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
 			<a class="active" href="/index.php"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> |
 			<a href="/pages/report.php"><?php echo "Report"; ?></a>
-			<?php if ($user['isAdmin']) { ?> | 
+			<?php if ($isAdmin) { ?> | 
 				<a href="/pages/txns.php"><?php echo "All Transactions" ?></a> | 
 				<a href="/pages/stats.php"><?php echo "Stats" ?></a> | 
 				<a href="/pages/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
@@ -81,7 +79,7 @@ if ($user['isAdmin']) {
 						<form method="post">
 						<input type="text" required autocomplete="off" name="client-name" placeholder="<?php echo getLangText('ACCOUNT_NAME'); ?>"/>
 						<select name="account_type" required>
-							<?php displayAccountTypes(); ?>
+							<?php displayAccountTypes(null, $isAdmin); ?>
 						</select>
 						<input type="submit" class="btn btn-warning btn-lg" name="client-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 						</form>
@@ -226,7 +224,7 @@ if ($user['isAdmin']) {
 						echo getLangText('ACCOUNT')." - <strong>".$account['name']."</strong>";
 						echo " <span class='".$class."'> ".getMoneyFormat($balance)."</span>"; ?>
 
-						<?php if (isAccountEditable($account)) { ?>
+						<?php if ($isAdmin || isAccountEditable($account)) { ?>
 							<span class='glyphicon glyphicon-edit' data-toggle='modal' data-target='#update-account'></span>
 							<div id="update-account" class="modal fade" role="dialog">
 								<div class="modal-dialog">
@@ -240,7 +238,7 @@ if ($user['isAdmin']) {
 											<input type="hidden" name="client-id" value="<?php echo $account['id']; ?>"/>
 											<input required autocomplete="off" type="text" name="client-name" value="<?php echo $account['original_name']; ?>"/>
 											<select name="account_type" required>
-												<?php displayAccountTypes($account['type']); ?>
+												<?php displayAccountTypes($account['type'], $isAdmin); ?>
 											</select>
 											<input type="submit" class="btn btn-warning btn-lg" name="client-update" value="<?php echo getLangText('UPDATE'); ?>"/>
 											</form>
@@ -255,8 +253,8 @@ if ($user['isAdmin']) {
 				<tr>
 					<th><?php echo getLangText('DATE'); ?></th>
 					<th><?php echo getLangText('DESC'); ?></th>
-					<th><?php echo getLangText('CREDIT'); if ($user['isAdmin']) echo " (".getMoneyFormat($total['credit'], true).")"; ?></th>
-					<th><?php echo getLangText('DEBIT'); if ($user['isAdmin']) echo " (".getMoneyFormat($total['debit'], true).")"; ?></th>
+					<th><?php echo getLangText('CREDIT')." (".getMoneyFormat($total['credit'], true).")"; ?></th>
+					<th><?php echo getLangText('DEBIT')." (".getMoneyFormat($total['debit'], true).")"; ?></th>
 					<th><?php echo getLangText('BALANCE'); ?></th>
 				</tr>
 			<?php
@@ -282,11 +280,11 @@ if ($user['isAdmin']) {
 							<form method="post">
 							<input type="hidden" name="txn-id" value="<?php echo $txn['id']; ?>"/>
 							<input required autocomplete="off" type="text" name="txn-desc" placeholder="<?php echo getLangText('DESC'); ?>" value="<?php echo $txn['description']; ?>"/>
-							<select required name="txn-from" <?php if (!$user['isAdmin']) echo 'disabled'; ?>>
+							<select required name="txn-from" <?php if (!$isAdmin) echo 'disabled'; ?>>
 								<option value=""><?php echo getLangText('FROM_ACCOUNT'); ?></option>
 								<?php displayAccounts($accounts, "all", $txn['from_account_id']); ?>
 							</select>
-							<select required name="txn-to" <?php if (!$user['isAdmin']) echo 'disabled'; ?>>
+							<select required name="txn-to" <?php if (!$isAdmin) echo 'disabled'; ?>>
 								<option value=""><?php echo getLangText('TO_ACCOUNT'); ?></option>
 								<?php displayAccounts($accounts, "all", $txn['to_account_id']); ?>
 							</select>

@@ -15,7 +15,7 @@ function displayUsers($users, $selectedUserId = null) {
 	}
 }
 
-function displayAccountTypes($selectedAccountType = null) {
+function displayAccountTypes($selectedAccountType = null, $showAll = false) {
 	global $ACCOUNT_TYPE;
 	$accTypes = array(
 		array(
@@ -32,6 +32,28 @@ function displayAccountTypes($selectedAccountType = null) {
 		)
 	);
 
+	$otherAccTypes = array(
+		array(
+			"type" => $ACCOUNT_TYPE['BUSINESS_PROPERTY'],
+			"name" => getLangText('BUSINESS_PROPERTY')
+		),
+		array(
+			"type" => $ACCOUNT_TYPE['CAPITAL'],
+			"name" => getLangText('CAPITAL')
+		),
+		array(
+			"type" => $ACCOUNT_TYPE['CASH'],
+			"name" => getLangText('CASH')
+		),
+		array(
+			"type" => $ACCOUNT_TYPE['STOCK'],
+			"name" => getLangText('STOCK')
+		)
+	);
+	if ($showAll) {
+		$accTypes = array_merge($accTypes, $otherAccTypes);
+	}
+	
 	echo '<option value="">'.getLangText("ACCOUNT_TYPE").'</option>';
 	foreach($accTypes as $at) {
 		if ($selectedAccountType == $at['type']) {

@@ -111,7 +111,7 @@ function displayTxns($data, $key) {
     $typeData = $data[$key]['typeData'];
     echo "<table class='report-detail'>";
     foreach($typeData as $accountId => $accData) {
-        echo "<tr><td><a href='/index.php?txn-account=".$accountId."'>".getLangText($accData['accountName'])."</a></td><td>".getMoneyFormat($accData['value'], true)."</td></tr>";
+        echo "<tr><td><a target='_blank' href='/index.php?txn-account=".$accountId."'>".getLangText($accData['accountName'])."</a></td><td>".getMoneyFormat($accData['value'], true)."</td></tr>";
     }
     echo "</table>";
 }
