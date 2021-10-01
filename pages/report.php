@@ -5,9 +5,14 @@ include_once "../services/constant.php";
 include_once "../services/util.php";
 include_once "../services/sessionUtil.php";
 include_once "../services/report.php";
+include_once "../services/mysql.php";
+include_once "../services/display.php";
+
+$profitPercent = isset($_GET['profit']) ? $_GET['profit'] : 15;
 
 $user = getLoggedInUser(true);
-$profitPercent = isset($_GET['profit']) ? $_GET['profit'] : 15;
+$userId = isset($_GET['userId']) ? $_GET['userId'] :  $user['userId'];
+$users = getAllUsers();
 
 ?>
 
@@ -26,11 +31,16 @@ $profitPercent = isset($_GET['profit']) ? $_GET['profit'] : 15;
 	</section>
 	<section>
 		<div class="txns">
-			<table>
+			<div class="txns-heading">
+				<form method="get">
+					<select name="userId" onchange="this.form.submit()">
+						<?php displayUsers($users, $userId); ?>
+					</select>
+				</form>
+			</div>
 			<?php
-				displayReport($profitPercent);
+				displayReport($profitPercent, $userId);
 			?>
-			</table>
 		</div>
 	</section>
 	<?php include('../includes/footer.php'); ?>

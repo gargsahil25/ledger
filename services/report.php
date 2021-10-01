@@ -4,9 +4,7 @@ include_once "constant.php";
 include_once "mysql.php";
 include_once "sessionUtil.php";
 
-function displayReport($profitPercent) {
-    global $LOGGED_IN_USER;
-	$userId = $LOGGED_IN_USER['userId'];
+function displayReport($profitPercent, $userId) {
     $report = getDataForReport($userId, $profitPercent);
     $months = array_keys($report);
     echo "<table class='report'><tr><th>&nbsp;</th>";
