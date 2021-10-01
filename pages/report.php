@@ -12,7 +12,8 @@ $user = getLoggedInUser(true);
 $userId = isset($_GET['userId']) ? $_GET['userId'] :  $user['userId'];
 $users = getAllUsers();
 
-$profitPercent = isset($_GET['profit']) ? $_GET['profit'] : $user['profit'];
+$profit = isset($_GET['profit']) ? $_GET['profit'] : null;
+$userDetail = getUserDetail($users, $userId);
 
 ?>
 
@@ -39,7 +40,7 @@ $profitPercent = isset($_GET['profit']) ? $_GET['profit'] : $user['profit'];
 				</form>
 			</div>
 			<?php
-				displayReport($profitPercent, $userId);
+				displayReport($userDetail, $profit);
 			?>
 		</div>
 	</section>

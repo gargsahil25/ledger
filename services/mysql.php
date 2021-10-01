@@ -62,7 +62,7 @@ function mysqlQuery($sql) {
 }
 
 function getAllUsers() {
-	$sql = "SELECT id, name FROM users";
+	$sql = "SELECT id, name, profit FROM users";
 	$userRows = mysqlQuery($sql);
 	$users = array();
 	while($u = $userRows->fetch_assoc()) {

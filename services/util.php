@@ -66,4 +66,12 @@ function getDateFormat($date = null, $format = null) {
     return date_format($date, $format);
 }
 
+function getUserDetail($users, $userId) {
+    foreach($users as $u) {
+		if ($userId == $u['id']) {
+            return $u;
+        }
+	}
+}
+
 ?>

@@ -4,8 +4,12 @@ include_once "constant.php";
 include_once "mysql.php";
 include_once "sessionUtil.php";
 
-function displayReport($profitPercent, $userId) {
-    $report = getDataForReport($userId, $profitPercent);
+function displayReport($userDetail, $overrideProfit) {
+    $profitPercent = $userDetail['profit'];
+    if ($overrideProfit != null) {
+        $profitPercent = $overrideProfit;
+    }
+    $report = getDataForReport($userDetail['id'], $profitPercent);
     $months = array_keys($report);
     echo "<table class='report'><tr><th>&nbsp;</th>";
     foreach ($months as $m) {
