@@ -8,11 +8,11 @@ include_once "../services/report.php";
 include_once "../services/mysql.php";
 include_once "../services/display.php";
 
-$profitPercent = isset($_GET['profit']) ? $_GET['profit'] : 15;
-
 $user = getLoggedInUser(true);
 $userId = isset($_GET['userId']) ? $_GET['userId'] :  $user['userId'];
 $users = getAllUsers();
+
+$profitPercent = isset($_GET['profit']) ? $_GET['profit'] : $user['profit'];
 
 ?>
 

@@ -10,6 +10,7 @@ function getLoggedInUser($redirect = false) {
     	$user = array();
     	$user['userId'] = $_SESSION['userId'];
     	$user['userName'] = $_SESSION['userName'];
+        $user['profit'] = $_SESSION['profit'];
         $user['isAdmin'] = (isset($_COOKIE['admin']) && $_COOKIE['admin'] == 't') ? true : false;
         return $user;
     } else if ($redirect) {
@@ -26,6 +27,7 @@ function loggedInRedirect() {
 function setLoginUser($user) {
 	$_SESSION['userId'] = $user['id'];
 	$_SESSION['userName'] = $user['name'];
+    $_SESSION['profit'] = $user['profit'];
 	return redirect();
 }
 
