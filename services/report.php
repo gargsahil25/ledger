@@ -16,28 +16,28 @@ function displayReport($userDetail, $overrideProfit) {
         echo "<th>".ucfirst($m)."</th>";
     }
     echo "</tr>";
-    displayRow($report, $months, 'Capital', 'capital');
-    displayRow($report, $months, 'Purchase', 'purchase');
-    displayRow($report, $months, 'Sale', 'sale');
-    displayRow($report, $months, 'Profit ('.$profitPercent.'%)', 'profit');
-    displayRow($report, $months, 'Home Expense', 'home_expense');
-    displayRow($report, $months, 'Business Expense', 'business_expense');
-    displayRow($report, $months, 'Business Property', 'factory_property');
-    displayRow($report, $months, '<span title="Profit - Business Expense">Actual Profit</span>', 'actual_profit');
-    displayRow($report, $months, 'Credit Balance', 'credit_balance');
-    displayRow($report, $months, 'Debit Balance', 'debit_balance');
-    displayRow($report, $months, 'Cash Balance', 'cash_balance');
-    displayRow($report, $months, '<span title="Stock + Profit">Actual Stock Balance</span>', 'stock_balance');
-    displayRow($report, $months, 'Total Capital', 'cum_capital');
-    displayRow($report, $months, '<span title="Capital + Profit - Business Expense - Home Expense">Net Capital Balance</span>', 'cum_balance_capital');
+    displayRow($report, $months, 'Capital', 'capital', $userDetail['id']);
+    displayRow($report, $months, 'Purchase', 'purchase', $userDetail['id']);
+    displayRow($report, $months, 'Sale', 'sale', $userDetail['id']);
+    displayRow($report, $months, 'Profit ('.$profitPercent.'%)', 'profit', $userDetail['id']);
+    displayRow($report, $months, 'Home Expense', 'home_expense', $userDetail['id']);
+    displayRow($report, $months, 'Business Expense', 'business_expense', $userDetail['id']);
+    displayRow($report, $months, 'Business Property', 'factory_property', $userDetail['id']);
+    displayRow($report, $months, '<span title="Profit - Business Expense">Actual Profit</span>', 'actual_profit', $userDetail['id']);
+    displayRow($report, $months, 'Credit Balance', 'credit_balance', $userDetail['id']);
+    displayRow($report, $months, 'Debit Balance', 'debit_balance', $userDetail['id']);
+    displayRow($report, $months, 'Cash Balance', 'cash_balance', $userDetail['id']);
+    displayRow($report, $months, '<span title="Stock + Profit">Actual Stock Balance</span>', 'stock_balance', $userDetail['id']);
+    displayRow($report, $months, 'Total Capital', 'cum_capital', $userDetail['id']);
+    displayRow($report, $months, '<span title="Capital + Profit - Business Expense - Home Expense">Net Capital Balance</span>', 'cum_balance_capital', $userDetail['id']);
     echo "</table>";
 }
 
-function displayRow($report, $months, $title, $type) {
+function displayRow($report, $months, $title, $type, $userId) {
     echo "<tr><th>".$title."</th>";
     foreach ($months as $m) {
         echo "<td>".getMoneyFormat(getValue($report[$m], $type), true);
-        displayTxns($report[$m], $type);
+        displayTxns($report[$m], $type, $userId);
         echo "</td>";
     }
     echo "</tr>";
@@ -108,7 +108,7 @@ function getValue($data, $key) {
     return 0;
 }
 
-function displayTxns($data, $key) {
+function displayTxns($data, $key, $userId) {
     if (!isset($data[$key]) || !isset($data[$key]['typeData'])) {
         return;
     }
@@ -122,7 +122,7 @@ function displayTxns($data, $key) {
 
     echo "<table class='report-detail'>";
     foreach($accArr as $accData) {
-        echo "<tr><td><a target='_blank' href='/index.php?txn-account=".$accData['accountId']."'>".getLangText($accData['accountName'])."</a></td><td>".getMoneyFormat($accData['value'], true)."</td></tr>";
+        echo "<tr><td><a target='_blank' href='/index.php?userId=".$userId."&txn-account=".$accData['accountId']."'>".getLangText($accData['accountName'])."</a></td><td>".getMoneyFormat($accData['value'], true)."</td></tr>";
     }
     echo "</table>";
 }
