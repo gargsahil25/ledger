@@ -87,7 +87,7 @@ function getDataForReport($userId, $profitPercent) {
         $monthWiseData[$dataRange] = $monthlyData;
     }
 
-    $accBalance = getAccountsBalance();
+    $accBalance = getAccountsBalance($userId);
     $accBalance['stock_balance']['value'] += $totalData['profit']['value'];
 
     $monthWiseData['total'] = $totalData;
@@ -113,16 +113,23 @@ function displayTxns($data, $key) {
         return;
     }
     $typeData = $data[$key]['typeData'];
-    echo "<table class='report-detail'>";
+    $accArr = array();
     foreach($typeData as $accountId => $accData) {
-        echo "<tr><td><a target='_blank' href='/index.php?txn-account=".$accountId."'>".getLangText($accData['accountName'])."</a></td><td>".getMoneyFormat($accData['value'], true)."</td></tr>";
+        array_push($accArr, $accData);
+    }
+    
+    array_multisort(array_column($accArr, 'value'), SORT_DESC, $accArr);
+
+    echo "<table class='report-detail'>";
+    foreach($accArr as $accData) {
+        echo "<tr><td><a target='_blank' href='/index.php?txn-account=".$accData['accountId']."'>".getLangText($accData['accountName'])."</a></td><td>".getMoneyFormat($accData['value'], true)."</td></tr>";
     }
     echo "</table>";
 }
 
-function getAccountsBalance() {
+function getAccountsBalance($userId) {
     global $ACCOUNT_TYPE;
-    $accounts = getAccounts();
+    $accounts = getAccounts($userId);
     $accBalance = array(
         "credit_balance" => array('value' => 0, 'typeData' => array()),
         "debit_balance" => array('value' => 0, 'typeData' => array()),
@@ -132,22 +139,22 @@ function getAccountsBalance() {
 	foreach($accounts as $account) {
         if ($account['type'] ==  $ACCOUNT_TYPE['CASH']) {
             $accBalance['cash_balance']['value'] += $account['balance'];
-            $accBalance['cash_balance']['typeData'][$account['id']] = array("accountName" => $account['name'], 'value' => $account['balance']);
+            $accBalance['cash_balance']['typeData'][$account['id']] = array("accountId" => $account['id'], "accountName" => $account['name'], 'value' => $account['balance']);
         }
 
         if ($account['type'] ==  $ACCOUNT_TYPE['STOCK']) {
             $accBalance['stock_balance']['value'] += $account['balance'];
-            $accBalance['stock_balance']['typeData'][$account['id']] = array("accountName" => $account['name'], 'value' => $account['balance']);
+            $accBalance['stock_balance']['typeData'][$account['id']] = array("accountId" => $account['id'], "accountName" => $account['name'], 'value' => $account['balance']);
         }
 
 		if ($account['type'] ==  $ACCOUNT_TYPE['CLIENT'] && $account['balance'] > 0) {
             $accBalance['credit_balance']['value'] += $account['balance'];
-            $accBalance['credit_balance']['typeData'][$account['id']] = array("accountName" => $account['name'], 'value' => $account['balance']);
+            $accBalance['credit_balance']['typeData'][$account['id']] = array("accountId" => $account['id'], "accountName" => $account['name'], 'value' => $account['balance']);
         }
 
         if ($account['type'] ==  $ACCOUNT_TYPE['CLIENT'] && $account['balance'] < 0) {
-            $accBalance['debit_balance']['value'] += $account['balance'];
-            $accBalance['debit_balance']['typeData'][$account['id']] = array("accountName" => $account['name'], 'value' => $account['balance']);
+            $accBalance['debit_balance']['value'] += ($account['balance'] * -1);
+            $accBalance['debit_balance']['typeData'][$account['id']] = array("accountId" => $account['id'], "accountName" => $account['name'], 'value' => $account['balance'] * -1);
         }
 	}
 
@@ -244,7 +251,7 @@ function addTxnToData($dateObj, $type, $t, $value, $accountId, $accountName) {
     
     $typeData = $dateObj[$dataRange][$type]['typeData'];
     if (!isset($typeData[$accountId])) {
-        $typeData[$accountId] = array('value' => 0, 'accountName' => $accountName, 'txns' => array());
+        $typeData[$accountId] = array('accountId' => $accountId, 'value' => 0, 'accountName' => $accountName, 'txns' => array());
     }
     $typeData[$accountId]['value'] += $value;
     array_push($typeData[$accountId]['txns'], $t);

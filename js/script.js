@@ -26,7 +26,7 @@ $(document).ready(function() {
     $('.txn-selector select, .txn-selector input').change(function(e) {
         $('.loader').fadeIn();
         var element = e.currentTarget;
-        window.location.search = "?" + element.name + "=" + element.value;
+        window.location.search = "?userId=" + element.dataset.userid + "&" + element.name + "=" + element.value;
     });
 
     $('input[name="txn-delete-confirm"]').on('click', function(e) {

@@ -3,12 +3,11 @@
 include_once "constant.php";
 include_once "util.php";
 include_once "sessionUtil.php";
-// include_once "sendEmail.php";
 
 date_default_timezone_set('Asia/Kolkata');
 
 $ALL_ACCOUNTS = array();
-$LOGGED_IN_USER = getLoggedInUser();
+$ALL_ACCOUNTS_USER_ID = null;
 
 function mysqlConn() {
 	$servername = "localhost:3306";
@@ -72,24 +71,29 @@ function getAllUsers() {
 }
 
 function getUserByPassword($userId, $password) {
-	$sql = "SELECT * FROM users WHERE id= '".$userId."' AND password = '".$password."'";
+	$sql = "SELECT * FROM users WHERE id = '".$userId."' AND password = '".$password."'";
 	$userRows = mysqlQuery($sql);
 	$user = $userRows->fetch_assoc();
 	return $user;
 }
 
-function getAccounts($userId = null) {
+function getUserById($userId) {
+	$sql = "SELECT id, name, profit FROM users WHERE id = '".$userId."'";
+	$userRows = mysqlQuery($sql);
+	$user = $userRows->fetch_assoc();
+	return $user;
+}
+
+function getAccounts($userId) {
 	global $ALL_ACCOUNTS;
-	global $LOGGED_IN_USER;
-	if ($userId == null) {
-		$userId = $LOGGED_IN_USER['userId'];
-	}
-	if (sizeof($ALL_ACCOUNTS) > 0) {
+	global $ALL_ACCOUNTS_USER_ID;
+	if (sizeof($ALL_ACCOUNTS) > 0 && $ALL_ACCOUNTS_USER_ID == $userId) {
 		return $ALL_ACCOUNTS;
 	}
-	$sql = "SELECT * FROM accounts WHERE user_id = ".$userId." ORDER BY type, name";
+	$sql = "SELECT * FROM accounts WHERE user_id = ".$userId." ORDER BY name";
 	$accountRows = mysqlQuery($sql);
 	$ALL_ACCOUNTS = array();
+	$ALL_ACCOUNTS_USER_ID = $userId;
 	while($account = $accountRows->fetch_assoc()) {
 		$account['original_name'] = $account['name'];
 		$account['name'] = getLangText($account['name']);
@@ -98,69 +102,55 @@ function getAccounts($userId = null) {
 	return $ALL_ACCOUNTS;
 }
 
-function getAccountByName($name) {
-	global $ALL_ACCOUNTS;
-	if (sizeof($ALL_ACCOUNTS) == 0) {
-		$ALL_ACCOUNTS = getAccounts();
-	}
-	for($i=0; $i < sizeof($ALL_ACCOUNTS); $i++) {
-		if ($ALL_ACCOUNTS[$i]['original_name'] == $name) {
-			return $ALL_ACCOUNTS[$i];
+function getAccountByName($name, $userId) {
+	$allAccounts = getAccounts($userId);
+	for($i=0; $i < sizeof($allAccounts); $i++) {
+		if ($allAccounts[$i]['original_name'] == $name) {
+			return $allAccounts[$i];
 		}
 	}
 }
 
-function getCashAccountId() {
-	return getAccountByName('CASH')['id'];
-}
-
-function getStockAccountId() {
-	return getAccountByName('STOCK')['id'];
-}
-
-function getAccountById($id) {
-	global $ALL_ACCOUNTS;
-	if (sizeof($ALL_ACCOUNTS) == 0) {
-		$ALL_ACCOUNTS = getAccounts();
-	}
-	for($i=0; $i < sizeof($ALL_ACCOUNTS); $i++) {
-		if ($ALL_ACCOUNTS[$i]['id'] == $id) {
-			return $ALL_ACCOUNTS[$i];
+function getAccountById($id, $userId) {
+	$allAccounts = getAccounts($userId);
+	for($i=0; $i < sizeof($allAccounts); $i++) {
+		if ($allAccounts[$i]['id'] == $id) {
+			return $allAccounts[$i];
 		}
 	}
 }
 
-function addAccount($name, $type) {
-	global $LOGGED_IN_USER;
+function getCashAccountId($userId) {
+	return getAccountByName('CASH', $userId)['id'];
+}
+
+function getStockAccountId($userId) {
+	return getAccountByName('STOCK', $userId)['id'];
+}
+
+function addAccount($userId, $name, $type) {
 	$sql = "INSERT INTO `accounts` (`user_id`, `name`, `type`) 
-			VALUES (".$LOGGED_IN_USER['userId'].", '".$name."', '".$type."')";
+			VALUES (".$userId.", '".$name."', '".$type."')";
 	$resp = mysqlQuery($sql);
 	$msg = "Adding new account with name: ".$name." and type: ".$type;
-	// sendEmail($LOGGED_IN_USER, $msg, $sql, $resp);
 	return $resp;
 }
 
-function updateAccount($accountId, $accountName, $type) {
-	global $LOGGED_IN_USER;
+function updateAccount($userId, $accountId, $accountName, $type) {
 	$sql = "UPDATE `accounts` SET `name` = '".$accountName."', `type` = '".$type."' WHERE id = ".$accountId.
-				" AND user_id = ".$LOGGED_IN_USER['userId'];
+				" AND user_id = ".$userId;
 	return mysqlQuery($sql);
 }
 
-function updateAccountBalance($accountId) {
-	global $LOGGED_IN_USER;
-	$balance = getBalanceByAccountId($accountId)['balance'];
+function updateAccountBalance($accountId, $userId) {
+	$balance = getBalanceByAccountId($accountId, null, $userId)['balance'];
 	$sql = "UPDATE `accounts` SET `balance` = ".$balance." WHERE id = ".$accountId.
-				" AND user_id = ".$LOGGED_IN_USER['userId'];
+				" AND user_id = ".$userId;
 	mysqlQuery($sql);
 	return $balance;
 }
 
-function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, $showDeleted = false, $userId = null, $sortByCreatedDate = 0) {
-	global $LOGGED_IN_USER;
-	if ($userId == null) {
-		$userId = $LOGGED_IN_USER['userId'];
-	}
+function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, $showDeleted = false, $userId, $sortByCreatedDate = 0) {
 	$sql = "SELECT 
 			t.id AS id, 
 			t.date AS date, 
@@ -213,51 +203,50 @@ function getTransactions($txnAccount = null, $txnDate = null, $txnMonth = null, 
 	return $txns;
 }
 
-function addTransaction($fromAccount, $toAccount, $description, $amount, $date, $updateBalance = true) {
+function addTransaction($userId, $fromAccount, $toAccount, $description, $amount, $date, $updateBalance = true) {
 	$sql = "INSERT INTO `transactions` (`from_account`, `to_account`, `description`, `amount`, `date`) 
 			VALUES (".$fromAccount.", ".$toAccount.", '".$description."', ".$amount.", '".$date."')";
 	mysqlQuery($sql);
 	if ($updateBalance) {
-		updateAccountBalance($fromAccount);
-		updateAccountBalance($toAccount);
+		updateAccountBalance($fromAccount, $userId);
+		updateAccountBalance($toAccount, $userId);
 	}
 }
 
-function updateTransaction($txnId, $desc, $from, $to, $amount, $date, $fromOld, $toOld) {
-	addTransaction($from, $to, $desc, $amount, $date, false);
-	deleteTransaction($txnId, $from, $to);
+function updateTransaction($userId, $txnId, $desc, $from, $to, $amount, $date, $fromOld, $toOld) {
+	addTransaction($userId, $from, $to, $desc, $amount, $date, false);
+	deleteTransaction($userId, $txnId, $from, $to);
 	if ($from != $fromOld) {
-		updateAccountBalance($fromOld);
+		updateAccountBalance($fromOld, $userId);
 	}
 	if ($to != $toOld) {
-		updateAccountBalance($toOld);
+		updateAccountBalance($toOld, $userId);
 	}
 }
 
-function deleteTransaction($txnId, $from, $to) {
+function deleteTransaction($userId, $txnId, $from, $to) {
 	$sql = "UPDATE `transactions` SET `is_deleted` = 1 WHERE id = ".$txnId;
 	mysqlQuery($sql);
-	updateAccountBalance($from);
-	updateAccountBalance($to);
+	updateAccountBalance($from, $userId);
+	updateAccountBalance($to, $userId);
 }
 
-function getBalanceByType($type) {
-	global $LOGGED_IN_USER;
-	$sql = "SELECT sum(amount) AS from_amount FROM transactions t JOIN accounts fa ON t.from_account = fa.id WHERE fa.type = '".$type."' AND t.is_deleted = 0 fa.user_id = ".$LOGGED_IN_USER['userId'];
+function getBalanceByType($type, $userId) {
+	$sql = "SELECT sum(amount) AS from_amount FROM transactions t JOIN accounts fa ON t.from_account = fa.id WHERE fa.type = '".$type."' AND t.is_deleted = 0 fa.user_id = ".$userId;
 	$txnRows = mysqlQuery($sql);
 	$fromAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
 		$fromAmount += $txn['from_amount'];
 	}
-	$sql = "SELECT sum(amount) AS to_amount FROM transactions t JOIN accounts ta ON t.to_account = ta.id WHERE ta.type = '".$type."' AND t.is_deleted = 0 AND ta.user_id = ".$LOGGED_IN_USER['userId'];
+	$sql = "SELECT sum(amount) AS to_amount FROM transactions t JOIN accounts ta ON t.to_account = ta.id WHERE ta.type = '".$type."' AND t.is_deleted = 0 AND ta.user_id = ".$userId;
 	$txnRows = mysqlQuery($sql);
 	$toAmount = 0;
 	while($txn = $txnRows->fetch_assoc()) {
 		$toAmount += $txn['to_amount'];
 	}
 
-	$factoryId = getStockAccountId();
-	$cashId = getCashAccountId();
+	$factoryId = getStockAccountId($userId);
+	$cashId = getCashAccountId($userId);
 
 	if ($id == $factoryId || $id == $cashId) {
 		return $toAmount - $fromAmount;
@@ -265,7 +254,7 @@ function getBalanceByType($type) {
 	return $fromAmount - $toAmount;
 }
 
-function getBalanceByAccountId($id, $date = null) {
+function getBalanceByAccountId($id, $date = null, $userId) {
 	$amounts = array(
 		"credit" => 0,
 		"debit" => 0,
@@ -294,8 +283,8 @@ function getBalanceByAccountId($id, $date = null) {
 	while($txn = $txnRows->fetch_assoc()) {
 		$toAmount += $txn['to_amount'];
 	}
-	$factoryId = getStockAccountId();
-	$cashId = getCashAccountId();
+	$factoryId = getStockAccountId($userId);
+	$cashId = getCashAccountId($userId);
 
 	if ($id == $factoryId || $id == $cashId) {
 		$amounts['credit'] = $toAmount;

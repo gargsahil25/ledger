@@ -8,17 +8,10 @@ include_once "../services/sessionUtil.php";
 include_once "../services/display.php";
 
 $user = getLoggedInUser(true);
-
-$userId = isset($_GET['userId']) ? $_GET['userId'] : $user['userId'];
+$userId = isset($_GET['userId']) && $user['isAdmin'] ? $_GET['userId'] : $user['userId'];
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 0;
-$users = getAllUsers();
 
-// Getting data for the page
-date_default_timezone_set('Asia/Kolkata');
-$txns = null;
-if ($userId != null) {
-	$txns = getTransactions(null, null, null, true, $userId, $sort);
-}
+$txns = getTransactions(null, null, null, true, $userId, $sort);
 
 ?>
 
@@ -31,19 +24,13 @@ if ($userId != null) {
 <body>
 	<section class="page-header">
 		<h5>			
-			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> &gt;
+			<a href="/index.php?userId=<?php echo $userId; ?>"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> &gt;
 			<a class="active" href="/pages/txns.php"><?php echo "All Transactions" ?></a>
 		</h5>
 	</section>
+	<?php include('../includes/userSelection.php'); ?>
 	<section>
 		<div class="txns">
-			<div class="txns-heading">
-				<form method="get">
-					<select name="userId" onchange="this.form.submit()">
-						<?php displayUsers($users, $userId); ?>
-					</select>
-				</form>
-			</div>
 			<table>
 				<tr><th><?php echo getLangText('DATE'); ?></th>
 				<th><?php echo "Created Date 

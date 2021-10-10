@@ -8,13 +8,9 @@ include_once "../services/handler.php";
 include_once "../services/display.php";
 
 $user = getLoggedInUser(true);
-$userId = isset($_GET['userId']) ? $_GET['userId'] :  $user['userId'];
-$users = getAllUsers();
+$userId = isset($_GET['userId']) && $user['isAdmin'] ? $_GET['userId'] : $user['userId'];
 
-$accounts = null;
-if ($userId != null) {
-	$accounts = getAccounts($userId);
-}
+$accounts = getAccounts($userId);
 
 /**
  * PROFIT: (ActualFactoryMallValue - FactoryMallAccountBalance) 
@@ -35,18 +31,14 @@ if ($userId != null) {
 <body>
 	<section class="page-header">
 		<h5>			
-			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> &gt;  
+		<a href="/index.php?userId=<?php echo $userId; ?>"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> &gt;
 			<a class="active" href="/pages/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
 		</h5>
 	</section>
+	<?php include('../includes/userSelection.php'); ?>
 	<section>
 		<div class="txns">
 			<div class="txns-heading">
-				<form method="get">
-					<select name="userId" onchange="this.form.submit()">
-						<?php displayUsers($users, $userId); ?>
-					</select>
-				</form>
 				<?php
 					echo getLangText('PROFIT_LOSS')." on <strong>".getDateFormat()."</strong> <span class='totalprofitloss balance'></span>";
 				?>

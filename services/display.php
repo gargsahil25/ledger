@@ -104,11 +104,11 @@ function displayAccountBalance($accounts) {
 	}
 }
 
-function displayDateTxns($txns, $txnDate) {
+function displayDateTxns($txns, $txnDate, $userId) {
 	$i = 0;
-	$factoryId = getStockAccountId();
-	$cashId = getCashAccountId();
-	$cashBalance = getBalanceByAccountId($cashId, $txnDate)['balance'];
+	$factoryId = getStockAccountId($userId);
+	$cashId = getCashAccountId($userId);
+	$cashBalance = getBalanceByAccountId($cashId, $txnDate, $userId)['balance'];
 	$cashTitle = "<tr><td colspan='5'><strong>".getLangText('CASH_BALANCE').": ".getMoneyFormat($cashBalance)."</strong></td></tr>";
 	$factoryTitle = "<tr><td colspan='5'><strong>".getLangText('FAC_TRANSACTION')."</strong></td></tr>";
 	$cashTxns = "";
@@ -154,11 +154,11 @@ function displayDateTxns($txns, $txnDate) {
 	echo $factoryTxns;
 }
 
-function displayAccountTxns($txns, $account, $balance) {
+function displayAccountTxns($txns, $account, $balance, $userId) {
 	global $ACCOUNT_TYPE;
 	$id = $account['id'];
-	$factoryId = getStockAccountId();
-	$cashId = getCashAccountId();
+	$factoryId = getStockAccountId($userId);
+	$cashId = getCashAccountId($userId);
 	$i = 0;
 	foreach($txns as $txn) {
 		$class = "debit";

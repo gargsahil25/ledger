@@ -24,10 +24,10 @@ function getMoneyFormat($money, $skipSymbol = false) {
     }
 }
 
-function redirect($url = false) {
-    if (!$url) {
-        $url = '/index.php?'.$_SERVER['QUERY_STRING'];
-    }
+function redirect($page = 'index.php', $queryParams = array()) {
+    parse_str($_SERVER['QUERY_STRING'], $queryObj);
+    $queryStr = http_build_query(array_merge($queryObj, $queryParams));
+    $url = '/'.$page.'?'.$queryStr;
     header('Location: '.$url);
     exit();
 }
@@ -64,14 +64,6 @@ function getDateFormat($date = null, $format = null) {
         $format = "j M Y";
     }
     return date_format($date, $format);
-}
-
-function getUserDetail($users, $userId) {
-    foreach($users as $u) {
-		if ($userId == $u['id']) {
-            return $u;
-        }
-	}
 }
 
 ?>

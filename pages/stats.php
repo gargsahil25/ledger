@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 include_once "../services/constant.php";
 include_once "../services/util.php";
@@ -6,12 +7,13 @@ include_once "../services/mysql.php";
 include_once "../services/display.php";
 include_once "../services/charts.php";
 
-// Getting data for the page
-date_default_timezone_set('Asia/Kolkata');
-$data = getDataForStats();
+$user = getLoggedInUser(true);
+$userId = isset($_GET['userId']) && $user['isAdmin'] ? $_GET['userId'] : $user['userId'];
 $txnType = isset($_GET['txnType']) ? $_GET['txnType'] : null;
 $userName = isset($_GET['userName']) ? $_GET['userName'] : null;
 $dateRange = isset($_GET['dateRange']) ? $_GET['dateRange'] : null;
+
+$data = getDataForStats();
 $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 
 ?>
@@ -25,7 +27,7 @@ $txnData = getStatsTxnData($data, $txnType, $userName, $dateRange);
 <body>
 	<section class="page-header">
 		<h5>			
-			<a href="/index.php"><?php echo getLangText("LEDGER"); ?></a> &gt;
+			<a href="/index.php?userId=<?php echo $userId; ?>"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> &gt;
 			<a class="active" href="/pages/stats.php"><?php echo "Stats" ?></a> 
 		</h5>
 	</section>

@@ -21,6 +21,7 @@ updateTxnHandler($_POST);
 deleteTxnHandler($_POST);
 
 // Get Params
+$userId = isset($_GET['userId']) && $user['isAdmin'] ? $_GET['userId'] : $user['userId'];
 $txnDate = isset($_GET['txn-date']) ? $_GET['txn-date'] : null;
 $txnMonth = isset($_GET['txn-month']) ? $_GET['txn-month'] : null;
 $txnAccount = isset($_GET['txn-account']) ? $_GET['txn-account'] : null;
@@ -30,16 +31,16 @@ if ($txnDate == null && $txnMonth == null && $txnAccount == null) {
 }
 
 // Getting data for the page
-$accounts = getAccounts();
-$txns = getTransactions($txnAccount, $txnDate, $txnMonth);
+$accounts = getAccounts($userId);
+$txns = getTransactions($txnAccount, $txnDate, $txnMonth, false, $userId);
 
 if ($txnAccount) {
-	$account = getAccountById($txnAccount);
+	$account = getAccountById($txnAccount, $userId);
 	$balance = $account['balance'];
 }
 
 $isAdmin = $user['isAdmin'];
-$total = getBalanceByAccountId($txnAccount);
+$total = getBalanceByAccountId($txnAccount, null, $userId);
 
 ?>
 
@@ -55,11 +56,11 @@ $total = getBalanceByAccountId($txnAccount);
 		<h5>			
 			<span class="glyphicon glyphicon-plus left collapsed" data-toggle="modal" data-target="#add-account"></span>
 			<a class="active" href="/index.php"><?php echo $user['userName'].' '.getLangText("LEDGER"); ?></a> |
-			<a href="/pages/report.php"><?php echo "Report"; ?></a>
+			<a href="/pages/report.php?userId=<?php echo $userId; ?>"><?php echo "Report"; ?></a>
 			<?php if ($isAdmin) { ?> | 
-				<a href="/pages/txns.php"><?php echo "All Transactions" ?></a> | 
-				<a href="/pages/stats.php"><?php echo "Stats" ?></a> | 
-				<a href="/pages/balance.php"><?php echo getLangText("PROFIT_LOSS"); ?></a>
+				<a href="/pages/txns.php?userId=<?php echo $userId; ?>"><?php echo "All Transactions" ?></a> | 
+				<a href="/pages/stats.php?userId=<?php echo $userId; ?>"><?php echo "Stats" ?></a> | 
+				<a href="/pages/balance.php?userId=<?php echo $userId; ?>"><?php echo getLangText("PROFIT_LOSS"); ?></a>
 			<?php } ?>
 			<span class="header-menu" data-cookie="PHPSESSID" data-reload="true" data-removecookie="true"><span class="glyphicon glyphicon-off collapsed"></span></span>
 			<span class="header-menu" data-cookie="entry"><span id="entryButton" class="glyphicon glyphicon-edit collapsed" data-toggle="collapse" data-target="#entry"></span></span>
@@ -67,6 +68,7 @@ $total = getBalanceByAccountId($txnAccount);
 
 		</h5>
 	</section>
+	<?php include('./includes/userSelection.php'); ?>
 	<section>
 		<div id="add-account" class="modal fade" role="dialog">
 			<div class="modal-dialog">
@@ -81,6 +83,7 @@ $total = getBalanceByAccountId($txnAccount);
 						<select name="account_type" required>
 							<?php displayAccountTypes(null, $isAdmin); ?>
 						</select>
+						<input type="hidden" name="user-id" value="<?php echo $userId; ?>"/>
 						<input type="submit" class="btn btn-warning btn-lg" name="client-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 						</form>
 					</div>
@@ -126,6 +129,7 @@ $total = getBalanceByAccountId($txnAccount);
 							<input required autocomplete="off" type="number" name="buy-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
 							<?php displayTxnType(); ?>
 							<input required type="date" name="buy-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input type="hidden" name="user-id" value="<?php echo $userId; ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="buy-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -149,6 +153,7 @@ $total = getBalanceByAccountId($txnAccount);
 							<input required autocomplete="off" type="number" name="sell-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
 							<?php displayTxnType(); ?>
 							<input required type="date" name="sell-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input type="hidden" name="user-id" value="<?php echo $userId; ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="sell-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -171,6 +176,7 @@ $total = getBalanceByAccountId($txnAccount);
 							</select>
 							<input required autocomplete="off" type="number" name="pay-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
 							<input required type="date" name="pay-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input type="hidden" name="user-id" value="<?php echo $userId; ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="pay-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -193,6 +199,7 @@ $total = getBalanceByAccountId($txnAccount);
 							</select>
 							<input required autocomplete="off" type="number" name="earn-amount" placeholder="<?php echo getLangText("AMOUNT"); ?>"/>
 							<input required type="date" name="earn-date" value="<?php echo date("Y-m-d") ?>"/>
+							<input type="hidden" name="user-id" value="<?php echo $userId; ?>"/>
 							<input type="submit" class="btn btn-warning btn-lg" name="earn-submit" value="<?php echo getLangText('SUBMIT'); ?>"/>
 							</form>
 						</div>
@@ -203,8 +210,8 @@ $total = getBalanceByAccountId($txnAccount);
 	</section>
 	<section>
 		<div class="txn-selector">
-			<input type="date" name="txn-date" value="<?php echo $txnDate; ?>" max="<?php echo getDateFormat(null, "Y-m-d"); ?>"/>
-			<select name="txn-account">
+			<input type="date" name="txn-date" data-userid="<?php echo $userId; ?>" value="<?php echo $txnDate; ?>" max="<?php echo getDateFormat(null, "Y-m-d"); ?>"/>
+			<select name="txn-account" data-userid="<?php echo $userId; ?>">
 				<option value=""><?php echo getLangText('ACCOUNT'); ?></option>
 				<?php displayAccounts($accounts, "all", $txnAccount, true); ?>
 			</select>
@@ -240,6 +247,7 @@ $total = getBalanceByAccountId($txnAccount);
 											<select name="account_type" required>
 												<?php displayAccountTypes($account['type'], $isAdmin); ?>
 											</select>
+											<input type="hidden" name="user-id" value="<?php echo $userId; ?>"/>
 											<input type="submit" class="btn btn-warning btn-lg" name="client-update" value="<?php echo getLangText('UPDATE'); ?>"/>
 											</form>
 										</div>
@@ -261,9 +269,9 @@ $total = getBalanceByAccountId($txnAccount);
 				if (sizeof($txns) == 0) {
 					echo "<tr><td colspan='5'>".getLangText('NO_TRANSACTION')."</td></tr>";
 				} else if ($txnAccount) {
-					displayAccountTxns($txns, $account, $balance);
+					displayAccountTxns($txns, $account, $balance, $userId);
 				} else {
-					displayDateTxns($txns, $txnDate);
+					displayDateTxns($txns, $txnDate, $userId);
 				}
 			?>
 			</table>
@@ -294,6 +302,7 @@ $total = getBalanceByAccountId($txnAccount);
 							<input type="hidden" name="txn-from-old" value="<?php echo $txn['from_account_id']; ?>"/>
 							<input type="hidden" name="txn-to-old" value="<?php echo $txn['to_account_id']; ?>"/>
 							<input type="hidden" name="txn-delete-submit" value=""/>
+							<input type="hidden" name="user-id" value="<?php echo $userId; ?>"/>
 							<input type="submit" class="btn btn-danger btn-lg half" data-index="<?php echo $i; ?>" name="txn-delete-confirm" value="<?php echo getLangText('DELETE'); ?>" data-dismiss="modal"/>
 							<input type="submit" class="btn btn-warning btn-lg half" name="txn-update-submit" value="<?php echo getLangText('UPDATE'); ?>"/>
 							</form>
