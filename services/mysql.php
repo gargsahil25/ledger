@@ -15,13 +15,15 @@ function mysqlConn() {
 	$password = "";
 	$dbname = "ledger";
 
-	$url = getenv("CLEARDB_DATABASE_URL");
-	if ($url) {
-		$url = parse_url($url);
-		$servername = $url["host"];
-		$username = $url["user"];
-		$password = $url["pass"];
-		$dbname = substr($url["path"],1);
+	$env_servername = getenv("AZURE_MYSQL_HOST");
+	$env_username = getenv("AZURE_MYSQL_USERNAME");
+	$env_password = getenv("AZURE_MYSQL_PASSWORD");
+	$env_dbname = getenv("AZURE_MYSQL_DBNAME");
+	if ($env_servername && $env_username && $env_password && $env_dbname) {
+		$servername = $env_servername;
+		$username = $env_username;
+		$password = $env_password;
+		$dbname = $env_dbname;
 	}	
 
 	// Create connection
