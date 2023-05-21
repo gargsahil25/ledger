@@ -14,7 +14,7 @@ function mysqlConn() {
 	$username = "root";
 	$password = "";
 	$dbname = "ledger";
-
+	
 	$env_servername = getenv("AZURE_MYSQL_HOST");
 	$env_username = getenv("AZURE_MYSQL_USERNAME");
 	$env_password = getenv("AZURE_MYSQL_PASSWORD");
@@ -25,14 +25,18 @@ function mysqlConn() {
 		$password = $env_password;
 		$dbname = $env_dbname;
 	}	
+	
+	$conn = mysqli_init();
+	mysqli_ssl_set($conn ,NULL, NULL, "./DigiCertGlobalRootCA.crt.pem", NULL, NULL);
+	mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, MYSQLI_CLIENT_SSL);
 
 	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
+	//$conn = new mysqli($servername, $username, $password, $dbname);
 	
 	// Check connection
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	} 
+// 	if ($conn->connect_error) {
+// 		die("Connection failed: " . $conn->connect_error);
+// 	} 
 
 	mysqli_set_charset($conn,"latin1");
 
