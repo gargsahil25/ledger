@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home1/gargszq4/public_html/ledger
+    - /bin/cp -R ./ $DEPLOYPATH
