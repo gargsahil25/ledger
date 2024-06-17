@@ -13,7 +13,7 @@ function getLoggedInUser($redirect = false) {
         $user['isAdmin'] = (isset($_COOKIE['admin']) && $_COOKIE['admin'] == 't') ? true : false;
         return $user;
     } else if ($redirect) {
-        return redirect('/ledger/login.php');
+        return redirect('ledger/login.php');
     }
 }
 
