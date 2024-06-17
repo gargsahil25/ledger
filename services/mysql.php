@@ -15,10 +15,10 @@ function mysqlConn() {
 	$password = "";
 	$dbname = "ledger";
 	
-	$env_servername = getenv("AZURE_MYSQL_HOST");
-	$env_username = getenv("AZURE_MYSQL_USERNAME");
-	$env_password = getenv("AZURE_MYSQL_PASSWORD");
-	$env_dbname = getenv("AZURE_MYSQL_DBNAME");
+	$env_servername = getenv("LEDGER_HOST");
+	$env_username = getenv("LEDGER_USERNAME");
+	$env_password = getenv("LEDGER_PASSWORD");
+	$env_dbname = getenv("LEDGER_DBNAME");
 	if ($env_servername && $env_username && $env_password && $env_dbname) {
 		$servername = $env_servername;
 		$username = $env_username;
@@ -26,17 +26,17 @@ function mysqlConn() {
 		$dbname = $env_dbname;
 	}	
 	
-	$conn = mysqli_init();
-	mysqli_ssl_set($conn ,NULL, NULL, "./DigiCertGlobalRootCA.crt.pem", NULL, NULL);
-	mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, MYSQLI_CLIENT_SSL);
+	// $conn = mysqli_init();
+	// mysqli_ssl_set($conn ,NULL, NULL, "./DigiCertGlobalRootCA.crt.pem", NULL, NULL);
+	// mysqli_real_connect($conn, $servername, $username, $password, $dbname, 3306, MYSQLI_CLIENT_SSL);
 
 	// Create connection
-	//$conn = new mysqli($servername, $username, $password, $dbname);
+	$conn = new mysqli($servername, $username, $password, $dbname);
 	
 	// Check connection
-// 	if ($conn->connect_error) {
-// 		die("Connection failed: " . $conn->connect_error);
-// 	} 
+	if ($conn->connect_error) {
+		die("Connection failed: " . $conn->connect_error);
+	} 
 
 	mysqli_set_charset($conn,"latin1");
 
