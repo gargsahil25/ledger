@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home1/gargsrul/public_html
+    - export DEPLOYPATH=/home1/gargsrul/public_html/ledger
     - /bin/cp -R ./ $DEPLOYPATH
